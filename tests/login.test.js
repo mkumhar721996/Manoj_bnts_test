@@ -25,10 +25,9 @@ describe('MT-STORY-019 AC4: login denied before email verification', () => {
   it('denies access and prompts the user to check their inbox', async () => {
     const payload = validPayload();
     await request(app).post('/api/register').send(payload);
+    const { email, password } = payload;
 
-    const res = await request(app)
-      .post('/api/login')
-      .send({ email: payload.email, password: payload.password });
+    const res = await request(app).post('/api/login').send({ email, password });
 
     expect(res.status).toBe(403);
     expect(res.body.error).toMatch(/verify your email|check your inbox/i);
@@ -39,12 +38,11 @@ describe('MT-STORY-019 AC6: login succeeds once the account is verified', () => 
   it('grants access after the verification link has been clicked', async () => {
     const payload = validPayload();
     await request(app).post('/api/register').send(payload);
+    const { email, password } = payload;
     const token = mailer.getSentEmails()[0].token;
     await request(app).get(`/api/verify/${token}`);
 
-    const res = await request(app)
-      .post('/api/login')
-      .send({ email: payload.email, password: payload.password });
+    const res = await request(app).post('/api/login').send({ email, password });
 
     expect(res.status).toBe(200);
     expect(res.body.message).toMatch(/login successful/i);
