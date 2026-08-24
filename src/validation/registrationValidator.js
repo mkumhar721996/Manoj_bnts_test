@@ -12,9 +12,10 @@ function validate(payload) {
     return { valid: false, field: 'email', message: 'Invalid email format' };
   }
 
-  const password = payload.password;
   const meetsPasswordRequirements =
-    password.length >= 8 && /[a-zA-Z]/.test(password) && /\d/.test(password);
+    payload.password.length >= 8 &&
+    /[a-zA-Z]/.test(payload.password) &&
+    /\d/.test(payload.password);
 
   if (!meetsPasswordRequirements) {
     return {
