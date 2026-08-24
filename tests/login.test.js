@@ -48,3 +48,18 @@ describe('MT-STORY-019 AC6: login succeeds once the account is verified', () => 
     expect(res.body.message).toMatch(/login successful/i);
   });
 });
+
+describe('security: login does not leak account existence via response timing', () => {
+  it('performs the same expensive password comparison for an unregistered email', async () => {
+    const scryptSpy = jest.spyOn(crypto, 'scryptSync');
+
+    const res = await request(app)
+      .post('/api/login')
+      .send({ email: 'nobody@example.com', password: 'whatever123' });
+
+    expect(res.status).toBe(401);
+    expect(scryptSpy).toHaveBeenCalled();
+
+    scryptSpy.mockRestore();
+  });
+});
