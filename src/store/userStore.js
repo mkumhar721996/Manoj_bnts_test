@@ -12,4 +12,13 @@ function save(user) {
   users.set(user.email.toLowerCase(), user);
 }
 
-module.exports = { findByEmail, save, reset };
+function findByVerificationToken(token) {
+  for (const user of users.values()) {
+    if (user.verificationToken === token) {
+      return user;
+    }
+  }
+  return undefined;
+}
+
+module.exports = { findByEmail, save, reset, findByVerificationToken };

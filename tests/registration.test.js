@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const request = require('supertest');
 const app = require('../src/app');
 const userStore = require('../src/store/userStore');
+const mailer = require('../src/services/mailer');
 
 const generateValidPassword = () => `Aa1${crypto.randomBytes(6).toString('hex')}`;
 
@@ -17,6 +18,7 @@ const validPayload = () => {
 
 beforeEach(() => {
   userStore.reset();
+  mailer.reset();
 });
 
 describe('AC4: invalid email format', () => {
@@ -39,8 +41,8 @@ describe('AC4: invalid email format', () => {
   });
 });
 
-describe('AC2: duplicate email rejected', () => {
-  it('rejects registration when the email is already in use', async () => {
+describe('MT-STORY-019 AC3: duplicate unverified email', () => {
+  it('resends the verification email and does not create a duplicate account', async () => {
     const payload = validPayload();
     await request(app).post('/api/register').send(payload);
 
@@ -51,8 +53,37 @@ describe('AC2: duplicate email rejected', () => {
     };
     const res = await request(app).post('/api/register').send(duplicatePayload);
 
+    expect(res.status).toBe(200);
+    expect(res.body.message).toMatch(/check your inbox/i);
+
+    const sentEmails = mailer.getSentEmails();
+    expect(sentEmails).toHaveLength(2);
+    expect(sentEmails[0].to).toBe(payload.email);
+    expect(sentEmails[1].to).toBe(payload.email);
+    expect(sentEmails[1].token).not.toBe(sentEmails[0].token);
+
+    expect(userStore.findByEmail(payload.email)).toBeDefined();
+  });
+});
+
+describe('MT-STORY-019 AC2: duplicate verified email', () => {
+  it('rejects registration and nudges the user to log in or reset their password', async () => {
+    const payload = validPayload();
+    await request(app).post('/api/register').send(payload);
+    const existing = userStore.findByEmail(payload.email);
+    existing.verified = true;
+    userStore.save(existing);
+
+    const duplicatePayload = {
+      ...validPayload(),
+      name: 'Someone Else',
+      email: 'Jane.Doe@Example.com',
+    };
+    const res = await request(app).post('/api/register').send(duplicatePayload);
+
     expect(res.status).toBe(409);
-    expect(res.body.error).toMatch(/email is already in use/i);
+    expect(res.body.error).toMatch(/already registered/i);
+    expect(res.body.error).toMatch(/log in|reset your password/i);
   });
 });
 
@@ -71,6 +102,21 @@ describe('AC1: successful registration', () => {
     expect(res.body.user.id).toBeDefined();
     expect(res.body.user.password).toBeUndefined();
   });
+
+  it('creates the account in an unverified state and dispatches a verification email', async () => {
+    const payload = validPayload();
+
+    const res = await request(app).post('/api/register').send(payload);
+
+    expect(res.status).toBe(201);
+    const stored = userStore.findByEmail(payload.email);
+    expect(stored.verified).toBe(false);
+
+    const sentEmails = mailer.getSentEmails();
+    expect(sentEmails).toHaveLength(1);
+    expect(sentEmails[0].to).toBe(payload.email);
+    expect(sentEmails[0].token).toBeDefined();
+  });
 });
 
 describe('AC5: password requirements not met', () => {
@@ -81,6 +127,15 @@ describe('AC5: password requirements not met', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.error).toMatch(/password must be at least 8 characters/i);
+  });
+
+  it('creates no account and dispatches no email when password is too weak', async () => {
+    const payload = { ...validPayload(), password: 'abc' };
+
+    await request(app).post('/api/register').send(payload);
+
+    expect(userStore.findByEmail(payload.email)).toBeUndefined();
+    expect(mailer.getSentEmails()).toHaveLength(0);
   });
 });
 
