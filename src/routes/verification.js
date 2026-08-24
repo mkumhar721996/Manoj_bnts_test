@@ -5,6 +5,9 @@ const emailService = require('../services/emailService');
 
 const router = express.Router();
 
+const RESEND_GENERIC_MESSAGE =
+  'If an account exists for that email and is not yet verified, a verification email has been sent';
+
 router.get('/verify-email', (req, res) => {
   const { token } = req.query;
 
@@ -51,18 +54,12 @@ router.post('/resend-verification', (req, res) => {
 
   const user = userStore.findByEmail(email);
 
-  if (!user) {
-    return res.status(404).json({ error: 'No account found for that email' });
+  if (user && !user.verified) {
+    const token = verificationTokenStore.create(user.email);
+    emailService.sendVerificationEmail(user.email, token);
   }
 
-  if (user.verified) {
-    return res.status(400).json({ error: 'This account has already been verified' });
-  }
-
-  const token = verificationTokenStore.create(user.email);
-  emailService.sendVerificationEmail(user.email, token);
-
-  return res.status(200).json({ message: 'Verification email resent' });
+  return res.status(200).json({ message: RESEND_GENERIC_MESSAGE });
 });
 
 module.exports = router;

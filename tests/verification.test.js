@@ -3,6 +3,7 @@ const request = require('supertest');
 const app = require('../src/app');
 const userStore = require('../src/store/userStore');
 const verificationTokenStore = require('../src/store/verificationTokenStore');
+const sessionStore = require('../src/store/sessionStore');
 const emailService = require('../src/services/emailService');
 
 const generateValidPassword = () => `Aa1${crypto.randomBytes(6).toString('hex')}`;
@@ -20,36 +21,63 @@ const validPayload = () => {
 beforeEach(() => {
   userStore.reset();
   verificationTokenStore.reset();
+  sessionStore.reset();
   emailService.reset();
 });
 
 describe('AC2: unverified user is blocked from authenticated access', () => {
   it('blocks an unverified user from accessing a protected route', async () => {
     const registerRes = await request(app).post('/api/register').send(validPayload());
-    const userId = registerRes.body.user.id;
+    const { sessionToken } = registerRes.body;
 
-    const res = await request(app).get('/api/account').set('x-user-id', userId);
+    const res = await request(app)
+      .get('/api/account')
+      .set('Authorization', `Bearer ${sessionToken}`);
 
     expect(res.status).toBe(403);
     expect(res.body.error).toMatch(/verify.*email/i);
   });
 
-  it('rejects access with no x-user-id header', async () => {
+  it('rejects access with no Authorization header', async () => {
     const res = await request(app).get('/api/account');
 
     expect(res.status).toBe(401);
   });
 
-  it('rejects access when x-user-id is an unknown id', async () => {
-    const res = await request(app).get('/api/account').set('x-user-id', crypto.randomUUID());
+  it('rejects access when the bearer token is unknown', async () => {
+    const res = await request(app)
+      .get('/api/account')
+      .set('Authorization', `Bearer ${crypto.randomUUID()}`);
 
     expect(res.status).toBe(401);
   });
 
-  it('rejects access when x-user-id is sent as a repeated header', async () => {
+  it('rejects access when the Authorization header is malformed (no Bearer prefix)', async () => {
+    const registerRes = await request(app).post('/api/register').send(validPayload());
+
     const res = await request(app)
       .get('/api/account')
-      .set('x-user-id', ['id-one', 'id-two']);
+      .set('Authorization', registerRes.body.sessionToken);
+
+    expect(res.status).toBe(401);
+  });
+
+  it('rejects access when the Authorization header is sent as a repeated header', async () => {
+    const res = await request(app)
+      .get('/api/account')
+      .set('Authorization', ['Bearer aaa', 'Bearer bbb']);
+
+    expect(res.status).toBe(401);
+  });
+
+  it('does not grant access by sending a real user id as a bearer token (spoofing regression)', async () => {
+    const registerRes = await request(app).post('/api/register').send(validPayload());
+    const { id: userId, verified } = registerRes.body.user;
+    expect(verified).toBe(false);
+
+    const res = await request(app)
+      .get('/api/account')
+      .set('Authorization', `Bearer ${userId}`);
 
     expect(res.status).toBe(401);
   });
@@ -68,7 +96,7 @@ describe('AC1: clicking a valid confirmation link verifies the account and grant
   it('marks the account verified and grants access to a protected route', async () => {
     const payload = validPayload();
     const registerRes = await request(app).post('/api/register').send(payload);
-    const userId = registerRes.body.user.id;
+    const { sessionToken } = registerRes.body;
     const { token } = emailService.getLastEmailTo(payload.email);
 
     const verifyRes = await request(app).get('/api/verify-email').query({ token });
@@ -76,13 +104,15 @@ describe('AC1: clicking a valid confirmation link verifies the account and grant
     expect(verifyRes.status).toBe(200);
     expect(verifyRes.body.message).toMatch(/verified/i);
 
-    const accountRes = await request(app).get('/api/account').set('x-user-id', userId);
+    const accountRes = await request(app)
+      .get('/api/account')
+      .set('Authorization', `Bearer ${sessionToken}`);
 
     expect(accountRes.status).toBe(200);
     expect(accountRes.body).toMatchObject({ verified: true });
   });
 
-  it('never includes a token in the registration response body', async () => {
+  it('never includes a verification token in the registration response body', async () => {
     const payload = validPayload();
 
     const res = await request(app).post('/api/register').send(payload);
@@ -90,6 +120,18 @@ describe('AC1: clicking a valid confirmation link verifies the account and grant
     expect(res.body.token).toBeUndefined();
     expect(res.body.verificationToken).toBeUndefined();
     expect(res.body.user.token).toBeUndefined();
+  });
+
+  it('issues a distinct session token per registration, unrelated to the user id', async () => {
+    const payloadOne = validPayload();
+    const payloadTwo = { ...validPayload(), email: 'session.check@example.com' };
+
+    const resOne = await request(app).post('/api/register').send(payloadOne);
+    const resTwo = await request(app).post('/api/register').send(payloadTwo);
+
+    expect(resOne.body.sessionToken).toBeDefined();
+    expect(resOne.body.sessionToken).not.toBe(resOne.body.user.id);
+    expect(resOne.body.sessionToken).not.toBe(resTwo.body.sessionToken);
   });
 
   it('generates a unique token per registration', async () => {
@@ -200,12 +242,13 @@ describe('AC4: an expired verification link', () => {
     expect(verifyRes.status).toBe(200);
   });
 
-  it('returns 404 when resending for an unknown email', async () => {
+  it('returns a generic 200 when resending for an unknown email (no enumeration)', async () => {
     const res = await request(app)
       .post('/api/resend-verification')
       .send({ email: 'unknown@example.com' });
 
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(200);
+    expect(emailService.getLastEmailTo('unknown@example.com')).toBeUndefined();
   });
 
   it('returns 400 when resending with a missing email field', async () => {
@@ -233,7 +276,7 @@ describe('AC4: an expired verification link', () => {
     expect(res.status).toBe(200);
   });
 
-  it('rejects resend for an already-verified account without emailing again', async () => {
+  it('returns a generic 200 for an already-verified account without emailing again (no enumeration)', async () => {
     const payload = validPayload();
     await request(app).post('/api/register').send(payload);
     const { token } = emailService.getLastEmailTo(payload.email);
@@ -244,7 +287,21 @@ describe('AC4: an expired verification link', () => {
       .post('/api/resend-verification')
       .send({ email: payload.email });
 
-    expect(res.status).toBe(400);
+    expect(res.status).toBe(200);
     expect(emailService.getLastEmailTo(payload.email).token).toBe(beforeToken);
+  });
+
+  it('returns the same generic message for unknown, already-verified, and unverified emails', async () => {
+    const payload = validPayload();
+    await request(app).post('/api/register').send(payload);
+
+    const unknownRes = await request(app)
+      .post('/api/resend-verification')
+      .send({ email: 'nobody@example.com' });
+    const unverifiedRes = await request(app)
+      .post('/api/resend-verification')
+      .send({ email: payload.email });
+
+    expect(unknownRes.body.message).toBe(unverifiedRes.body.message);
   });
 });

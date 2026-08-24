@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const { validate } = require('../validation/registrationValidator');
 const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
+const sessionStore = require('../store/sessionStore');
 const emailService = require('../services/emailService');
 const { hashPassword } = require('../utils/password');
 
@@ -45,10 +46,13 @@ router.post('/register', (req, res) => {
   const token = verificationTokenStore.create(user.email);
   emailService.sendVerificationEmail(user.email, token);
 
+  const sessionToken = sessionStore.create(user.id);
+
   const { passwordHash, ...safeUser } = user;
   return res.status(201).json({
     message: 'Registration successful. Please check your inbox to verify your email.',
     user: safeUser,
+    sessionToken,
   });
 });
 

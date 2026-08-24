@@ -1,9 +1,19 @@
 const userStore = require('../store/userStore');
+const sessionStore = require('../store/sessionStore');
+
+const BEARER_PREFIX = 'Bearer ';
 
 function requireVerifiedUser(req, res, next) {
-  const userId = req.headers['x-user-id'];
+  const authHeader = req.headers.authorization;
 
-  if (typeof userId !== 'string' || userId.trim() === '') {
+  if (typeof authHeader !== 'string' || !authHeader.startsWith(BEARER_PREFIX)) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  const sessionToken = authHeader.slice(BEARER_PREFIX.length);
+  const userId = sessionStore.findUserId(sessionToken);
+
+  if (!userId) {
     return res.status(401).json({ error: 'Authentication required' });
   }
 
