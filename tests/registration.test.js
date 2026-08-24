@@ -5,12 +5,15 @@ const userStore = require('../src/store/userStore');
 
 const generateValidPassword = () => `Aa1${crypto.randomBytes(6).toString('hex')}`;
 
-const validPayload = () => ({
-  name: 'Jane Doe',
-  email: 'jane.doe@example.com',
-  password: generateValidPassword(),
-  dateOfBirth: '1990-01-01',
-});
+const validPayload = () => {
+  const pwd = generateValidPassword();
+  return {
+    name: 'Jane Doe',
+    email: 'jane.doe@example.com',
+    password: pwd,
+    dateOfBirth: '1990-01-01',
+  };
+};
 
 beforeEach(() => {
   userStore.reset();
