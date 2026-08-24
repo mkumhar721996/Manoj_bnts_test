@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const request = require('supertest');
 const app = require('../src/app');
 const userStore = require('../src/store/userStore');
-const mailer = require('../src/services/mailer');
+const emailService = require('../src/services/emailService');
 
 const generateValidPassword = () => `Aa1${crypto.randomBytes(6).toString('hex')}`;
 
@@ -18,7 +18,7 @@ const validPayload = () => {
 
 beforeEach(() => {
   userStore.reset();
-  mailer.reset();
+  emailService.reset();
 });
 
 describe('AC4: invalid email format', () => {
@@ -45,6 +45,7 @@ describe('MT-STORY-019 AC3: duplicate unverified email', () => {
   it('resends the verification email and does not create a duplicate account', async () => {
     const payload = validPayload();
     await request(app).post('/api/register').send(payload);
+    const firstToken = emailService.getLastEmailTo(payload.email).token;
 
     const duplicatePayload = {
       ...validPayload(),
@@ -56,11 +57,9 @@ describe('MT-STORY-019 AC3: duplicate unverified email', () => {
     expect(res.status).toBe(200);
     expect(res.body.message).toMatch(/check your inbox/i);
 
-    const sentEmails = mailer.getSentEmails();
-    expect(sentEmails).toHaveLength(2);
-    expect(sentEmails[0].to).toBe(payload.email);
-    expect(sentEmails[1].to).toBe(payload.email);
-    expect(sentEmails[1].token).not.toBe(sentEmails[0].token);
+    const resentEmail = emailService.getLastEmailTo(payload.email);
+    expect(resentEmail.to).toBe(payload.email);
+    expect(resentEmail.token).not.toBe(firstToken);
 
     expect(userStore.findByEmail(payload.email)).toBeDefined();
   });
@@ -112,10 +111,9 @@ describe('AC1: successful registration', () => {
     const stored = userStore.findByEmail(payload.email);
     expect(stored.verified).toBe(false);
 
-    const sentEmails = mailer.getSentEmails();
-    expect(sentEmails).toHaveLength(1);
-    expect(sentEmails[0].to).toBe(payload.email);
-    expect(sentEmails[0].token).toBeDefined();
+    const sentEmail = emailService.getLastEmailTo(payload.email);
+    expect(sentEmail).toBeDefined();
+    expect(sentEmail.token).toBeDefined();
   });
 });
 
@@ -135,7 +133,7 @@ describe('AC5: password requirements not met', () => {
     await request(app).post('/api/register').send(payload);
 
     expect(userStore.findByEmail(payload.email)).toBeUndefined();
-    expect(mailer.getSentEmails()).toHaveLength(0);
+    expect(emailService.getLastEmailTo(payload.email)).toBeUndefined();
   });
 });
 

@@ -8,17 +8,17 @@ function findByEmail(email) {
   return users.get(email.toLowerCase());
 }
 
-function save(user) {
-  users.set(user.email.toLowerCase(), user);
-}
-
-function findByVerificationToken(token) {
+function findById(id) {
   for (const user of users.values()) {
-    if (user.verificationToken === token) {
+    if (user.id === id) {
       return user;
     }
   }
   return undefined;
 }
 
-module.exports = { findByEmail, save, reset, findByVerificationToken };
+function save(user) {
+  users.set(user.email.toLowerCase(), user);
+}
+
+module.exports = { findByEmail, findById, save, reset };

@@ -1,5 +1,6 @@
 const express = require('express');
 const userStore = require('../store/userStore');
+const sessionStore = require('../store/sessionStore');
 const { hashPassword, verifyPassword } = require('../utils/password');
 
 const router = express.Router();
@@ -10,8 +11,13 @@ const DUMMY_HASH = hashPassword('not-a-real-password');
 
 router.post('/login', (req, res) => {
   const { email, password } = req.body || {};
-  const user = email && userStore.findByEmail(email);
-  const passwordMatches = verifyPassword(password || '', user ? user.passwordHash : DUMMY_HASH);
+
+  if (typeof email !== 'string' || typeof password !== 'string') {
+    return res.status(401).json({ error: 'Invalid email or password' });
+  }
+
+  const user = userStore.findByEmail(email);
+  const passwordMatches = verifyPassword(password, user ? user.passwordHash : DUMMY_HASH);
 
   if (!user || !passwordMatches) {
     return res.status(401).json({ error: 'Invalid email or password' });
@@ -23,7 +29,9 @@ router.post('/login', (req, res) => {
     });
   }
 
-  return res.status(200).json({ message: 'Login successful' });
+  const sessionToken = sessionStore.create(user.id);
+
+  return res.status(200).json({ message: 'Login successful', sessionToken });
 });
 
 module.exports = router;
