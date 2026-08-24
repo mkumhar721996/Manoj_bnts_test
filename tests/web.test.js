@@ -92,7 +92,7 @@ describe('AC4: missing or invalid registration fields show which fields are inva
   });
 
   it('shows "Password must be at least 8 characters." for a short password', async () => {
-    const payload = { name: 'Short Pwd', email: 'shortpwd@example.com', password: 'abc123' };
+    const payload = { name: 'Short Pwd', email: 'shortpwd@example.com', password: 'abc' };
 
     const res = await request(app).post('/register').type('form').send(payload);
 
@@ -165,10 +165,11 @@ describe('AC6: invalid login credentials show an error and deny access', () => {
       .type('form')
       .send({ name: 'Jordan Rivera', email: 'jordan2@example.com', password });
 
+    const wrongPassword = generateValidPassword();
     const res = await request(app)
       .post('/login')
       .type('form')
-      .send({ email: 'jordan2@example.com', password: 'wrong-password' });
+      .send({ email: 'jordan2@example.com', password: wrongPassword });
 
     expect(res.status).toBe(401);
     expect(res.text).toContain('status-icon danger');
@@ -182,7 +183,7 @@ describe('AC6: invalid login credentials show an error and deny access', () => {
     const res = await request(app)
       .post('/login')
       .type('form')
-      .send({ email: 'nobody@example.com', password: 'whatever123' });
+      .send({ email: 'nobody@example.com', password: generateValidPassword() });
 
     expect(res.status).toBe(401);
     expect(res.text).toContain('status-icon danger');
