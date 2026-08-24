@@ -2,7 +2,8 @@ const express = require('express');
 const crypto = require('crypto');
 const { validate } = require('../validation/registrationValidator');
 const userStore = require('../store/userStore');
-const mailer = require('../services/mailer');
+const verificationTokenStore = require('../store/verificationTokenStore');
+const emailService = require('../services/emailService');
 const { hashPassword } = require('../utils/password');
 
 const router = express.Router();
@@ -23,17 +24,14 @@ router.post('/register', (req, res) => {
       });
     }
 
-    const resendToken = crypto.randomUUID();
-    existing.verificationToken = resendToken;
-    userStore.save(existing);
-    mailer.sendVerificationEmail(existing.email, resendToken);
+    const resendToken = verificationTokenStore.create(existing.email);
+    emailService.sendVerificationEmail(existing.email, resendToken);
 
     return res.status(200).json({
       message: 'This email is already registered but not yet verified. Please check your inbox to verify your email.',
     });
   }
 
-  const verificationToken = crypto.randomUUID();
   const user = {
     id: crypto.randomUUID(),
     name: payload.name,
@@ -41,12 +39,13 @@ router.post('/register', (req, res) => {
     dateOfBirth: payload.dateOfBirth,
     passwordHash: hashPassword(payload.password),
     verified: false,
-    verificationToken,
   };
   userStore.save(user);
-  mailer.sendVerificationEmail(user.email, verificationToken);
 
-  const { passwordHash, verificationToken: _token, ...safeUser } = user;
+  const token = verificationTokenStore.create(user.email);
+  emailService.sendVerificationEmail(user.email, token);
+
+  const { passwordHash, ...safeUser } = user;
   return res.status(201).json({
     message: 'Registration successful. Please check your inbox to verify your email.',
     user: safeUser,

@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const request = require('supertest');
 const app = require('../src/app');
 const userStore = require('../src/store/userStore');
-const mailer = require('../src/services/mailer');
+const emailService = require('../src/services/emailService');
 
 const generateValidPassword = () => `Aa1${crypto.randomBytes(6).toString('hex')}`;
 
@@ -18,7 +18,7 @@ const validPayload = () => {
 
 beforeEach(() => {
   userStore.reset();
-  mailer.reset();
+  emailService.reset();
 });
 
 describe('MT-STORY-019 AC4: login denied before email verification', () => {
@@ -39,8 +39,8 @@ describe('MT-STORY-019 AC6: login succeeds once the account is verified', () => 
     const payload = validPayload();
     await request(app).post('/api/register').send(payload);
     const { email, password } = payload;
-    const token = mailer.getSentEmails()[0].token;
-    await request(app).get(`/api/verify/${token}`);
+    const { token } = emailService.getLastEmailTo(email);
+    await request(app).get('/api/verify-email').query({ token });
 
     const res = await request(app).post('/api/login').send({ email, password });
 
