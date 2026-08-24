@@ -28,6 +28,15 @@ describe('AC4: invalid email format', () => {
     expect(res.status).toBe(400);
     expect(res.body.error).toMatch(/invalid email/i);
   });
+
+  it('rejects registration when email is a non-string value', async () => {
+    const payload = { ...validPayload(), email: ['jane.doe@example.com'] };
+
+    const res = await request(app).post('/api/register').send(payload);
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toMatch(/invalid email/i);
+  });
 });
 
 describe('AC2: duplicate email rejected', () => {

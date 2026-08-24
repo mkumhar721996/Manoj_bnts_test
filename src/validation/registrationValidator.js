@@ -8,7 +8,7 @@ function validate(payload) {
     }
   }
 
-  if (!EMAIL_REGEX.test(payload.email)) {
+  if (typeof payload.email !== 'string' || !EMAIL_REGEX.test(payload.email)) {
     return { valid: false, field: 'email', message: 'Invalid email format' };
   }
 
