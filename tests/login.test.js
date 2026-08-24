@@ -47,6 +47,24 @@ describe('MT-STORY-019 AC6: login succeeds once the account is verified', () => 
     expect(res.status).toBe(200);
     expect(res.body.message).toMatch(/login successful/i);
   });
+
+  it('issues a session token that grants access to protected routes', async () => {
+    const payload = validPayload();
+    await request(app).post('/api/register').send(payload);
+    const { email, password } = payload;
+    const { token } = emailService.getLastEmailTo(email);
+    await request(app).get('/api/verify-email').query({ token });
+
+    const loginRes = await request(app).post('/api/login').send({ email, password });
+    expect(loginRes.body.sessionToken).toEqual(expect.any(String));
+
+    const accountRes = await request(app)
+      .get('/api/account')
+      .set('Authorization', `Bearer ${loginRes.body.sessionToken}`);
+
+    expect(accountRes.status).toBe(200);
+    expect(accountRes.body.email).toBe(email);
+  });
 });
 
 describe('security: login does not leak account existence via response timing', () => {
@@ -61,5 +79,23 @@ describe('security: login does not leak account existence via response timing', 
     expect(scryptSpy).toHaveBeenCalled();
 
     scryptSpy.mockRestore();
+  });
+});
+
+describe('security: login rejects non-string credentials without crashing', () => {
+  it('returns 401 when email is not a string', async () => {
+    const res = await request(app).post('/api/login').send({ email: {}, password: 'x' });
+
+    expect(res.status).toBe(401);
+    expect(res.body.error).toMatch(/invalid email or password/i);
+  });
+
+  it('returns 401 when password is not a string', async () => {
+    const res = await request(app)
+      .post('/api/login')
+      .send({ email: 'a@b.com', password: {} });
+
+    expect(res.status).toBe(401);
+    expect(res.body.error).toMatch(/invalid email or password/i);
   });
 });
