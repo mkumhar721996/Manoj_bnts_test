@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MT-STORY-024 · Manoj_demo — Design Prototype</title>
+<style>
+/* ==========================================================================
+   DESIGN SYSTEM — PROPOSAL AWAITING REVIEW
+   This project (Manoj_demo, a Facebook-style social site) has no existing
+   design system. The tokens below are a first proposal, scoped to this
+   prototype. If approved by stakeholders, they become the project's design
+   system. Every rule below is consumed exclusively via var() elsewhere in
+   this file — no hex/px/font-family literals appear outside this block.
+   ========================================================================== */
+:root {
+  /* Palette */
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --border: #dadde1;
+  --fg: #1c1e21;
+  --muted: #65676b;
+  --brand: #1877f2;
+  --brand-dark: #145dbf;
+  --brand-tint: #e7f0fd;
+  --brand-contrast: #ffffff;
+  --success: #31a24c;
+  --success-dark: #279140;
+  --success-tint: #e6f4ea;
+  --danger: #d0342c;
+  --danger-tint: #fde2e1;
+  --focus-ring: #8bb8fb;
+  --overlay-weak: rgba(255, 255, 255, 0.12);
+  --overlay-strong: rgba(255, 255, 255, 0.24);
+
+  /* Typography */
+  --font-sans: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 15px;
+  --font-size-md: 17px;
+  --font-size-lg: 22px;
+  --font-size-xl: 32px;
+  --font-size-xxl: 46px;
+  --line-height-tight: 1.2;
+  --line-height-base: 1.45;
+  --font-weight-normal: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* Radii & shadow */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.14);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.16);
+
+  /* Motion */
+  --transition-fast: 120ms ease;
+  --transition-base: 220ms ease;
+
+  /* Layout */
+  --reviewer-bar-height: 52px;
+  --max-content-width: 980px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+body { padding-top: var(--reviewer-bar-height); }
+
+h1, h2, h3, p { margin: 0; }
+
+button { font-family: var(--font-sans); cursor: pointer; }
+
+a { color: var(--brand); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------------------------------------------------------------------
+   Reviewer bar (canonical scaffold — always present, fixed to viewport)
+   --------------------------------------------------------------------- */
+.reviewer-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--reviewer-bar-height);
+  background: var(--fg);
+  color: var(--brand-contrast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 0 var(--space-4);
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-size-sm);
+}
+
+.reviewer-bar__title {
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+.reviewer-bar__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.reviewer-bar__btn {
+  background: var(--overlay-weak);
+  color: var(--brand-contrast);
+  border: 1px solid var(--overlay-strong);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-sm);
+  transition: background var(--transition-fast);
+}
+.reviewer-bar__btn:hover { background: var(--overlay-strong); }
+
+.reviewer-bar__select {
+  background: var(--overlay-weak);
+  color: var(--brand-contrast);
+  border: 1px solid var(--overlay-strong);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+}
+.reviewer-bar__select option { color: var(--fg); }
+
+.reviewer-bar__status {
+  margin-left: auto;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------
+   Product header / nav (this is a standalone product, not an arc-platform
+   ARC-* story, so we use a lightweight product nav — see HTML comment
+   above the header for rationale — rather than the arc sidebar shell)
+   --------------------------------------------------------------------- */
+.site-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: var(--space-3) var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-wordmark {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--brand);
+  letter-spacing: -0.5px;
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.btn {
+  border-radius: var(--radius-sm);
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  transition: background var(--transition-fast), opacity var(--transition-fast);
+}
+.btn-brand { background: var(--brand); color: var(--brand-contrast); }
+.btn-brand:hover { background: var(--brand-dark); }
+.btn-success { background: var(--success); color: var(--brand-contrast); }
+.btn-success:hover { background: var(--success-dark); }
+.btn-ghost { background: transparent; color: var(--brand); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--brand-tint); }
+.btn:disabled { opacity: 0.6; cursor: default; }
+.btn-block { width: 100%; }
+
+/* ---------------------------------------------------------------------
+   Screens
+   --------------------------------------------------------------------- */
+.screen-panel { display: none; }
+.screen-panel.is-active { display: block; }
+
+/* Homepage hero */
+.hero {
+  max-width: var(--max-content-width);
+  margin: 0 auto;
+  padding: var(--space-7) var(--space-4);
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; padding: var(--space-5) var(--space-3); gap: var(--space-6); }
+}
+
+.hero-copy .brand-wordmark { font-size: var(--font-size-xxl); margin-bottom: var(--space-3); display: block; }
+.hero-copy p {
+  font-size: var(--font-size-md);
+  color: var(--fg);
+  max-width: 420px;
+  line-height: var(--line-height-base);
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
+}
+
+.card + .card { margin-top: var(--space-4); }
+
+.card h2 {
+  font-size: var(--font-size-md);
+  margin-bottom: var(--space-4);
+}
+
+.field { margin-bottom: var(--space-3); }
+.field label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-1);
+  color: var(--muted);
+}
+.field input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--font-size-base);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  color: var(--fg);
+  background: var(--surface);
+}
+.field input:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 1px;
+  border-color: var(--brand);
+}
+.field.has-error input { border-color: var(--danger); background: var(--danger-tint); }
+.field-error {
+  color: var(--danger);
+  font-size: var(--font-size-xs);
+  margin-top: var(--space-1);
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-4) 0;
+}
+
+.helper-text {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  margin-top: var(--space-2);
+  text-align: center;
+}
+
+.fixture-hint {
+  font-size: var(--font-size-xs);
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  margin-top: var(--space-3);
+}
+
+/* Alerts */
+.alert {
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-4);
+}
+.alert-danger { background: var(--danger-tint); color: var(--danger); border: 1px solid var(--danger); }
+.alert-success { background: var(--success-tint); color: var(--success-dark); border: 1px solid var(--success); }
+.alert ul { margin: var(--space-1) 0 0; padding-left: var(--space-5); }
+
+/* Centered status screens (reg success / errors / login error) */
+.status-screen {
+  max-width: 480px;
+  margin: var(--space-8) auto;
+  padding: 0 var(--space-4);
+  text-align: center;
+}
+.status-screen .card { text-align: left; }
+.status-icon {
+  width: 56px; height: 56px;
+  border-radius: var(--radius-pill);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto var(--space-4);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--brand-contrast);
+}
+.status-icon.success { background: var(--success); }
+.status-icon.danger { background: var(--danger); }
+
+/* Feed / dashboard */
+.app-shell {
+  display: grid;
+  grid-template-columns: 220px 1fr 260px;
+  gap: var(--space-4);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+@media (max-width: 900px) {
+  .app-shell { grid-template-columns: 1fr; }
+}
+.side-nav { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); }
+.side-nav__item {
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--fg);
+  margin-bottom: var(--space-1);
+}
+.side-nav__item.is-current { background: var(--brand-tint); color: var(--brand-dark); }
+.avatar {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+  color: var(--brand-contrast);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+}
+.welcome-banner {
+  background: var(--brand);
+  color: var(--brand-contrast);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  margin-bottom: var(--space-4);
+}
+.welcome-banner h1 { font-size: var(--font-size-lg); margin-bottom: var(--space-1); }
+.welcome-banner p { opacity: 0.9; font-size: var(--font-size-sm); }
+.post {
+  display: flex; gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+.post:last-child { border-bottom: none; margin-bottom: 0; }
+.post-author { font-weight: var(--font-weight-semibold); font-size: var(--font-size-sm); }
+.post-meta { color: var(--muted); font-size: var(--font-size-xs); margin-bottom: var(--space-2); }
+.right-rail { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-3); font-size: var(--font-size-sm); }
+.right-rail h3 { font-size: var(--font-size-sm); color: var(--muted); margin-bottom: var(--space-3); text-transform: uppercase; letter-spacing: 0.4px; }
+.contact { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+
+.back-link { display: inline-block; margin-top: var(--space-4); font-size: var(--font-size-sm); }
+
+.spinner-dot::after {
+  content: "…";
+}
+</style>
+</head>
+<body>
+
+<!--
+  Reviewer bar — canonical scaffold, always present. Lets a stakeholder walk
+  through every AC-relevant state without needing to interact with the
+  simulated forms, via Prev/Next or the screen picker.
+-->
+<div class="reviewer-bar">
+  <div class="reviewer-bar__title">MT-STORY-024 · Manoj_demo</div>
+  <div class="reviewer-bar__nav">
+    <button class="reviewer-bar__btn" id="prevScreenBtn" aria-label="Previous screen">&lsaquo; Prev</button>
+    <select class="reviewer-bar__select" id="screenSelect" aria-label="Jump to screen"></select>
+    <button class="reviewer-bar__btn" id="nextScreenBtn" aria-label="Next screen">Next &rsaquo;</button>
+  </div>
+  <div class="reviewer-bar__status" id="screenStatus"></div>
+</div>
+
+<!--
+  Application nav rationale: Manoj_demo is a standalone consumer product
+  (a Facebook-style site), not an ARC-* platform story, so this prototype
+  uses a lightweight product header (brand wordmark + auth actions) instead
+  of the arc-platform sidebar shell. The header/footer chrome is repeated
+  per screen to show how it adapts to signed-out vs signed-in state.
+-->
+
+<!-- ===================================================================
+     SCREEN 1: Homepage (default, signed-out)
+     Covers AC1 (Facebook-branded homepage on load) and AC2 (registration
+     form visible with name/email/password). Also hosts the login form
+     used to demonstrate AC5/AC6 interactively.
+     State: default, no validation triggered yet
+     =================================================================== -->
+<section class="screen-panel is-active" data-screen="home" data-label="1. Homepage (signed-out)">
+  <!-- State: default -->
+  <header class="site-header">
+    <span class="brand-wordmark">Facebook</span>
+    <div class="header-actions">
+      <button class="btn btn-ghost" type="button" onclick="document.getElementById('login-email').focus()">Log In</button>
+      <button class="btn btn-brand" type="button" onclick="document.getElementById('reg-name').focus()">Create Account</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-copy">
+      <span class="brand-wordmark">facebook</span>
+      <p>Connect with friends and the world around you on Facebook. Share updates, photos, and moments with the people who matter most.</p>
+    </div>
+
+    <div>
+      <!-- Login card: demonstrates AC5 (valid credentials → feed) and AC6 (invalid → error) -->
+      <div class="card">
+        <h2>Log Into Your Account</h2>
+        <form id="loginForm" onsubmit="return handleLogin(event)" novalidate>
+          <div class="field">
+            <label for="login-email">Email address</label>
+            <input type="text" id="login-email" placeholder="jordan@example.com" autocomplete="username">
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password">
+          </div>
+          <button class="btn btn-brand btn-block" type="submit" id="loginSubmitBtn">Log In</button>
+          <p class="helper-text"><a href="#" onclick="return false;">Forgotten password?</a></p>
+          <div class="fixture-hint">Try it: <strong>jordan@example.com</strong> / <strong>Passw0rd!</strong> logs in successfully. Any other value shows the invalid-credentials error (AC6).</div>
+        </form>
+      </div>
+
+      <!-- Registration card: always visible per AC2 -->
+      <div class="card">
+        <h2>Create a New Account</h2>
+        <form id="registerForm" onsubmit="return handleRegister(event)" novalidate>
+          <div class="field">
+            <label for="reg-name">Full name</label>
+            <input type="text" id="reg-name" placeholder="e.g. Priya Shah">
+          </div>
+          <div class="field">
+            <label for="reg-email">Email address</label>
+            <input type="text" id="reg-email" placeholder="e.g. priya@example.com">
+          </div>
+          <div class="field">
+            <label for="reg-password">New password</label>
+            <input type="password" id="reg-password" placeholder="At least 8 characters">
+          </div>
+          <button class="btn btn-success btn-block" type="submit" id="registerSubmitBtn">Sign Up</button>
+          <div class="fixture-hint">Leave a field blank, use an email without "@", or a password under 8 characters to see the validation error state (AC4). Fill all three correctly to see the success confirmation (AC3).</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     SCREEN 2: Registration — validation error
+     Covers AC4: missing/invalid fields on submit show which fields failed.
+     State: error — submitted with invalid/missing data
+     =================================================================== -->
+<section class="screen-panel" data-screen="reg-error" data-label="2. Registration — Error">
+  <!-- State: error -->
+  <header class="site-header">
+    <span class="brand-wordmark">Facebook</span>
+    <div class="header-actions">
+      <button class="btn btn-ghost" type="button" onclick="showScreen('home')">Log In</button>
+      <button class="btn btn-brand" type="button" onclick="showScreen('home')">Create Account</button>
+    </div>
+  </header>
+  <div class="status-screen">
+    <div class="card">
+      <div class="alert alert-danger" role="alert">
+        <strong>We couldn't create your account.</strong>
+        <div>Please fix the following before continuing:</div>
+        <ul id="regErrorList"><li>Name is required.</li></ul>
+      </div>
+      <h2>Create a New Account</h2>
+      <form onsubmit="return handleRegister(event)" novalidate>
+        <div class="field" id="reg-name-field">
+          <label for="reg-name-2">Full name</label>
+          <input type="text" id="reg-name-2" placeholder="e.g. Priya Shah">
+        </div>
+        <div class="field" id="reg-email-field">
+          <label for="reg-email-2">Email address</label>
+          <input type="text" id="reg-email-2" placeholder="e.g. priya@example.com">
+        </div>
+        <div class="field" id="reg-password-field">
+          <label for="reg-password-2">New password</label>
+          <input type="password" id="reg-password-2" placeholder="At least 8 characters">
+        </div>
+        <button class="btn btn-success btn-block" type="submit">Try Again</button>
+      </form>
+    </div>
+    <a class="back-link" href="#" onclick="showScreen('home'); return false;">&larr; Back to homepage</a>
+  </div>
+</section>
+
+<!-- ===================================================================
+     SCREEN 3: Registration — success confirmation
+     Covers AC3: valid submission creates the account and shows confirmation.
+     State: success
+     =================================================================== -->
+<section class="screen-panel" data-screen="reg-success" data-label="3. Registration — Success">
+  <!-- State: success -->
+  <header class="site-header">
+    <span class="brand-wordmark">Facebook</span>
+    <div class="header-actions">
+      <button class="btn btn-ghost" type="button" onclick="showScreen('home')">Log In</button>
+    </div>
+  </header>
+  <div class="status-screen">
+    <div class="status-icon success">&#10003;</div>
+    <div class="card">
+      <div class="alert alert-success" role="status">
+        Account created for <strong id="regSuccessName">Priya Shah</strong>. A confirmation has been sent to <strong id="regSuccessEmail">priya@example.com</strong>.
+      </div>
+      <p>Welcome to Facebook! You can now log in with your new account.</p>
+      <button class="btn btn-brand btn-block" style="margin-top: var(--space-4);" type="button" onclick="showScreen('home')">Continue to Log In</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================================================================
+     SCREEN 4: Login — invalid credentials
+     Covers AC6: invalid credentials show an error and deny access.
+     State: error
+     =================================================================== -->
+<section class="screen-panel" data-screen="login-error" data-label="4. Login — Error">
+  <!-- State: error -->
+  <header class="site-header">
+    <span class="brand-wordmark">Facebook</span>
+    <div class="header-actions">
+      <button class="btn btn-brand" type="button" onclick="showScreen('home')">Create Account</button>
+    </div>
+  </header>
+  <div class="status-screen">
+    <div class="status-icon danger">&#33;</div>
+    <div class="card">
+      <div class="alert alert-danger" role="alert">
+        The email or password you entered is incorrect. Access denied.
+      </div>
+      <form onsubmit="return handleLogin(event)" novalidate>
+        <div class="field">
+          <label for="login-email-2">Email address</label>
+          <input type="text" id="login-email-2" placeholder="jordan@example.com">
+        </div>
+        <div class="field">
+          <label for="login-password-2">Password</label>
+          <input type="password" id="login-password-2" placeholder="Enter your password">
+        </div>
+        <button class="btn btn-brand btn-block" type="submit">Try Again</button>
+      </form>
+    </div>
+    <a class="back-link" href="#" onclick="showScreen('home'); return false;">&larr; Back to homepage</a>
+  </div>
+</section>
+
+<!-- ===================================================================
+     SCREEN 5: Feed / dashboard (signed-in)
+     Covers AC5: valid credentials authenticate and redirect to feed.
+     State: authenticated
+     =================================================================== -->
+<section class="screen-panel" data-screen="feed" data-label="5. Feed / Dashboard (signed-in)">
+  <!-- State: authenticated -->
+  <header class="site-header">
+    <span class="brand-wordmark">Facebook</span>
+    <div class="header-actions">
+      <div class="avatar" id="feedAvatarInitial">J</div>
+      <button class="btn btn-ghost" type="button" onclick="showScreen('home')">Log Out</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <nav class="side-nav">
+      <div class="side-nav__item is-current">Feed</div>
+      <div class="side-nav__item">Friends</div>
+      <div class="side-nav__item">Groups</div>
+      <div class="side-nav__item">Marketplace</div>
+      <div class="side-nav__item">Watch</div>
+    </nav>
+
+    <main>
+      <div class="welcome-banner">
+        <h1 id="feedWelcomeName">Welcome back, Jordan!</h1>
+        <p>You're logged in. Here's what's new in your feed.</p>
+      </div>
+      <div class="card">
+        <div class="post">
+          <div class="avatar">A</div>
+          <div>
+            <div class="post-author">Aisha Khan</div>
+            <div class="post-meta">2 hours ago</div>
+            <p>Just finished a 10k run along the river trail — beautiful morning for it!</p>
+          </div>
+        </div>
+        <div class="post">
+          <div class="avatar">D</div>
+          <div>
+            <div class="post-author">Diego Fernandez</div>
+            <div class="post-meta">5 hours ago</div>
+            <p>Posted 6 new photos from the team offsite in Austin.</p>
+          </div>
+        </div>
+        <div class="post">
+          <div class="avatar">L</div>
+          <div>
+            <div class="post-author">Lin Wei</div>
+            <div class="post-meta">Yesterday</div>
+            <p>Excited to share that I started a new role this week!</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="right-rail">
+      <h3>Contacts</h3>
+      <div class="contact"><div class="avatar">A</div> Aisha Khan</div>
+      <div class="contact"><div class="avatar">D</div> Diego Fernandez</div>
+      <div class="contact"><div class="avatar">L</div> Lin Wei</div>
+      <div class="contact"><div class="avatar">S</div> Sam Okafor</div>
+    </aside>
+  </div>
+</section>
+
+<script>
+  // ---------------------------------------------------------------------
+  // Fixture data (inline, no network calls — this is a visual prototype)
+  // ---------------------------------------------------------------------
+  var existingUsers = [
+    { name: 'Jordan Rivera', email: 'jordan@example.com', password: 'Passw0rd!' }
+  ];
+
+  // ---------------------------------------------------------------------
+  // Reviewer bar scaffold
+  // ---------------------------------------------------------------------
+  var screens = Array.prototype.slice.call(document.querySelectorAll('.screen-panel')).map(function (el) {
+    return { id: el.getAttribute('data-screen'), label: el.getAttribute('data-label') };
+  });
+  var currentIndex = 0;
+
+  var screenSelect = document.getElementById('screenSelect');
+  screens.forEach(function (s, i) {
+    var opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.label;
+    screenSelect.appendChild(opt);
+  });
+
+  function showScreen(id) {
+    var idx = screens.findIndex(function (s) { return s.id === id; });
+    if (idx === -1) return;
+    currentIndex = idx;
+    document.querySelectorAll('.screen-panel').forEach(function (el) {
+      el.classList.toggle('is-active', el.getAttribute('data-screen') === id);
+    });
+    screenSelect.value = id;
+    document.getElementById('screenStatus').textContent =
+      'Screen ' + (idx + 1) + ' of ' + screens.length + ' — ' + screens[idx].label.replace(/^\d+\.\s*/, '');
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }
+
+  document.getElementById('prevScreenBtn').addEventListener('click', function () {
+    var idx = (currentIndex - 1 + screens.length) % screens.length;
+    showScreen(screens[idx].id);
+  });
+  document.getElementById('nextScreenBtn').addEventListener('click', function () {
+    var idx = (currentIndex + 1) % screens.length;
+    showScreen(screens[idx].id);
+  });
+  screenSelect.addEventListener('change', function (e) { showScreen(e.target.value); });
+
+  showScreen('home');
+
+  // ---------------------------------------------------------------------
+  // Simulated interactions (setTimeout stands in for a network round-trip)
+  // ---------------------------------------------------------------------
+  function handleRegister(evt) {
+    evt.preventDefault();
+    var form = evt.target;
+    var name = (form.querySelector('input[id^="reg-name"]').value || '').trim();
+    var email = (form.querySelector('input[id^="reg-email"]').value || '').trim();
+    var password = (form.querySelector('input[id^="reg-password"]').value || '').trim();
+
+    var errors = [];
+    if (!name) errors.push('Name is required.');
+    if (!email) {
+      errors.push('Email is required.');
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.push('Email address is not valid.');
+    }
+    if (!password) {
+      errors.push('Password is required.');
+    } else if (password.length < 8) {
+      errors.push('Password must be at least 8 characters.');
+    }
+
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    setTimeout(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+
+      if (errors.length > 0) {
+        var list = document.getElementById('regErrorList');
+        list.innerHTML = '';
+        errors.forEach(function (msg) {
+          var li = document.createElement('li');
+          li.textContent = msg;
+          list.appendChild(li);
+        });
+        showScreen('reg-error');
+        return;
+      }
+
+      existingUsers.push({ name: name, email: email, password: password });
+      document.getElementById('regSuccessName').textContent = name;
+      document.getElementById('regSuccessEmail').textContent = email;
+      showScreen('reg-success');
+    }, 500);
+
+    return false;
+  }
+
+  function handleLogin(evt) {
+    evt.preventDefault();
+    var form = evt.target;
+    var email = (form.querySelector('input[id^="login-email"]').value || '').trim();
+    var password = form.querySelector('input[id^="login-password"]').value || '';
+
+    var submitBtn = form.querySelector('button[type="submit"]');
+    var originalLabel = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Logging in…';
+
+    setTimeout(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalLabel;
+
+      var match = existingUsers.find(function (u) {
+        return u.email.toLowerCase() === email.toLowerCase() && u.password === password;
+      });
+
+      if (!match) {
+        showScreen('login-error');
+        return;
+      }
+
+      var firstName = match.name.split(' ')[0];
+      document.getElementById('feedWelcomeName').textContent = 'Welcome back, ' + firstName + '!';
+      document.getElementById('feedAvatarInitial').textContent = match.name.charAt(0).toUpperCase();
+      showScreen('feed');
+    }, 500);
+
+    return false;
+  }
+</script>
+</body>
+</html>
