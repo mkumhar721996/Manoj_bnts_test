@@ -55,7 +55,7 @@ describe('security: login does not leak account existence via response timing', 
 
     const res = await request(app)
       .post('/api/login')
-      .send({ email: 'nobody@example.com', password: 'whatever123' });
+      .send({ email: 'nobody@example.com', password: generateValidPassword() });
 
     expect(res.status).toBe(401);
     expect(scryptSpy).toHaveBeenCalled();
