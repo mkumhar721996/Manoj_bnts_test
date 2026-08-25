@@ -11,38 +11,100 @@ beforeEach(() => {
   emailService.reset();
 });
 
-describe('AC1: Facebook-branded homepage on load', () => {
-  it('renders the homepage with the Facebook brand', async () => {
+describe('MT-STORY-026 AC1: hero section with primary CTAs', () => {
+  it('renders the hero heading and both primary CTAs pointing at the menu page', async () => {
     const res = await request(app).get('/');
 
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toMatch(/html/);
-    expect(res.text).toContain('class="brand-wordmark">Facebook<');
-    expect(res.text).toContain('class="brand-wordmark">facebook<');
-    expect(res.text).toContain(
-      'Connect with friends and the world around you on Facebook.'
-    );
+    expect(res.text).toContain('Wood-Fired Pizza,');
+    expect(res.text).toContain('Delivered Hot');
+    expect(res.text).toMatch(/<a[^>]*href="\/menu"[^>]*>[\s\S]*?Order Online Now[\s\S]*?<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*href="\/menu"[^>]*>[\s\S]*?Explore Full Menu[\s\S]*?<\/a>/);
   });
 });
 
-describe('AC2: registration form visible on the homepage', () => {
-  it('renders a registration form with name, email, and password fields', async () => {
+describe('MT-STORY-026 AC2: delivery banner', () => {
+  it('renders the free-delivery promotional banner with stats', async () => {
     const res = await request(app).get('/');
 
     expect(res.status).toBe(200);
-    expect(res.text).toContain('action="/register"');
-    expect(res.text).toMatch(/<input[^>]*name="name"[^>]*>/);
-    expect(res.text).toMatch(/<input[^>]*name="email"[^>]*>/);
-    expect(res.text).toMatch(/<input[^>]*type="password"[^>]*name="password"[^>]*>/);
-    expect(res.text).toContain('>Sign Up<');
+    expect(res.text).toContain('Free Delivery On Orders Over $35');
+    expect(res.text).toContain(
+      'Craving quality? Skip the delivery fee entirely inside our active zones.'
+    );
+    expect(res.text).toContain('Average ETA');
+    expect(res.text).toContain('25 - 35 Min');
+    expect(res.text).toContain('Pizza Temperature');
+    expect(res.text).toContain('Piping Hot Guaranteed');
+  });
+});
+
+describe('MT-STORY-026 AC3: chef-recommended pizza carousel', () => {
+  it('renders each pizza card with an image, name, and Add to Order action', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Chef Recommendations');
+    expect(res.text).toContain('Popular Sourdough Pizzas');
+
+    const items = [
+      { id: 'diavola', name: 'Diavola', image: '/images/pizza-diavola.png' },
+      {
+        id: 'funghi-tartufo',
+        name: 'Funghi Selvatici &amp; Tartufo',
+        image: '/images/pizza-funghi-tartufo.png',
+      },
+      { id: 'margherita', name: 'Classic Margherita', image: '/images/pizza-margherita.png' },
+      {
+        id: 'prosciutto-rucola',
+        name: 'Prosciutto Crudo e Rucola',
+        image: '/images/pizza-prosciutto-rucola.png',
+      },
+    ];
+
+    items.forEach((item) => {
+      expect(res.text).toContain(item.name);
+      expect(res.text).toContain(`src="${item.image}"`);
+      expect(res.text).toContain(`data-item-id="${item.id}"`);
+      expect(res.text).toMatch(
+        new RegExp(`data-item-id="${item.id}"[^>]*>[\\s\\S]*?Add to Order`)
+      );
+    });
+  });
+});
+
+describe('MT-STORY-026 AC6: brand story section', () => {
+  it('renders the brand story section with feature list and images', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('The Sourdough Secret');
+    expect(res.text).toContain('Our Passion for the Perfect Crust');
+    expect(res.text).toContain('100% Imported San Marzano Tomatoes');
+    expect(res.text).toContain('Fior di Latte &amp; Fresh Mozzarella');
+    expect(res.text).toContain('900°F Stone Hearth Wood Oven');
+    expect(res.text).toContain('src="/images/story-dough.png"');
+    expect(res.text).toContain('src="/images/story-oven.png"');
+  });
+});
+
+describe('MT-STORY-026 AC7: navigation to the menu page', () => {
+  it('points Order Online Now, Explore Full Menu, and Our Menu at /menu', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/<a[^>]*href="\/menu"[^>]*>[\s\S]*?Order Online Now[\s\S]*?<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*href="\/menu"[^>]*>[\s\S]*?Explore Full Menu[\s\S]*?<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*href="\/menu"[^>]*>Our Menu<\/a>/);
   });
 
-  it('renders a login form with email and password fields', async () => {
-    const res = await request(app).get('/');
+  it('renders the menu page at GET /menu', async () => {
+    const res = await request(app).get('/menu');
 
     expect(res.status).toBe(200);
-    expect(res.text).toContain('action="/login"');
-    expect(res.text).toContain('>Log In<');
+    expect(res.headers['content-type']).toMatch(/html/);
+    expect(res.text).toContain('Our Menu');
   });
 });
 
