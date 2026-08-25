@@ -11,38 +11,25 @@ beforeEach(() => {
   emailService.reset();
 });
 
-describe('AC1: Facebook-branded homepage on load', () => {
-  it('renders the homepage with the Facebook brand', async () => {
+describe('AC1: Forno Rosso homepage on load', () => {
+  it('renders the homepage with the Forno Rosso brand header', async () => {
     const res = await request(app).get('/');
 
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toMatch(/html/);
-    expect(res.text).toContain('class="brand-wordmark">Facebook<');
-    expect(res.text).toContain('class="brand-wordmark">facebook<');
-    expect(res.text).toContain(
-      'Connect with friends and the world around you on Facebook.'
-    );
+    expect(res.text).toContain('class="brand-wordmark">Forno Rosso<');
+    expect(res.text).toContain('class="site-header"');
   });
 });
 
-describe('AC2: registration form visible on the homepage', () => {
-  it('renders a registration form with name, email, and password fields', async () => {
+describe('AC2: primary navigation visible on the homepage', () => {
+  it('renders Home, Our Menu, and Cart nav links', async () => {
     const res = await request(app).get('/');
 
     expect(res.status).toBe(200);
-    expect(res.text).toContain('action="/register"');
-    expect(res.text).toMatch(/<input[^>]*name="name"[^>]*>/);
-    expect(res.text).toMatch(/<input[^>]*name="email"[^>]*>/);
-    expect(res.text).toMatch(/<input[^>]*type="password"[^>]*name="password"[^>]*>/);
-    expect(res.text).toContain('>Sign Up<');
-  });
-
-  it('renders a login form with email and password fields', async () => {
-    const res = await request(app).get('/');
-
-    expect(res.status).toBe(200);
-    expect(res.text).toContain('action="/login"');
-    expect(res.text).toContain('>Log In<');
+    expect(res.text).toMatch(/<a[^>]*href="\/"[^>]*>\s*Home\s*<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*href="\/menu"[^>]*>\s*Our Menu\s*<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*href="\/cart"[^>]*>\s*Cart\s*<\/a>/);
   });
 });
 

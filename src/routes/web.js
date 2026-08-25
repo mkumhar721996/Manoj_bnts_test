@@ -1,6 +1,8 @@
 const express = require('express');
 const crypto = require('crypto');
 const { renderHomePage } = require('../views/pages/homePage');
+const { renderMenuPage } = require('../views/pages/menuPage');
+const { renderCartPage } = require('../views/pages/cartPage');
 const { renderRegistrationSuccessPage } = require('../views/pages/registrationSuccessPage');
 const { renderRegistrationErrorPage } = require('../views/pages/registrationErrorPage');
 const { renderFeedPage } = require('../views/pages/feedPage');
@@ -19,6 +21,14 @@ const DUMMY_HASH = hashPassword('not-a-real-password');
 
 router.get('/', (req, res) => {
   res.type('html').send(renderHomePage());
+});
+
+router.get('/menu', (req, res) => {
+  res.type('html').send(renderMenuPage());
+});
+
+router.get('/cart', (req, res) => {
+  res.type('html').send(renderCartPage());
 });
 
 router.post('/register', (req, res) => {
