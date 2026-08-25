@@ -6,11 +6,13 @@ const verificationRouter = require('./routes/verification');
 const loginRouter = require('./routes/login');
 const cartApiRouter = require('./routes/cartApi');
 const webRouter = require('./routes/web');
+const cartSession = require('./middleware/cartSession');
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, '../public')));
+app.use(cartSession);
 app.use('/api', registrationRouter);
 app.use('/api', accountRouter);
 app.use('/api', verificationRouter);

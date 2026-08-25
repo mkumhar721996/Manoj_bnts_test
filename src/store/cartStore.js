@@ -1,15 +1,16 @@
-let count = 0;
+let carts = new Map();
 
 function reset() {
-  count = 0;
+  carts = new Map();
 }
 
-function getCount() {
-  return count;
+function getCount(cartId) {
+  return carts.get(cartId) || 0;
 }
 
-function addItem(quantity = 1) {
-  count += quantity;
+function addItem(cartId, quantity = 1) {
+  const count = getCount(cartId) + quantity;
+  carts.set(cartId, count);
   return count;
 }
 

@@ -11,8 +11,14 @@
       return;
     }
 
-    const response = await fetch('/api/cart');
-    const { count } = await response.json();
+    let count;
+    try {
+      const response = await fetch('/api/cart');
+      ({ count } = await response.json());
+    } catch (error) {
+      console.error('Failed to refresh cart badge:', error);
+      return;
+    }
 
     badge.textContent = String(count);
     if (count === 0) {

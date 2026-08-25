@@ -2,10 +2,10 @@ const { renderSiteLayout } = require('../siteLayout');
 const { renderSiteHeader } = require('../components/siteHeader');
 const cartStore = require('../../store/cartStore');
 
-function renderHomePage() {
+function renderHomePage(cartId) {
   const header = renderSiteHeader({
     activePath: '/',
-    cartCount: cartStore.getCount(),
+    cartCount: cartStore.getCount(cartId),
     etaLabel: 'Estimated delivery:',
     etaValue: '30 mins',
   });

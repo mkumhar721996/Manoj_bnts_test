@@ -1,3 +1,5 @@
+const { renderLayout } = require('./layout');
+
 const STYLE = `
 :root {
   --ink: #151212;
@@ -145,20 +147,10 @@ a { color: inherit; text-decoration: none; }
 `;
 
 function renderSiteLayout(title, bodyHtml) {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<style>${STYLE}</style>
-</head>
-<body>
-${bodyHtml}
-<script src="/js/cart-badge.js" defer></script>
-</body>
-</html>
-`;
+  return renderLayout(title, bodyHtml, {
+    style: STYLE,
+    extraScripts: '<script src="/js/cart-badge.js" defer></script>\n',
+  });
 }
 
 module.exports = { renderSiteLayout };

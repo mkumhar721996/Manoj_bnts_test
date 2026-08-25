@@ -20,15 +20,15 @@ const router = express.Router();
 const DUMMY_HASH = hashPassword('not-a-real-password');
 
 router.get('/', (req, res) => {
-  res.type('html').send(renderHomePage());
+  res.type('html').send(renderHomePage(req.cartId));
 });
 
 router.get('/menu', (req, res) => {
-  res.type('html').send(renderMenuPage());
+  res.type('html').send(renderMenuPage(req.cartId));
 });
 
 router.get('/cart', (req, res) => {
-  res.type('html').send(renderCartPage());
+  res.type('html').send(renderCartPage(req.cartId));
 });
 
 router.post('/register', (req, res) => {

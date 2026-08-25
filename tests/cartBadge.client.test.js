@@ -48,4 +48,30 @@ describe('AC8: cart badge updates in place without a full page reload', () => {
     expect(badge.textContent).toBe('5');
     expect(badge.hasAttribute('hidden')).toBe(false);
   });
+
+  it('leaves the badge in its last-known state and does not throw when the fetch fails', async () => {
+    setBadgeHtml(2, false);
+    global.fetch.mockRejectedValue(new Error('network down'));
+
+    await expect(refreshCartBadge()).resolves.toBeUndefined();
+
+    const badge = document.getElementById('cart-badge');
+    expect(badge.textContent).toBe('2');
+    expect(badge.hasAttribute('hidden')).toBe(false);
+  });
+
+  it('leaves the badge in its last-known state when the response is not valid JSON', async () => {
+    setBadgeHtml(2, false);
+    global.fetch.mockResolvedValue({
+      json: async () => {
+        throw new Error('invalid json');
+      },
+    });
+
+    await expect(refreshCartBadge()).resolves.toBeUndefined();
+
+    const badge = document.getElementById('cart-badge');
+    expect(badge.textContent).toBe('2');
+    expect(badge.hasAttribute('hidden')).toBe(false);
+  });
 });

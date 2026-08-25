@@ -4,12 +4,15 @@ const cartStore = require('../store/cartStore');
 const router = express.Router();
 
 router.get('/cart', (req, res) => {
-  res.json({ count: cartStore.getCount() });
+  res.json({ count: cartStore.getCount(req.cartId) });
 });
 
 router.post('/cart/items', (req, res) => {
   const quantity = Number(req.body && req.body.quantity);
-  const count = cartStore.addItem(Number.isFinite(quantity) && quantity > 0 ? quantity : 1);
+  const count = cartStore.addItem(
+    req.cartId,
+    Number.isFinite(quantity) && quantity > 0 ? quantity : 1
+  );
   res.json({ count });
 });
 

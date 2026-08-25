@@ -8,9 +8,10 @@ beforeEach(() => {
 
 describe('AC1: header renders logo, nav links, delivery ETA, and cart badge', () => {
   it('renders the Forno Rosso brand, nav links, ETA, and cart badge on the home page', async () => {
-    cartStore.addItem(3);
+    const visitor = request.agent(app);
+    await visitor.post('/api/cart/items').send({ quantity: 3 });
 
-    const res = await request(app).get('/');
+    const res = await visitor.get('/');
 
     expect(res.status).toBe(200);
     expect(res.text).toContain('Forno Rosso');
@@ -75,9 +76,9 @@ describe('AC5: clicking the cart icon or Cart link navigates to the cart page', 
 
 describe('AC6: zero items in the cart hides the numeric badge', () => {
   it('does not render a visible digit when the cart is empty', async () => {
-    cartStore.reset();
+    const visitor = request.agent(app);
 
-    const res = await request(app).get('/');
+    const res = await visitor.get('/');
 
     expect(res.status).toBe(200);
     const badgeMatch = res.text.match(/<span id="cart-badge"[^>]*>.*?<\/span>/s);
@@ -87,15 +88,16 @@ describe('AC6: zero items in the cart hides the numeric badge', () => {
 
 describe('AC7: one or more items shows the correct running total', () => {
   it('reflects the live cart count in the badge', async () => {
-    cartStore.addItem(5);
+    const visitor = request.agent(app);
+    await visitor.post('/api/cart/items').send({ quantity: 5 });
 
-    let res = await request(app).get('/');
+    let res = await visitor.get('/');
     expect(res.text).toMatch(/<span id="cart-badge"[^>]*>5<\/span>/);
     expect(res.text).not.toMatch(/<span id="cart-badge"[^>]*hidden[^>]*>5<\/span>/);
 
-    cartStore.addItem(2);
+    await visitor.post('/api/cart/items').send({ quantity: 2 });
 
-    res = await request(app).get('/');
+    res = await visitor.get('/');
     expect(res.text).toMatch(/<span id="cart-badge"[^>]*>7<\/span>/);
   });
 });
