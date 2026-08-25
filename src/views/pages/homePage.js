@@ -1,4 +1,5 @@
 const { escapeHtml } = require('../../utils/escapeHtml');
+const { renderLayout } = require('../layout');
 const { HOME_PAGE_STYLE } = require('./homePageStyle');
 
 function renderSiteHeader() {
@@ -69,19 +70,7 @@ ${renderPopularPizzasSection(featuredPizzas, featuredError)}
 <div id="toastContainer" aria-live="polite"></div>
 <script src="/js/pizzaMenu.js" defer></script>`;
 
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forno Rosso</title>
-<style>${HOME_PAGE_STYLE}</style>
-</head>
-<body>
-${body}
-</body>
-</html>
-`;
+  return renderLayout('Forno Rosso', body, HOME_PAGE_STYLE);
 }
 
 module.exports = { renderHomePage };
