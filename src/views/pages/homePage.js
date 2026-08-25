@@ -2,6 +2,14 @@ const { renderLayout } = require('../layout');
 
 function renderHomePage() {
   const body = `
+<header class="site-header">
+  <span class="brand-wordmark">Forno Rosso</span>
+  <div class="header-actions">
+    <a class="btn btn-ghost" href="/login">Log In</a>
+    <a class="btn btn-brand" href="/register">Create Account</a>
+  </div>
+</header>
+
 <section class="hero-section">
   <div class="hero-text-container">
     <span class="hero-badge">

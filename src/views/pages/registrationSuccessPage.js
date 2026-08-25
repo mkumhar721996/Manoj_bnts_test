@@ -8,7 +8,7 @@ function renderRegistrationSuccessPage(name, email) {
 <header class="site-header">
   <span class="brand-wordmark">Facebook</span>
   <div class="header-actions">
-    <a class="btn btn-ghost" href="/">Log In</a>
+    <a class="btn btn-ghost" href="/login">Log In</a>
   </div>
 </header>
 <div class="status-screen">
@@ -18,7 +18,7 @@ function renderRegistrationSuccessPage(name, email) {
       Account created for <strong>${safeName}</strong>. A confirmation has been sent to <strong>${safeEmail}</strong>.
     </div>
     <p>Welcome to Facebook! You can now log in with your new account.</p>
-    <a class="btn btn-brand btn-block" style="margin-top: var(--space-4); display: block; text-align: center;" href="/">Continue to Log In</a>
+    <a class="btn btn-brand btn-block" style="margin-top: var(--space-4); display: block; text-align: center;" href="/login">Continue to Log In</a>
   </div>
 </div>
 `;

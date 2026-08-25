@@ -62,6 +62,66 @@ describe('MT-STORY-038 AC3: hero is responsive on mobile viewports', () => {
   });
 });
 
+describe('MT-STORY-038 review fix: restore reachable login/registration navigation', () => {
+  it('serves a GET-reachable login form at /login', async () => {
+    const res = await request(app).get('/login');
+
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch(/html/);
+    expect(res.text).toContain('action="/login"');
+    expect(res.text).toMatch(/<input[^>]*name="email"[^>]*>/);
+    expect(res.text).toMatch(/<input[^>]*type="password"[^>]*name="password"[^>]*>/);
+    expect(res.text).toContain('>Log In<');
+  });
+
+  it('serves a GET-reachable registration form at /register', async () => {
+    const res = await request(app).get('/register');
+
+    expect(res.status).toBe(200);
+    expect(res.headers['content-type']).toMatch(/html/);
+    expect(res.text).toContain('action="/register"');
+    expect(res.text).toMatch(/<input[^>]*name="name"[^>]*>/);
+    expect(res.text).toMatch(/<input[^>]*name="email"[^>]*>/);
+    expect(res.text).toMatch(/<input[^>]*type="password"[^>]*name="password"[^>]*>/);
+    expect(res.text).toContain('>Sign Up<');
+  });
+
+  it('links the home page header to the login and registration pages', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.text).toMatch(/<a[^>]*href="\/login"[^>]*>\s*Log In\s*<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*href="\/register"[^>]*>\s*Create Account\s*<\/a>/);
+  });
+
+  it('routes the registration success page "Continue to Log In" link to /login', async () => {
+    const pwd = generateValidPassword();
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({ name: 'Nav Check', email: 'navcheck@example.com', password: pwd });
+
+    expect(res.text).toMatch(/<a[^>]*href="\/login"[^>]*>Continue to Log In<\/a>/);
+  });
+
+  it('routes the login error page "Create Account" link to /register', async () => {
+    const res = await request(app)
+      .post('/login')
+      .type('form')
+      .send({ email: 'nobody2@example.com', password: 'whatever123' });
+
+    expect(res.text).toMatch(/<a[^>]*href="\/register"[^>]*>Create Account<\/a>/);
+  });
+
+  it('routes the registration error page "Log In" link to /login', async () => {
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({ name: '', email: '', password: '' });
+
+    expect(res.text).toMatch(/<a[^>]*href="\/login"[^>]*>Log In<\/a>/);
+  });
+});
+
 describe('AC3: valid registration creates the account and shows confirmation', () => {
   it('creates the account and shows a confirmation with name and email', async () => {
     const pwd = generateValidPassword();

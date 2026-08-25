@@ -2,6 +2,8 @@ const express = require('express');
 const crypto = require('crypto');
 const { renderHomePage } = require('../views/pages/homePage');
 const { renderMenuPage } = require('../views/pages/menuPage');
+const { renderLoginPage } = require('../views/pages/loginPage');
+const { renderRegisterPage } = require('../views/pages/registerPage');
 const { renderRegistrationSuccessPage } = require('../views/pages/registrationSuccessPage');
 const { renderRegistrationErrorPage } = require('../views/pages/registrationErrorPage');
 const { renderFeedPage } = require('../views/pages/feedPage');
@@ -24,6 +26,14 @@ router.get('/', (req, res) => {
 
 router.get('/menu', (req, res) => {
   res.type('html').send(renderMenuPage());
+});
+
+router.get('/login', (req, res) => {
+  res.type('html').send(renderLoginPage());
+});
+
+router.get('/register', (req, res) => {
+  res.type('html').send(renderRegisterPage());
 });
 
 router.post('/register', (req, res) => {
