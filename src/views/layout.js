@@ -274,14 +274,14 @@ a:hover { text-decoration: underline; }
 .back-link { display: inline-block; margin-top: var(--space-4); font-size: var(--font-size-sm); }
 `;
 
-function renderLayout(title, bodyHtml) {
+function renderLayout(title, bodyHtml, style = STYLE) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title}</title>
-<style>${STYLE}</style>
+<style>${style}</style>
 </head>
 <body>
 ${bodyHtml}
