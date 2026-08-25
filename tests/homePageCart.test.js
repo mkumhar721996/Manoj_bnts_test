@@ -9,12 +9,29 @@ function loadPageIntoDom() {
   document.close();
 }
 
+// cart.js is a plain script (no module exports) that attaches document-level
+// click/keydown listeners as a side effect of being required. jest.isolateModules
+// re-runs that side effect fresh each test so the module-scoped `cart` array starts
+// empty, but the listeners it registers would otherwise pile up on the single jsdom
+// `document` Jest reuses across tests in this file. Track and remove exactly the
+// listeners this load attaches so each test starts with a clean slate.
 function loadCartScript() {
-  let cartModulePath;
-  jest.isolateModules(() => {
-    cartModulePath = require.resolve(path.join(__dirname, '..', 'public', 'js', 'cart.js'));
-    require(cartModulePath);
-  });
+  const attachedListeners = [];
+  const originalAddEventListener = document.addEventListener.bind(document);
+  document.addEventListener = (...args) => {
+    attachedListeners.push(args);
+    originalAddEventListener(...args);
+  };
+
+  try {
+    jest.isolateModules(() => {
+      require(path.join(__dirname, '..', 'public', 'js', 'cart.js'));
+    });
+  } finally {
+    document.addEventListener = originalAddEventListener;
+  }
+
+  return attachedListeners;
 }
 
 function clickAddToOrder(itemId) {
@@ -22,10 +39,17 @@ function clickAddToOrder(itemId) {
   button.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
 }
 
+let activeListeners = [];
+
 beforeEach(() => {
   jest.resetModules();
   loadPageIntoDom();
-  loadCartScript();
+  activeListeners = loadCartScript();
+});
+
+afterEach(() => {
+  activeListeners.forEach((args) => document.removeEventListener(...args));
+  activeListeners = [];
 });
 
 describe('MT-STORY-026 AC4: adding a new item to the cart', () => {
@@ -64,5 +88,51 @@ describe('MT-STORY-026 AC5: adding an item already in the cart', () => {
     const lineItems = document.querySelectorAll('#cart-line-items li');
     expect(lineItems.length).toBe(2);
     expect(document.getElementById('cart-badge').textContent).toBe('3');
+  });
+});
+
+describe('MT-STORY-026: cart panel disclosure toggle', () => {
+  function cartButton() {
+    return document.getElementById('cart-button');
+  }
+
+  function cartPanel() {
+    return document.getElementById('cart-panel');
+  }
+
+  it('starts closed with aria-expanded false and no is-open class', () => {
+    expect(cartButton().getAttribute('aria-expanded')).toBe('false');
+    expect(cartPanel().classList.contains('is-open')).toBe(false);
+  });
+
+  it('opens the cart panel and flips aria-expanded when the cart button is clicked', () => {
+    cartButton().dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+
+    expect(cartPanel().classList.contains('is-open')).toBe(true);
+    expect(cartButton().getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('closes the cart panel when the cart button is clicked again', () => {
+    cartButton().dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    cartButton().dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+
+    expect(cartPanel().classList.contains('is-open')).toBe(false);
+    expect(cartButton().getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('closes the cart panel when clicking outside of it', () => {
+    cartButton().dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    document.body.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+
+    expect(cartPanel().classList.contains('is-open')).toBe(false);
+    expect(cartButton().getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('closes the cart panel when Escape is pressed', () => {
+    cartButton().dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+    document.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+
+    expect(cartPanel().classList.contains('is-open')).toBe(false);
+    expect(cartButton().getAttribute('aria-expanded')).toBe('false');
   });
 });

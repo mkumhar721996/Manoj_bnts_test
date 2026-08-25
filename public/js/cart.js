@@ -43,17 +43,49 @@
     }
   }
 
-  document.addEventListener('click', function (event) {
-    var button = event.target.closest('[data-item-id]');
-    if (!button) {
+  function setPanelOpen(open) {
+    var panel = document.getElementById('cart-panel');
+    var button = document.getElementById('cart-button');
+    if (!panel || !button) {
       return;
     }
-    addItem(
-      button.getAttribute('data-item-id'),
-      button.getAttribute('data-item-name'),
-      button.getAttribute('data-item-price')
-    );
-    render();
+    panel.classList.toggle('is-open', open);
+    button.setAttribute('aria-expanded', String(open));
+  }
+
+  function isPanelOpen() {
+    var panel = document.getElementById('cart-panel');
+    return !!panel && panel.classList.contains('is-open');
+  }
+
+  document.addEventListener('click', function (event) {
+    var addToOrderButton = event.target.closest('[data-item-id]');
+    if (addToOrderButton) {
+      addItem(
+        addToOrderButton.getAttribute('data-item-id'),
+        addToOrderButton.getAttribute('data-item-name'),
+        addToOrderButton.getAttribute('data-item-price')
+      );
+      render();
+      return;
+    }
+
+    var cartButton = event.target.closest('#cart-button');
+    if (cartButton) {
+      setPanelOpen(!isPanelOpen());
+      return;
+    }
+
+    var cartPanel = event.target.closest('#cart-panel');
+    if (!cartPanel && isPanelOpen()) {
+      setPanelOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && isPanelOpen()) {
+      setPanelOpen(false);
+    }
   });
 
   render();
