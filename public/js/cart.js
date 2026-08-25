@@ -59,7 +59,7 @@
   }
 
   document.addEventListener('click', function (event) {
-    var addToOrderButton = event.target.closest('[data-item-id]');
+    var addToOrderButton = event.target.closest('[data-action="add-to-order"]');
     if (addToOrderButton) {
       addItem(
         addToOrderButton.getAttribute('data-item-id'),

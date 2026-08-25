@@ -35,7 +35,7 @@ function loadCartScript() {
 }
 
 function clickAddToOrder(itemId) {
-  const button = document.querySelector(`[data-item-id="${itemId}"]`);
+  const button = document.querySelector(`[data-action="add-to-order"][data-item-id="${itemId}"]`);
   button.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
 }
 
@@ -88,6 +88,21 @@ describe('MT-STORY-026 AC5: adding an item already in the cart', () => {
     const lineItems = document.querySelectorAll('#cart-line-items li');
     expect(lineItems.length).toBe(2);
     expect(document.getElementById('cart-badge').textContent).toBe('3');
+  });
+
+  it('does not re-add the item when clicking its rendered line item in an open cart panel', () => {
+    clickAddToOrder('diavola');
+
+    const cartButton = document.getElementById('cart-button');
+    cartButton.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+
+    const lineItem = document.querySelector('#cart-line-items li[data-item-id="diavola"]');
+    lineItem.dispatchEvent(new window.MouseEvent('click', { bubbles: true }));
+
+    const lineItems = document.querySelectorAll('#cart-line-items li');
+    expect(lineItems.length).toBe(1);
+    expect(lineItems[0].textContent).not.toContain('x2');
+    expect(document.getElementById('cart-badge').textContent).toBe('1');
   });
 });
 

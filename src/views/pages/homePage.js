@@ -70,6 +70,7 @@ function renderPizzaCard(pizza) {
     <button
       type="button"
       class="btn btn-dark"
+      data-action="add-to-order"
       data-item-id="${pizza.id}"
       data-item-name="${pizza.name}"
       data-item-price="${pizza.price}"
