@@ -1,0 +1,150 @@
+{
+  "count": 7,
+  "note": "Source bitmaps exported from the Figma file's image fills \u2014 the ORIGINAL uploads, at full resolution and uncropped, not renders. Each entry names the node that paints it and the box it is painted into. Use these files; do not generate substitute artwork.",
+  "assets": [
+    {
+      "node_id": "6:39",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "6:25",
+        "name": "hero"
+      },
+      "ancestors": [
+        "home-page",
+        "hero",
+        "hero-image-wrapper"
+      ],
+      "painted_box": {
+        "width": 616.0,
+        "height": 480.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-6-39-hero-image-wrapper.png"
+    },
+    {
+      "node_id": "6:62",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "6:54",
+        "name": "featured-section"
+      },
+      "ancestors": [
+        "featured-section",
+        "featured-grid",
+        "Frame",
+        "Frame"
+      ],
+      "painted_box": {
+        "width": 302.0,
+        "height": 220.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-6-62-featured-grid.png"
+    },
+    {
+      "node_id": "6:74",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "6:54",
+        "name": "featured-section"
+      },
+      "ancestors": [
+        "featured-section",
+        "featured-grid",
+        "Frame",
+        "Frame"
+      ],
+      "painted_box": {
+        "width": 302.0,
+        "height": 220.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-6-74-featured-grid.png"
+    },
+    {
+      "node_id": "6:86",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "6:54",
+        "name": "featured-section"
+      },
+      "ancestors": [
+        "featured-section",
+        "featured-grid",
+        "Frame",
+        "Frame"
+      ],
+      "painted_box": {
+        "width": 302.0,
+        "height": 220.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-6-86-featured-grid.png"
+    },
+    {
+      "node_id": "6:98",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "6:54",
+        "name": "featured-section"
+      },
+      "ancestors": [
+        "featured-section",
+        "featured-grid",
+        "Frame",
+        "Frame"
+      ],
+      "painted_box": {
+        "width": 302.0,
+        "height": 220.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-6-98-featured-grid.png"
+    },
+    {
+      "node_id": "6:134",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "6:108",
+        "name": "story-section"
+      },
+      "ancestors": [
+        "home-page",
+        "story-section",
+        "story-img-collage"
+      ],
+      "painted_box": {
+        "width": 292.0,
+        "height": 520.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-6-134-story-img-collage.png"
+    },
+    {
+      "node_id": "6:135",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "6:108",
+        "name": "story-section"
+      },
+      "ancestors": [
+        "home-page",
+        "story-section",
+        "story-img-collage"
+      ],
+      "painted_box": {
+        "width": 292.0,
+        "height": 520.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-6-135-story-img-collage.png"
+    }
+  ]
+}

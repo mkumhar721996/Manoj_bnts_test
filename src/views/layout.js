@@ -110,27 +110,6 @@ a:hover { text-decoration: underline; }
 .btn:disabled { opacity: 0.6; cursor: default; }
 .btn-block { width: 100%; }
 
-.hero {
-  max-width: var(--max-content-width);
-  margin: 0 auto;
-  padding: var(--space-7) var(--space-4);
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: var(--space-8);
-  align-items: start;
-}
-@media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; padding: var(--space-5) var(--space-3); gap: var(--space-6); }
-}
-
-.hero-copy .brand-wordmark { font-size: var(--font-size-xxl); margin-bottom: var(--space-3); display: block; }
-.hero-copy p {
-  font-size: var(--font-size-md);
-  color: var(--fg);
-  max-width: 420px;
-  line-height: var(--line-height-base);
-}
-
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -272,6 +251,136 @@ a:hover { text-decoration: underline; }
 .contact { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
 
 .back-link { display: inline-block; margin-top: var(--space-4); font-size: var(--font-size-sm); }
+
+.hero-section {
+  --hero-bg: #151212;
+  --hero-fg: #ffffff;
+  --hero-muted: rgba(255, 255, 255, 0.8);
+  --hero-brand: #C82D25;
+  --hero-badge-bg: rgba(255, 255, 255, 0.07);
+
+  background: var(--hero-bg);
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 0 80px;
+  min-height: 620px;
+}
+
+.hero-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  flex: 1;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  background: var(--hero-badge-bg);
+  border-radius: 100px;
+  padding: 6px 12px;
+  font-family: 'Geist', var(--font-sans);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 16.9px;
+  text-transform: uppercase;
+  color: var(--hero-fg);
+}
+
+.hero-badge-icon { flex-shrink: 0; }
+
+.hero-heading {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: 64px;
+  line-height: 70.4px;
+  color: var(--hero-fg);
+}
+
+.hero-heading-highlight { color: var(--hero-brand); }
+
+.hero-description {
+  font-family: 'Geist', var(--font-sans);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 27px;
+  color: var(--hero-muted);
+}
+
+.hero-cta-group {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-hero-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--hero-brand);
+  color: var(--hero-fg);
+  border-radius: 8px;
+  padding: 16px 32px;
+  font-family: 'Geist', var(--font-sans);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20.8px;
+}
+.btn-hero-primary:hover { text-decoration: none; opacity: 0.9; }
+
+.btn-hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  border: 1px solid var(--hero-fg);
+  color: var(--hero-fg);
+  border-radius: 8px;
+  padding: 16px 24px;
+  font-family: 'Geist', var(--font-sans);
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20.8px;
+}
+.btn-hero-secondary:hover { text-decoration: none; background: rgba(255, 255, 255, 0.07); }
+
+.hero-image-wrapper {
+  max-width: 100%;
+  width: 616px;
+  height: 480px;
+  border-radius: 24px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .hero-section {
+    flex-direction: column;
+    padding: var(--space-6) var(--space-4);
+    gap: var(--space-6);
+    min-height: 0;
+  }
+  .hero-heading {
+    font-size: 40px;
+    line-height: 1.1;
+  }
+  .hero-cta-group {
+    flex-direction: column;
+  }
+  .hero-image-wrapper {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 616 / 480;
+  }
+}
 `;
 
 function renderLayout(title, bodyHtml) {
@@ -281,6 +390,9 @@ function renderLayout(title, bodyHtml) {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${title}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
 <style>${STYLE}</style>
 </head>
 <body>
