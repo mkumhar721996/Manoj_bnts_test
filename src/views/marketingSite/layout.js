@@ -1,3 +1,9 @@
+const { renderLayout } = require('../layout');
+
+const FONT_LINKS = `<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,700&family=Geist:wght@400;600&display=swap" rel="stylesheet">
+`;
+
 const STYLE = `
 :root {
   --ink: #151212;
@@ -190,21 +196,7 @@ a { color: inherit; text-decoration: none; }
 `;
 
 function renderMarketingLayout(title, bodyHtml) {
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${title}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;0,700;1,700&family=Geist:wght@400;600&display=swap" rel="stylesheet">
-<style>${STYLE}</style>
-</head>
-<body>
-${bodyHtml}
-</body>
-</html>
-`;
+  return renderLayout(title, bodyHtml, { style: STYLE, extraHead: FONT_LINKS });
 }
 
 module.exports = { renderMarketingLayout };

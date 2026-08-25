@@ -80,6 +80,15 @@ describe('AC3: clicking a social media link opens it in a new browser tab', () =
       expect(anchorTag).toContain('rel="noopener noreferrer"');
     });
   });
+
+  it('renders social icons that inherit the on-dark text color via currentColor', async () => {
+    const res = await request(app).get('/pizzeria');
+    const footerMatch = res.text.match(/<footer[\s\S]*<\/footer>/);
+    expect(footerMatch).not.toBeNull();
+
+    expect(footerMatch[0]).not.toContain('stroke="#FFFFFF"');
+    expect(footerMatch[0]).toContain('stroke="currentColor"');
+  });
 });
 
 describe('AC4: clicking a legal link navigates to the appropriate legal page', () => {

@@ -21,8 +21,8 @@ const businessInfo = Object.freeze({
     deliveryEmail: 'ciao@fornorosso.pizza',
   }),
   legalLinks: Object.freeze([
-    Object.freeze({ id: 'privacy-policy', label: 'Privacy Policy', href: '/pizzeria/privacy-policy' }),
-    Object.freeze({ id: 'delivery-terms', label: 'Delivery Terms', href: '/pizzeria/delivery-terms' }),
+    Object.freeze({ label: 'Privacy Policy', href: '/pizzeria/privacy-policy' }),
+    Object.freeze({ label: 'Delivery Terms', href: '/pizzeria/delivery-terms' }),
   ]),
   copyright: '© 2026 Forno Rosso Pizzeria. All rights reserved.',
 });
