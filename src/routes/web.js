@@ -5,11 +5,15 @@ const { renderRegistrationSuccessPage } = require('../views/pages/registrationSu
 const { renderRegistrationErrorPage } = require('../views/pages/registrationErrorPage');
 const { renderFeedPage } = require('../views/pages/feedPage');
 const { renderLoginErrorPage } = require('../views/pages/loginErrorPage');
+const { renderMenuPage } = require('../views/pages/menuPage');
+const { renderCartPage } = require('../views/pages/cartPage');
 const { validate } = require('../validation/webRegistrationValidator');
 const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
+const cartStore = require('../store/cartStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
+const menuItems = require('../data/menuItems');
 
 const router = express.Router();
 
@@ -19,6 +23,27 @@ const DUMMY_HASH = hashPassword('not-a-real-password');
 
 router.get('/', (req, res) => {
   res.type('html').send(renderHomePage());
+});
+
+router.get('/menu', (req, res) => {
+  res.type('html').send(renderMenuPage(menuItems));
+});
+
+router.get('/cart', (req, res) => {
+  res.type('html').send(renderCartPage(cartStore.getItems()));
+});
+
+router.post('/cart/add/:itemId', (req, res) => {
+  const item = menuItems.find((candidate) => candidate.id === req.params.itemId);
+  if (item) {
+    cartStore.addItem(item.id, item.name, item.price);
+  }
+  res.type('html').send(renderCartPage(cartStore.getItems()));
+});
+
+router.post('/cart/remove/:itemId', (req, res) => {
+  cartStore.removeItem(req.params.itemId);
+  res.type('html').send(renderCartPage(cartStore.getItems()));
 });
 
 router.post('/register', (req, res) => {

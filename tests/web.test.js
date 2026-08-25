@@ -3,12 +3,14 @@ const request = require('supertest');
 const app = require('../src/app');
 const userStore = require('../src/store/userStore');
 const emailService = require('../src/services/emailService');
+const cartStore = require('../src/store/cartStore');
 
 const generateValidPassword = () => `longenough${crypto.randomBytes(4).toString('hex')}`;
 
 beforeEach(() => {
   userStore.reset();
   emailService.reset();
+  cartStore.reset();
 });
 
 describe('AC1: Facebook-branded homepage on load', () => {
@@ -199,5 +201,105 @@ describe('AC6: invalid login credentials show an error and deny access', () => {
     expect(res.text).toContain(
       'The email or password you entered is incorrect. Access denied.'
     );
+  });
+});
+
+describe('MT-STORY-025 AC1/AC4: global header with nav links, ETA, and cart badge', () => {
+  it('renders nav links to Home, Our Menu, and Cart, an ETA indicator, and a 0 cart badge on an empty cart', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(/<a[^>]*href="\/"[^>]*>Home<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*href="\/menu"[^>]*>Our Menu<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*href="\/cart"[^>]*>[\s\S]*Cart[\s\S]*<\/a>/);
+    expect(res.text).toContain('id="deliveryEta"');
+    expect(res.text).toContain('id="cartBadge">0<');
+  });
+});
+
+describe('MT-STORY-025 AC2: global footer with store info', () => {
+  it('renders store hours, location, contact, social links, and legal links', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('id="storeHours"');
+    expect(res.text).toContain('id="storeLocation"');
+    expect(res.text).toContain('id="storeContact"');
+    expect((res.text.match(/class="social-link"/g) || []).length).toBeGreaterThanOrEqual(2);
+    expect((res.text.match(/class="legal-link"/g) || []).length).toBeGreaterThanOrEqual(2);
+  });
+});
+
+describe('MT-STORY-025 AC3: Our Menu and Cart pages are reachable', () => {
+  it('renders the Our Menu page with catalog items and an add-to-cart form each', async () => {
+    const res = await request(app).get('/menu');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Our Menu');
+    expect(res.text).toContain('Classic Burger');
+    expect(res.text).toContain('Veggie Wrap');
+    expect(res.text).toContain('Iced Tea');
+    expect(res.text).toContain('action="/cart/add/classic-burger"');
+  });
+
+  it('renders the Cart page with empty-cart copy when nothing has been added', async () => {
+    const res = await request(app).get('/cart');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Your Cart');
+    expect(res.text).toContain('Your cart is empty.');
+  });
+});
+
+describe('MT-STORY-025 AC3/AC5: adding items updates the cart and badge immediately', () => {
+  it('adds a known item and updates the cart badge to 1', async () => {
+    const res = await request(app).post('/cart/add/classic-burger');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('Classic Burger');
+    expect(res.text).toContain('id="cartBadge">1<');
+    expect(res.text).toContain('action="/cart/remove/classic-burger"');
+  });
+
+  it('adds a second distinct item and updates the badge to 2', async () => {
+    await request(app).post('/cart/add/classic-burger');
+    const res = await request(app).post('/cart/add/veggie-wrap');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('id="cartBadge">2<');
+    expect(res.text).toContain('Classic Burger');
+    expect(res.text).toContain('Veggie Wrap');
+  });
+
+  it('keeps the badge at 1 distinct line item when the same item is added twice, but increases its quantity', async () => {
+    await request(app).post('/cart/add/classic-burger');
+    const res = await request(app).post('/cart/add/classic-burger');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('id="cartBadge">1<');
+  });
+});
+
+describe('MT-STORY-025 AC5: removing items updates the cart and badge immediately', () => {
+  it('removes an item, dropping the badge and clearing its listing while keeping the remaining item', async () => {
+    await request(app).post('/cart/add/classic-burger');
+    await request(app).post('/cart/add/veggie-wrap');
+
+    const res = await request(app).post('/cart/remove/classic-burger');
+
+    expect(res.status).toBe(200);
+    expect(res.text).not.toContain('Classic Burger');
+    expect(res.text).toContain('id="cartBadge">1<');
+    expect(res.text).toContain('Veggie Wrap');
+  });
+
+  it('drops the badge to 0 and shows empty-cart copy when the last item is removed', async () => {
+    await request(app).post('/cart/add/classic-burger');
+
+    const res = await request(app).post('/cart/remove/classic-burger');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('id="cartBadge">0<');
+    expect(res.text).toContain('Your cart is empty.');
   });
 });
