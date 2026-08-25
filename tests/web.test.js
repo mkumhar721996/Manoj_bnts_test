@@ -191,16 +191,16 @@ describe('MT-STORY-041 AC3: brand story supporting photos are visible', () => {
 
     expect(res.status).toBe(200);
     expect(res.text).toContain(
-      'class="story-images__photo" src="/images/story/dough-prep.png"'
+      'class="story-images__photo" src="/images/story/dough-prep.jpg"'
     );
     expect(res.text).toContain(
-      'class="story-images__photo" src="/images/story/wood-oven.png"'
+      'class="story-images__photo" src="/images/story/wood-oven.jpg"'
     );
   });
 
   it('serves the story photos as real static image files', async () => {
-    const doughRes = await request(app).get('/images/story/dough-prep.png');
-    const ovenRes = await request(app).get('/images/story/wood-oven.png');
+    const doughRes = await request(app).get('/images/story/dough-prep.jpg');
+    const ovenRes = await request(app).get('/images/story/wood-oven.jpg');
 
     expect(doughRes.status).toBe(200);
     expect(doughRes.headers['content-type']).toMatch(/image\//);
@@ -220,6 +220,31 @@ describe('MT-STORY-041 AC4: brand story is legible on mobile without horizontal 
     expect(res.text).toMatch(
       /\.story-images__photo\s*\{[^}]*max-width:\s*100%/s
     );
+  });
+
+  it('does not let two fixed/full-width photos both claim a full flex row (no combined overflow)', async () => {
+    const res = await request(app).get('/');
+    const styleBlock = res.text.slice(res.text.indexOf('<style>'), res.text.indexOf('</style>'));
+
+    const baseRuleMatch = styleBlock.match(/\.story-images__photo\s*\{([^}]*)\}/s);
+    expect(baseRuleMatch).not.toBeNull();
+    expect(baseRuleMatch[1]).not.toMatch(/flex:\s*1\s*;/);
+
+    const mediaBlocks = styleBlock.match(/@media \(max-width: 860px\)\s*\{[\s\S]*?\n\}/g) || [];
+    const storyMediaBlock = mediaBlocks.find((block) => block.includes('.story-images'));
+    expect(storyMediaBlock).toBeTruthy();
+    expect(storyMediaBlock).toMatch(/\.story-images\s*\{[^}]*flex-direction:\s*column/s);
+  });
+
+  it('only loads the brand-story Google Fonts on the home page, not on unrelated pages', async () => {
+    const homeRes = await request(app).get('/');
+    expect(homeRes.text).toContain('fonts.googleapis.com');
+
+    const badLoginRes = await request(app)
+      .post('/login')
+      .type('form')
+      .send({ email: 'nobody@example.com', password: 'irrelevant123' });
+    expect(badLoginRes.text).not.toContain('fonts.googleapis.com');
   });
 });
 

@@ -102,7 +102,11 @@ function renderHomePage() {
 ${renderBrandStorySection()}
 `;
 
-  return renderLayout('Facebook', body);
+  const extraHead =
+    '<link rel="preconnect" href="https://fonts.googleapis.com">\n' +
+    '<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Geist:wght@400;600&display=swap" rel="stylesheet">\n';
+
+  return renderLayout('Facebook', body, extraHead);
 }
 
 module.exports = { renderHomePage };

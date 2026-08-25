@@ -21,7 +21,7 @@ module.exports = {
     },
   ],
   images: [
-    { src: '/images/story/dough-prep.png', alt: 'Pizzaiolo hand-stretching fresh sourdough at Forno Rosso' },
-    { src: '/images/story/wood-oven.png', alt: 'Pizza baking inside the 900°F wood-fired oven' },
+    { src: '/images/story/dough-prep.jpg', alt: 'Pizzaiolo hand-stretching fresh sourdough at Forno Rosso' },
+    { src: '/images/story/wood-oven.jpg', alt: 'Pizza baking inside the 900°F wood-fired oven' },
   ],
 };
