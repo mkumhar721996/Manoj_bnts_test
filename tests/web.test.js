@@ -259,10 +259,11 @@ describe('MT-STORY-025 AC1: the global header is the only header rendered per pa
   });
 
   it('renders exactly one header on the login error page', async () => {
+    const pwd = generateValidPassword();
     const res = await request(app)
       .post('/login')
       .type('form')
-      .send({ email: 'nobody-header@example.com', password: 'whatever' });
+      .send({ email: 'nobody-header@example.com', password: pwd });
 
     expect(countHeaders(res.text)).toBe(1);
   });
