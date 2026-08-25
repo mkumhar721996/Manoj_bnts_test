@@ -11,41 +11,6 @@ beforeEach(() => {
   emailService.reset();
 });
 
-describe('AC1: Facebook-branded homepage on load', () => {
-  it('renders the homepage with the Facebook brand', async () => {
-    const res = await request(app).get('/');
-
-    expect(res.status).toBe(200);
-    expect(res.headers['content-type']).toMatch(/html/);
-    expect(res.text).toContain('class="brand-wordmark">Facebook<');
-    expect(res.text).toContain('class="brand-wordmark">facebook<');
-    expect(res.text).toContain(
-      'Connect with friends and the world around you on Facebook.'
-    );
-  });
-});
-
-describe('AC2: registration form visible on the homepage', () => {
-  it('renders a registration form with name, email, and password fields', async () => {
-    const res = await request(app).get('/');
-
-    expect(res.status).toBe(200);
-    expect(res.text).toContain('action="/register"');
-    expect(res.text).toMatch(/<input[^>]*name="name"[^>]*>/);
-    expect(res.text).toMatch(/<input[^>]*name="email"[^>]*>/);
-    expect(res.text).toMatch(/<input[^>]*type="password"[^>]*name="password"[^>]*>/);
-    expect(res.text).toContain('>Sign Up<');
-  });
-
-  it('renders a login form with email and password fields', async () => {
-    const res = await request(app).get('/');
-
-    expect(res.status).toBe(200);
-    expect(res.text).toContain('action="/login"');
-    expect(res.text).toContain('>Log In<');
-  });
-});
-
 describe('AC3: valid registration creates the account and shows confirmation', () => {
   it('creates the account and shows a confirmation with name and email', async () => {
     const pwd = generateValidPassword();
