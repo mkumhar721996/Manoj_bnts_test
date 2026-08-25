@@ -2,12 +2,6 @@ const { renderLayout } = require('../layout');
 
 function renderLoginErrorPage() {
   const body = `
-<header class="site-header">
-  <span class="brand-wordmark">Facebook</span>
-  <div class="header-actions">
-    <a class="btn btn-brand" href="/">Create Account</a>
-  </div>
-</header>
 <div class="status-screen">
   <div class="status-icon danger">&#33;</div>
   <div class="card">

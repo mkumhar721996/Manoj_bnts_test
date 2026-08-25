@@ -2,14 +2,6 @@ const { renderLayout } = require('../layout');
 
 function renderHomePage() {
   const body = `
-<header class="site-header">
-  <span class="brand-wordmark">Facebook</span>
-  <div class="header-actions">
-    <a class="btn btn-ghost" href="#login-email">Log In</a>
-    <a class="btn btn-brand" href="#reg-name">Create Account</a>
-  </div>
-</header>
-
 <div class="hero">
   <div class="hero-copy">
     <span class="brand-wordmark">facebook</span>
