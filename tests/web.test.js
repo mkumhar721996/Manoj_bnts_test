@@ -104,10 +104,11 @@ describe('MT-STORY-038 review fix: restore reachable login/registration navigati
   });
 
   it('routes the login error page "Create Account" link to /register', async () => {
+    const pwd = generateValidPassword();
     const res = await request(app)
       .post('/login')
       .type('form')
-      .send({ email: 'nobody2@example.com', password: 'whatever123' });
+      .send({ email: 'nobody2@example.com', password: pwd });
 
     expect(res.text).toMatch(/<a[^>]*href="\/register"[^>]*>Create Account<\/a>/);
   });
