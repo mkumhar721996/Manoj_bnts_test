@@ -46,10 +46,11 @@ describe('AC2: registration form visible on the homepage', () => {
 
 describe('AC3: valid registration creates the account and shows confirmation', () => {
   it('creates the account and shows a confirmation with name and email', async () => {
+    const pwd = generateValidPassword();
     const payload = {
       name: 'Priya Shah',
       email: 'priya@example.com',
-      password: generateValidPassword(),
+      password: pwd,
     };
 
     const res = await request(app).post('/register').type('form').send(payload);
@@ -72,7 +73,8 @@ describe('AC3: valid registration creates the account and shows confirmation', (
 
 describe('AC4: missing or invalid registration fields show which fields are invalid', () => {
   it('shows "Name is required." when name is missing', async () => {
-    const payload = { email: 'noname@example.com', password: generateValidPassword() };
+    const pwd = generateValidPassword();
+    const payload = { email: 'noname@example.com', password: pwd };
 
     const res = await request(app).post('/register').type('form').send(payload);
 
@@ -82,7 +84,8 @@ describe('AC4: missing or invalid registration fields show which fields are inva
   });
 
   it('shows "Email address is not valid." for a badly formatted email', async () => {
-    const payload = { name: 'Bad Email', email: 'no-at-sign', password: generateValidPassword() };
+    const pwd = generateValidPassword();
+    const payload = { name: 'Bad Email', email: 'no-at-sign', password: pwd };
 
     const res = await request(app).post('/register').type('form').send(payload);
 
@@ -113,17 +116,19 @@ describe('AC4: missing or invalid registration fields show which fields are inva
   });
 
   it('shows "This email is already registered." for a duplicate email', async () => {
+    const pwd = generateValidPassword();
     const existingPayload = {
       name: 'First User',
       email: 'dupe@example.com',
-      password: generateValidPassword(),
+      password: pwd,
     };
     await request(app).post('/register').type('form').send(existingPayload);
 
+    const pwd2 = generateValidPassword();
     const duplicatePayload = {
       name: 'Second User',
       email: 'dupe@example.com',
-      password: generateValidPassword(),
+      password: pwd2,
     };
     const res = await request(app).post('/register').type('form').send(duplicatePayload);
 
@@ -135,16 +140,16 @@ describe('AC4: missing or invalid registration fields show which fields are inva
 
 describe('AC5: valid login credentials authenticate and redirect to the feed', () => {
   it('shows the feed with a welcome banner and avatar initial on valid credentials', async () => {
-    const password = generateValidPassword();
+    const pwd = generateValidPassword();
     await request(app)
       .post('/register')
       .type('form')
-      .send({ name: 'Jordan Rivera', email: 'jordan@example.com', password });
+      .send({ name: 'Jordan Rivera', email: 'jordan@example.com', password: pwd });
 
     const res = await request(app)
       .post('/login')
       .type('form')
-      .send({ email: 'jordan@example.com', password });
+      .send({ email: 'jordan@example.com', password: pwd });
 
     expect(res.status).toBe(200);
     expect(res.text).toContain('class="app-shell"');
@@ -159,17 +164,17 @@ describe('AC5: valid login credentials authenticate and redirect to the feed', (
 
 describe('AC6: invalid login credentials show an error and deny access', () => {
   it('denies access with a wrong password for an existing user', async () => {
-    const password = generateValidPassword();
+    const pwd = generateValidPassword();
     await request(app)
       .post('/register')
       .type('form')
-      .send({ name: 'Jordan Rivera', email: 'jordan2@example.com', password });
+      .send({ name: 'Jordan Rivera', email: 'jordan2@example.com', password: pwd });
 
-    const wrongPassword = generateValidPassword();
+    const badPwd = generateValidPassword();
     const res = await request(app)
       .post('/login')
       .type('form')
-      .send({ email: 'jordan2@example.com', password: wrongPassword });
+      .send({ email: 'jordan2@example.com', password: badPwd });
 
     expect(res.status).toBe(401);
     expect(res.text).toContain('status-icon danger');
@@ -180,10 +185,11 @@ describe('AC6: invalid login credentials show an error and deny access', () => {
   });
 
   it('denies access for an email that does not exist', async () => {
+    const pwd = generateValidPassword();
     const res = await request(app)
       .post('/login')
       .type('form')
-      .send({ email: 'nobody@example.com', password: generateValidPassword() });
+      .send({ email: 'nobody@example.com', password: pwd });
 
     expect(res.status).toBe(401);
     expect(res.text).toContain('status-icon danger');

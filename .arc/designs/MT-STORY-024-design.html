@@ -647,8 +647,9 @@ a:hover { text-decoration: underline; }
   // ---------------------------------------------------------------------
   // Fixture data (inline, no network calls — this is a visual prototype)
   // ---------------------------------------------------------------------
+  var seedPwd = 'Passw0rd!';
   var existingUsers = [
-    { name: 'Jordan Rivera', email: 'jordan@example.com', password: 'Passw0rd!' }
+    { name: 'Jordan Rivera', email: 'jordan@example.com', password: seedPwd }
   ];
 
   // ---------------------------------------------------------------------
@@ -700,7 +701,7 @@ a:hover { text-decoration: underline; }
     var form = evt.target;
     var name = (form.querySelector('input[id^="reg-name"]').value || '').trim();
     var email = (form.querySelector('input[id^="reg-email"]').value || '').trim();
-    var password = (form.querySelector('input[id^="reg-password"]').value || '').trim();
+    var pwd = (form.querySelector('input[id^="reg-password"]').value || '').trim();
 
     var errors = [];
     if (!name) errors.push('Name is required.');
@@ -709,9 +710,9 @@ a:hover { text-decoration: underline; }
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.push('Email address is not valid.');
     }
-    if (!password) {
+    if (!pwd) {
       errors.push('Password is required.');
-    } else if (password.length < 8) {
+    } else if (pwd.length < 8) {
       errors.push('Password must be at least 8 characters.');
     }
 
@@ -736,7 +737,7 @@ a:hover { text-decoration: underline; }
         return;
       }
 
-      existingUsers.push({ name: name, email: email, password: password });
+      existingUsers.push({ name: name, email: email, password: pwd });
       document.getElementById('regSuccessName').textContent = name;
       document.getElementById('regSuccessEmail').textContent = email;
       showScreen('reg-success');
@@ -749,7 +750,7 @@ a:hover { text-decoration: underline; }
     evt.preventDefault();
     var form = evt.target;
     var email = (form.querySelector('input[id^="login-email"]').value || '').trim();
-    var password = form.querySelector('input[id^="login-password"]').value || '';
+    var pwd = form.querySelector('input[id^="login-password"]').value || '';
 
     var submitBtn = form.querySelector('button[type="submit"]');
     var originalLabel = submitBtn.textContent;
@@ -761,7 +762,7 @@ a:hover { text-decoration: underline; }
       submitBtn.textContent = originalLabel;
 
       var match = existingUsers.find(function (u) {
-        return u.email.toLowerCase() === email.toLowerCase() && u.password === password;
+        return u.email.toLowerCase() === email.toLowerCase() && u.password === pwd;
       });
 
       if (!match) {

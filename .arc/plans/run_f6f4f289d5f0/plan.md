@@ -141,7 +141,7 @@ truth for what the form validates.
 ### AC3 — valid registration creates the account and shows confirmation
 - **Failing test first** (`tests/web.test.js`, `userStore.reset()` in `beforeEach`, importing
   `userStore` like the existing API tests do): `POST /register` with valid
-  `{ name: 'Priya Shah', email: 'priya@example.com', password: 'longenough' }` → `201`,
+  `{ name: 'Priya Shah', email: 'priya@example.com', password: '8+ chars' }` → `201`,
   HTML body contains the success icon, `Account created for Priya Shah.`, `A confirmation has
   been sent to priya@example.com.`, and "Continue to Log In"; also assert
   `userStore.findByEmail('priya@example.com')` exists with `verified === true` and a
