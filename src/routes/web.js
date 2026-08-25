@@ -7,6 +7,8 @@ const { renderFeedPage } = require('../views/pages/feedPage');
 const { renderLoginErrorPage } = require('../views/pages/loginErrorPage');
 const { validate } = require('../validation/webRegistrationValidator');
 const userStore = require('../store/userStore');
+const verificationTokenStore = require('../store/verificationTokenStore');
+const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
 
 const router = express.Router();
@@ -36,9 +38,16 @@ router.post('/register', (req, res) => {
     name,
     email,
     passwordHash: hashPassword(password),
-    verified: true,
+    // Not verified yet: only the real /verify-email link (verificationTokenStore
+    // + emailService below) is allowed to prove ownership of this address. This
+    // keeps website registrations from self-asserting `verified: true` into the
+    // userStore that /api/login and requireVerifiedUser trust.
+    verified: false,
   };
   userStore.save(user);
+
+  const token = verificationTokenStore.create(user.email);
+  emailService.sendVerificationEmail(user.email, token);
 
   return res.status(201).type('html').send(renderRegistrationSuccessPage(name, email));
 });
@@ -52,6 +61,13 @@ router.post('/login', (req, res) => {
     typeof password === 'string' ? password : '',
     user ? user.passwordHash : DUMMY_HASH
   );
+
+  // This website login intentionally does not gate on `user.verified`: AC5/AC6
+  // for this story require immediate authentication on valid credentials, with
+  // no email-verification step in the flow. This is safe because registration
+  // above never self-asserts `verified: true`, so this divergence only grants
+  // access to this same story's own feed page, not to /api/account or other
+  // routes gated by requireVerifiedUser.
 
   if (!user || !passwordMatches) {
     return res.status(401).type('html').send(renderLoginErrorPage());

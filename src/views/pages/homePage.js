@@ -5,8 +5,8 @@ function renderHomePage() {
 <header class="site-header">
   <span class="brand-wordmark">Facebook</span>
   <div class="header-actions">
-    <button class="btn btn-ghost" type="button">Log In</button>
-    <button class="btn btn-brand" type="button">Create Account</button>
+    <a class="btn btn-ghost" href="#login-email">Log In</a>
+    <a class="btn btn-brand" href="#reg-name">Create Account</a>
   </div>
 </header>
 

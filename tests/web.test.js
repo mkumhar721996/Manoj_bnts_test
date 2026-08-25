@@ -2,11 +2,13 @@ const crypto = require('crypto');
 const request = require('supertest');
 const app = require('../src/app');
 const userStore = require('../src/store/userStore');
+const emailService = require('../src/services/emailService');
 
 const generateValidPassword = () => `longenough${crypto.randomBytes(4).toString('hex')}`;
 
 beforeEach(() => {
   userStore.reset();
+  emailService.reset();
 });
 
 describe('AC1: Facebook-branded homepage on load', () => {
@@ -65,9 +67,10 @@ describe('AC3: valid registration creates the account and shows confirmation', (
 
     const stored = userStore.findByEmail(payload.email);
     expect(stored).toBeDefined();
-    expect(stored.verified).toBe(true);
+    expect(stored.verified).toBe(false);
     expect(stored.passwordHash).toBeDefined();
     expect(stored.passwordHash).not.toContain(payload.password);
+    expect(emailService.getLastEmailTo(payload.email)).toBeDefined();
   });
 });
 
