@@ -11,38 +11,54 @@ beforeEach(() => {
   emailService.reset();
 });
 
-describe('AC1: Facebook-branded homepage on load', () => {
-  it('renders the homepage with the Facebook brand', async () => {
+describe('MT-STORY-038 AC1: hero section renders on home page load', () => {
+  it('renders the hero headline, description, and both CTA buttons', async () => {
     const res = await request(app).get('/');
 
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toMatch(/html/);
-    expect(res.text).toContain('class="brand-wordmark">Facebook<');
-    expect(res.text).toContain('class="brand-wordmark">facebook<');
+    expect(res.text).toContain('class="hero-section"');
+    expect(res.text).toMatch(/<h1 class="hero-heading">\s*Wood-Fired Pizza,\s*<span class="hero-heading-highlight">Delivered Hot<\/span>/);
     expect(res.text).toContain(
-      'Connect with friends and the world around you on Facebook.'
+      'Baked at 900°F in our stone ovens to perfect charred perfection. Handcrafted sourdough bases fermented for 48 hours. Order now for fast, direct thermal-bag delivery.'
     );
+    expect(res.text).toContain('AUTHENTIC NEAPOLITAN WOODFIRED');
+    expect(res.text).toMatch(/<a[^>]*class="btn-hero-primary"[^>]*>[\s\S]*?Order Online Now[\s\S]*?<\/a>/);
+    expect(res.text).toMatch(/<a[^>]*class="btn-hero-secondary"[^>]*>\s*Explore Full Menu\s*<\/a>/);
   });
 });
 
-describe('AC2: registration form visible on the homepage', () => {
-  it('renders a registration form with name, email, and password fields', async () => {
+describe('MT-STORY-038 AC2: hero CTAs navigate to the menu page', () => {
+  it('points both hero CTAs at /menu', async () => {
     const res = await request(app).get('/');
 
-    expect(res.status).toBe(200);
-    expect(res.text).toContain('action="/register"');
-    expect(res.text).toMatch(/<input[^>]*name="name"[^>]*>/);
-    expect(res.text).toMatch(/<input[^>]*name="email"[^>]*>/);
-    expect(res.text).toMatch(/<input[^>]*type="password"[^>]*name="password"[^>]*>/);
-    expect(res.text).toContain('>Sign Up<');
+    expect(res.text).toMatch(/<a href="\/menu" class="btn-hero-primary"/);
+    expect(res.text).toMatch(/<a href="\/menu" class="btn-hero-secondary"/);
   });
 
-  it('renders a login form with email and password fields', async () => {
-    const res = await request(app).get('/');
+  it('serves a stub menu page at /menu', async () => {
+    const res = await request(app).get('/menu');
 
     expect(res.status).toBe(200);
-    expect(res.text).toContain('action="/login"');
-    expect(res.text).toContain('>Log In<');
+    expect(res.headers['content-type']).toMatch(/html/);
+    expect(res.text).toContain('<h1>Our Menu</h1>');
+    expect(res.text).toContain('Full menu coming soon.');
+  });
+});
+
+describe('MT-STORY-038 AC3: hero is responsive on mobile viewports', () => {
+  it('stacks the hero layout and CTAs, and shrinks the heading, under a 640px breakpoint', async () => {
+    const res = await request(app).get('/');
+
+    const mediaMatch = res.text.match(/@media \(max-width: 640px\) \{([\s\S]*?)\n\}/);
+    expect(mediaMatch).not.toBeNull();
+    const mediaBlock = mediaMatch[1];
+
+    expect(mediaBlock).toMatch(/\.hero-section\s*\{[^}]*flex-direction:\s*column/);
+    expect(mediaBlock).toMatch(/\.hero-cta-group\s*\{[^}]*flex-direction:\s*column/);
+    expect(mediaBlock).toMatch(/\.hero-heading\s*\{[^}]*font-size:\s*40px/);
+
+    expect(res.text).toMatch(/\.hero-image-wrapper\s*\{[^}]*max-width:\s*100%/);
   });
 });
 
