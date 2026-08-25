@@ -9,6 +9,7 @@ const { validate } = require('../validation/webRegistrationValidator');
 const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
 const emailService = require('../services/emailService');
+const menuService = require('../services/menuService');
 const { hashPassword, verifyPassword } = require('../utils/password');
 
 const router = express.Router();
@@ -17,8 +18,13 @@ const router = express.Router();
 // comparison's timing identical whether or not the email is registered.
 const DUMMY_HASH = hashPassword('not-a-real-password');
 
-router.get('/', (req, res) => {
-  res.type('html').send(renderHomePage());
+router.get('/', async (req, res) => {
+  try {
+    const featuredPizzas = await menuService.getFeaturedPizzas();
+    res.type('html').send(renderHomePage({ featuredPizzas }));
+  } catch (error) {
+    res.type('html').send(renderHomePage({ featuredError: true }));
+  }
 });
 
 router.post('/register', (req, res) => {

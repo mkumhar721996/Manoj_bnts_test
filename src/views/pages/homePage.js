@@ -1,61 +1,87 @@
-const { renderLayout } = require('../layout');
+const { escapeHtml } = require('../../utils/escapeHtml');
+const { HOME_PAGE_STYLE } = require('./homePageStyle');
 
-function renderHomePage() {
-  const body = `
+function renderSiteHeader() {
+  return `
 <header class="site-header">
-  <span class="brand-wordmark">Facebook</span>
-  <div class="header-actions">
-    <a class="btn btn-ghost" href="#login-email">Log In</a>
-    <a class="btn btn-brand" href="#reg-name">Create Account</a>
+  <div class="brand-logo">
+    <span class="brand-logo__mark">F</span>
+    <span class="brand-logo__word">Forno Rosso</span>
   </div>
-</header>
-
-<div class="hero">
-  <div class="hero-copy">
-    <span class="brand-wordmark">facebook</span>
-    <p>Connect with friends and the world around you on Facebook. Share updates, photos, and moments with the people who matter most.</p>
+  <nav class="nav-bar">
+    <a class="nav-link is-active" href="/">Home</a>
+    <a class="nav-link" href="#">Our Menu</a>
+    <a class="nav-link" href="#">Cart</a>
+  </nav>
+  <div class="header-cart-status">
+    <span class="header-cart-status__eta">Estimated delivery: <strong>30 mins</strong></span>
+    <button class="cart-button" type="button" aria-label="View cart">
+      &#128722; <span id="cartCount">0</span>
+    </button>
   </div>
+</header>`;
+}
 
-  <div>
-    <div class="card">
-      <h2>Log Into Your Account</h2>
-      <form action="/login" method="post" novalidate>
-        <div class="field">
-          <label for="login-email">Email address</label>
-          <input type="text" id="login-email" name="email" placeholder="jordan@example.com" autocomplete="username">
-        </div>
-        <div class="field">
-          <label for="login-password">Password</label>
-          <input type="password" id="login-password" name="password" placeholder="Enter your password" autocomplete="current-password">
-        </div>
-        <button class="btn btn-brand btn-block" type="submit">Log In</button>
-        <p class="helper-text"><a href="#">Forgotten password?</a></p>
-      </form>
+function renderPizzaCard(pizza) {
+  return `
+<article class="pizza-card">
+  <img class="pizza-card__image" src="${escapeHtml(pizza.image)}" alt="${escapeHtml(pizza.name)}">
+  <div class="pizza-card__body">
+    <div class="pizza-card__row">
+      <span class="pizza-card__name">${escapeHtml(pizza.name)}</span>
+      <span class="pizza-card__price">${escapeHtml(pizza.price)}</span>
     </div>
-
-    <div class="card">
-      <h2>Create a New Account</h2>
-      <form action="/register" method="post" novalidate>
-        <div class="field">
-          <label for="reg-name">Full name</label>
-          <input type="text" id="reg-name" name="name" placeholder="e.g. Priya Shah">
-        </div>
-        <div class="field">
-          <label for="reg-email">Email address</label>
-          <input type="text" id="reg-email" name="email" placeholder="e.g. priya@example.com">
-        </div>
-        <div class="field">
-          <label for="reg-password">New password</label>
-          <input type="password" id="reg-password" name="password" placeholder="At least 8 characters">
-        </div>
-        <button class="btn btn-success btn-block" type="submit">Sign Up</button>
-      </form>
-    </div>
+    <p class="pizza-card__description">${escapeHtml(pizza.description)}</p>
+    <button class="add-to-order-btn" type="button" data-pizza-name="${escapeHtml(pizza.name)}">
+      + Add to Order
+    </button>
   </div>
-</div>
+</article>`;
+}
+
+function renderPopularPizzasSection(featuredPizzas, featuredError) {
+  let content;
+  if (featuredError) {
+    content =
+      '<p class="menu-state-message is-error">We couldn\'t load our featured pizzas. Please try again later.</p>';
+  } else if (featuredPizzas.length === 0) {
+    content =
+      '<p class="menu-state-message">No featured pizzas are available right now — check back soon!</p>';
+  } else {
+    content = `<div class="pizza-card-grid">${featuredPizzas.map(renderPizzaCard).join('')}</div>`;
+  }
+
+  return `
+<section class="popular-pizzas-section">
+  <div class="section-heading">
+    <span class="section-heading__eyebrow">Chef Recommendations</span>
+    <h2 class="section-heading__title">Popular Sourdough Pizzas</h2>
+    <div class="section-heading__accent"></div>
+  </div>
+  ${content}
+</section>`;
+}
+
+function renderHomePage({ featuredPizzas = [], featuredError = false } = {}) {
+  const body = `
+${renderSiteHeader()}
+${renderPopularPizzasSection(featuredPizzas, featuredError)}
+<div id="toastContainer" aria-live="polite"></div>
+<script src="/js/pizzaMenu.js" defer></script>`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forno Rosso</title>
+<style>${HOME_PAGE_STYLE}</style>
+</head>
+<body>
+${body}
+</body>
+</html>
 `;
-
-  return renderLayout('Facebook', body);
 }
 
 module.exports = { renderHomePage };
