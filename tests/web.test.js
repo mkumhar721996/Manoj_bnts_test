@@ -165,6 +165,129 @@ describe('AC5: valid login credentials authenticate and redirect to the feed', (
   });
 });
 
+describe('MT-STORY-041 AC1: brand story section renders on the home page', () => {
+  it('renders the "Our Passion for the Perfect Crust" heading', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('class="story-heading__title">Our Passion for the Perfect Crust<');
+  });
+});
+
+describe('MT-STORY-041 AC2: brand story body copy references key sourcing/craft facts', () => {
+  it('mentions San Marzano tomatoes, fresh mozzarella, and the 900°F wood oven', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain('San Marzano Tomatoes');
+    expect(res.text).toContain('Fresh Mozzarella');
+    expect(res.text).toContain('900°F Stone Hearth Wood Oven');
+  });
+});
+
+describe('MT-STORY-041 AC3: brand story supporting photos are visible', () => {
+  it('renders an img tag for each configured story image', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toContain(
+      'class="story-images__photo" src="/images/story/dough-prep.jpg"'
+    );
+    expect(res.text).toContain(
+      'class="story-images__photo" src="/images/story/wood-oven.jpg"'
+    );
+  });
+
+  it('serves the story photos as real static image files', async () => {
+    const doughRes = await request(app).get('/images/story/dough-prep.jpg');
+    const ovenRes = await request(app).get('/images/story/wood-oven.jpg');
+
+    expect(doughRes.status).toBe(200);
+    expect(doughRes.headers['content-type']).toMatch(/image\//);
+    expect(ovenRes.status).toBe(200);
+    expect(ovenRes.headers['content-type']).toMatch(/image\//);
+  });
+});
+
+describe('MT-STORY-041 AC4: brand story is legible on mobile without horizontal scrolling', () => {
+  it('collapses the two-column grid to one column and makes photos fluid-width under 860px', async () => {
+    const res = await request(app).get('/');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toMatch(
+      /@media \(max-width: 860px\)[^}]*\{[^}]*\.brand-story__grid\s*\{[^}]*grid-template-columns:\s*1fr/s
+    );
+    expect(res.text).toMatch(
+      /\.story-images__photo\s*\{[^}]*max-width:\s*100%/s
+    );
+  });
+
+  it('does not let two fixed/full-width photos both claim a full flex row (no combined overflow)', async () => {
+    const res = await request(app).get('/');
+    const styleBlock = res.text.slice(res.text.indexOf('<style>'), res.text.indexOf('</style>'));
+
+    const baseRuleMatch = styleBlock.match(/\.story-images__photo\s*\{([^}]*)\}/s);
+    expect(baseRuleMatch).not.toBeNull();
+    expect(baseRuleMatch[1]).not.toMatch(/flex:\s*1\s*;/);
+
+    const mediaBlocks = styleBlock.match(/@media \(max-width: 860px\)\s*\{[\s\S]*?\n\}/g) || [];
+    const storyMediaBlock = mediaBlocks.find((block) => block.includes('.story-images'));
+    expect(storyMediaBlock).toBeTruthy();
+    expect(storyMediaBlock).toMatch(/\.story-images\s*\{[^}]*flex-direction:\s*column/s);
+  });
+
+  it('only loads the brand-story Google Fonts on the home page, not on unrelated pages', async () => {
+    const homeRes = await request(app).get('/');
+    expect(homeRes.text).toContain('fonts.googleapis.com');
+
+    const badLoginRes = await request(app)
+      .post('/login')
+      .type('form')
+      .send({ email: 'nobody@example.com', password: generateValidPassword() });
+    expect(badLoginRes.text).not.toContain('fonts.googleapis.com');
+  });
+});
+
+describe('MT-STORY-041 AC5: brand story content is a static module, not CMS/admin-backed', () => {
+  it('exports a plain static object with heading, paragraph, features, and images', () => {
+    const brandStory = require('../src/content/brandStory');
+
+    expect(typeof brandStory.eyebrow).toBe('string');
+    expect(brandStory.heading).toBe('Our Passion for the Perfect Crust');
+    expect(brandStory.paragraph).toContain('At Forno Rosso');
+
+    expect(Array.isArray(brandStory.features)).toBe(true);
+    expect(brandStory.features).toHaveLength(3);
+    brandStory.features.forEach((feature) => {
+      expect(typeof feature.icon).toBe('string');
+      expect(typeof feature.title).toBe('string');
+      expect(typeof feature.description).toBe('string');
+    });
+
+    expect(Array.isArray(brandStory.images)).toBe(true);
+    expect(brandStory.images).toHaveLength(2);
+    brandStory.images.forEach((image) => {
+      expect(typeof image.src).toBe('string');
+      expect(typeof image.alt).toBe('string');
+    });
+  });
+
+  it('renders identical brand story content across requests with no seeded or admin state', async () => {
+    userStore.reset();
+
+    const first = await request(app).get('/');
+    const second = await request(app).get('/');
+
+    const extractStory = (text) => text.slice(text.indexOf('class="brand-story"'));
+
+    expect(first.status).toBe(200);
+    expect(second.status).toBe(200);
+    expect(extractStory(first.text)).toBe(extractStory(second.text));
+    expect(first.text).toContain('Our Passion for the Perfect Crust');
+    expect(first.text).toContain('At Forno Rosso');
+  });
+});
+
 describe('AC6: invalid login credentials show an error and deny access', () => {
   it('denies access with a wrong password for an existing user', async () => {
     const pwd = generateValidPassword();

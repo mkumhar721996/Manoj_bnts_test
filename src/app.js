@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const registrationRouter = require('./routes/registration');
 const accountRouter = require('./routes/account');
@@ -8,6 +9,7 @@ const webRouter = require('./routes/web');
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use('/images', express.static(path.join(__dirname, '..', 'public', 'images')));
 app.use('/api', registrationRouter);
 app.use('/api', accountRouter);
 app.use('/api', verificationRouter);
