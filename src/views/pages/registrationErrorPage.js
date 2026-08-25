@@ -6,13 +6,6 @@ function renderRegistrationErrorPage(errors, name, email) {
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);
   const body = `
-<header class="site-header">
-  <span class="brand-wordmark">Facebook</span>
-  <div class="header-actions">
-    <a class="btn btn-ghost" href="/">Log In</a>
-    <a class="btn btn-brand" href="/">Create Account</a>
-  </div>
-</header>
 <div class="status-screen">
   <div class="card">
     <div class="alert alert-danger" role="alert">

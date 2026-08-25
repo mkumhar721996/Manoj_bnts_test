@@ -217,6 +217,57 @@ describe('MT-STORY-025 AC1/AC4: global header with nav links, ETA, and cart badg
   });
 });
 
+describe('MT-STORY-025 AC1: the global header is the only header rendered per page', () => {
+  const countHeaders = (html) => (html.match(/<header[ >]/g) || []).length;
+
+  it('renders exactly one header on the homepage', async () => {
+    const res = await request(app).get('/');
+    expect(countHeaders(res.text)).toBe(1);
+  });
+
+  it('renders exactly one header on the feed page after login', async () => {
+    const pwd = generateValidPassword();
+    await request(app)
+      .post('/register')
+      .type('form')
+      .send({ name: 'Nav Header', email: 'navheader@example.com', password: pwd });
+    const res = await request(app)
+      .post('/login')
+      .type('form')
+      .send({ email: 'navheader@example.com', password: pwd });
+
+    expect(countHeaders(res.text)).toBe(1);
+  });
+
+  it('renders exactly one header on the registration success page', async () => {
+    const pwd = generateValidPassword();
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({ name: 'Success Header', email: 'successheader@example.com', password: pwd });
+
+    expect(countHeaders(res.text)).toBe(1);
+  });
+
+  it('renders exactly one header on the registration error page', async () => {
+    const res = await request(app)
+      .post('/register')
+      .type('form')
+      .send({ email: '', password: '' });
+
+    expect(countHeaders(res.text)).toBe(1);
+  });
+
+  it('renders exactly one header on the login error page', async () => {
+    const res = await request(app)
+      .post('/login')
+      .type('form')
+      .send({ email: 'nobody-header@example.com', password: 'whatever' });
+
+    expect(countHeaders(res.text)).toBe(1);
+  });
+});
+
 describe('MT-STORY-025 AC2: global footer with store info', () => {
   it('renders store hours, location, contact, social links, and legal links', async () => {
     const res = await request(app).get('/');

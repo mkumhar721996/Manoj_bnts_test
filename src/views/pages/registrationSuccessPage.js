@@ -5,12 +5,6 @@ function renderRegistrationSuccessPage(name, email) {
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);
   const body = `
-<header class="site-header">
-  <span class="brand-wordmark">Facebook</span>
-  <div class="header-actions">
-    <a class="btn btn-ghost" href="/">Log In</a>
-  </div>
-</header>
 <div class="status-screen">
   <div class="status-icon success">&#10003;</div>
   <div class="card">

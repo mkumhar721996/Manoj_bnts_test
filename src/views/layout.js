@@ -75,26 +75,11 @@ button { font-family: var(--font-sans); cursor: pointer; }
 a { color: var(--brand); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-.site-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: var(--space-3) var(--space-5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .brand-wordmark {
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
   color: var(--brand);
   letter-spacing: -0.5px;
-}
-
-.header-actions {
-  display: flex;
-  gap: var(--space-3);
-  align-items: center;
 }
 
 .btn {

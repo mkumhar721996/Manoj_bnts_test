@@ -7,14 +7,6 @@ function renderFeedPage(user) {
   const safeFirstName = escapeHtml(firstName);
   const safeInitial = escapeHtml(initial);
   const body = `
-<header class="site-header">
-  <span class="brand-wordmark">Facebook</span>
-  <div class="header-actions">
-    <div class="avatar" id="feedAvatarInitial">${safeInitial}</div>
-    <a class="btn btn-ghost" href="/">Log Out</a>
-  </div>
-</header>
-
 <div class="app-shell">
   <nav class="side-nav">
     <div class="side-nav__item is-current">Feed</div>
@@ -26,6 +18,7 @@ function renderFeedPage(user) {
 
   <main>
     <div class="welcome-banner">
+      <div class="avatar" id="feedAvatarInitial">${safeInitial}</div>
       <h1 id="feedWelcomeName">Welcome back, ${safeFirstName}!</h1>
       <p>You're logged in. Here's what's new in your feed.</p>
     </div>
