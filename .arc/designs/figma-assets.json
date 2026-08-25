@@ -1,0 +1,69 @@
+{
+  "count": 3,
+  "note": "Source bitmaps exported from the Figma file's image fills \u2014 the ORIGINAL uploads, at full resolution and uncropped, not renders. Each entry names the node that paints it and the box it is painted into. Use these files; do not generate substitute artwork.",
+  "assets": [
+    {
+      "node_id": "13:271",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "13:263",
+        "name": "cart-body"
+      },
+      "ancestors": [
+        "cart-left",
+        "Frame",
+        "Frame",
+        "Frame"
+      ],
+      "painted_box": {
+        "width": 80.0,
+        "height": 80.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-13-271-cart-left.png"
+    },
+    {
+      "node_id": "13:288",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "13:263",
+        "name": "cart-body"
+      },
+      "ancestors": [
+        "cart-left",
+        "Frame",
+        "Frame",
+        "Frame"
+      ],
+      "painted_box": {
+        "width": 80.0,
+        "height": 80.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-13-288-cart-left.png"
+    },
+    {
+      "node_id": "13:305",
+      "layer_name": "Rectangle",
+      "section": {
+        "node_id": "13:263",
+        "name": "cart-body"
+      },
+      "ancestors": [
+        "cart-left",
+        "Frame",
+        "Frame",
+        "Frame"
+      ],
+      "painted_box": {
+        "width": 80.0,
+        "height": 80.0
+      },
+      "scale_mode": "FILL",
+      "css_object_fit": "cover",
+      "file": "./.arc/designs/figma-asset-13-305-cart-left.png"
+    }
+  ]
+}
