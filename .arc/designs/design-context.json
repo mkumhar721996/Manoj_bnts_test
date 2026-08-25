@@ -1,0 +1,342 @@
+{
+  "frame": {
+    "file_key": "Kzae8FDEX2i6bB6tcai7JX",
+    "node_id": "13:243",
+    "name": "cart-page",
+    "node_type": "FRAME"
+  },
+  "artboards": [
+    {
+      "id": "13:243",
+      "name": "cart-page",
+      "figma_type": "FRAME",
+      "kind": "screen",
+      "bounds": { "x": 0, "y": 0, "width": 1440, "height": 1521 },
+      "role": "Cart / checkout review screen for the Forno Rosso pizzeria site. Shows selected order items, delivery destination form, order cost summary, promo code application, and checkout CTA. This is the single artboard in the linked node (the node is a FRAME, not a CANVAS with siblings), so the header, cart-body and footer below are sections of this ONE screen, not separate artboards."
+    }
+  ],
+  "resolved_decisions": [],
+  "tokens": {
+    "color": {
+      "--bg": "#FCFAF6",
+      "--surface": "#FFFFFF",
+      "--surface-muted": "#FCFAF6",
+      "--ink": "#151212",
+      "--ink-inverse": "#FFFFFF",
+      "--muted": "#6B6661",
+      "--border": "#EBE7DF",
+      "--border-subtle": "#F3EFE9",
+      "--brand": "#C82D25",
+      "--success": "#2A7043",
+      "--footer-divider": "rgba(255,255,255,0.12)"
+    },
+    "typography": {
+      "--font-display": "Fraunces, serif",
+      "--font-body": "Geist, sans-serif",
+      "notes": "Fraunces (serif, weight 600/700) is used for headings (section titles, brand wordmark, totals label, footer column titles). Geist (sans, weight 400-700) is used for body copy, labels, buttons and nav.",
+      "scale": [
+        { "role": "eyebrow-label", "family": "Geist", "size": 12, "weight": 600, "case": "UPPER", "line_height": 15.6 },
+        { "role": "small-label", "family": "Geist", "size": 13, "weight": 600, "line_height": 16.9 },
+        { "role": "body", "family": "Geist", "size": 14, "weight": 400, "line_height": 19.6 },
+        { "role": "body-strong", "family": "Geist", "size": 14, "weight": 600, "line_height": 18.2 },
+        { "role": "nav-link", "family": "Geist", "size": 15, "weight": 500, "line_height": 19.5 },
+        { "role": "nav-link-active", "family": "Geist", "size": 15, "weight": 600, "line_height": 19.5 },
+        { "role": "card-heading", "family": "Fraunces", "size": 20, "weight": 600, "line_height": 24.66 },
+        { "role": "button-label", "family": "Geist", "size": 16, "weight": 600, "line_height": 20.8 },
+        { "role": "price-total", "family": "Geist", "size": 22, "weight": 700, "line_height": 28.6 },
+        { "role": "footer-col-title", "family": "Fraunces", "size": 16, "weight": 600, "case": "UPPER", "line_height": 19.73 }
+      ]
+    },
+    "spacing": [2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 32, 40, 48, 64, 80],
+    "radii": {
+      "--radius-sm": "6px",
+      "--radius-md": "8px",
+      "--radius-lg": "12px",
+      "--radius-xl": "16px",
+      "--radius-pill-badge": "18px",
+      "--radius-round": "20px/24px (circular badges/buttons, radius = half of side)"
+    },
+    "stroke_weights": [1, 2]
+  },
+  "component_map": [
+    {
+      "figma_node": "13:244",
+      "artboard_id": "13:243",
+      "code_component": "SiteHeader",
+      "status": "proposed_new",
+      "props": { "background": "var(--ink)" },
+      "notes": "Full-width dark header bar (#151212), 88px tall, contains logo, primary nav and the header cart indicator."
+    },
+    {
+      "figma_node": "13:246",
+      "artboard_id": "13:243",
+      "code_component": "BrandLogo",
+      "status": "proposed_new",
+      "props": { "mark": "F", "background": "var(--brand)", "shape": "circle", "size": 40 },
+      "notes": "Circular brand mark (red disc with serif 'F') paired with 'Forno Rosso' wordmark (13:248). Reused identically in the footer (13:379/13:380/13:381) — see notes there."
+    },
+    {
+      "figma_node": "13:249",
+      "artboard_id": "13:243",
+      "code_component": "PrimaryNav",
+      "status": "proposed_new",
+      "props": { "items": ["Home", "Our Menu", "Cart"], "active": "Cart" },
+      "notes": "Horizontal nav; active item ('Cart') is rendered in brand red with a 2px red underline rule (13:256). Home/Our Menu have no visible hover/focus state drawn — see open question nav-hover-state."
+    },
+    {
+      "figma_node": "13:257",
+      "artboard_id": "13:243",
+      "code_component": "HeaderCartIndicator",
+      "status": "proposed_new",
+      "props": { "eta_label": "Estimated delivery: 30 mins", "item_count": 3 },
+      "notes": "Composite of an ETA text (13:258, 'mins' portion in --success green) and a circular cart-icon button (13:259, white @ ~12% opacity fill giving a translucent charcoal chip) with a numeric badge (13:262). Reuses a ShoppingCartIcon glyph."
+    },
+    {
+      "figma_node": "13:265",
+      "artboard_id": "13:243",
+      "code_component": "Card",
+      "status": "proposed_new",
+      "props": { "background": "var(--surface)", "border": "var(--border)", "radius": "var(--radius-xl)" },
+      "notes": "Generic white card shell (radius 16, 1px #EBE7DF border) reused for the order card (13:265), delivery-destination card (13:321) and order-summary card (13:344)."
+    },
+    {
+      "figma_node": "13:266",
+      "artboard_id": "13:243",
+      "code_component": "CardHeader",
+      "status": "proposed_new",
+      "props": { "title": "Your Selected Order", "meta": "3 Items" },
+      "notes": "Card title (Fraunces 20/600) + right-aligned meta text. Same pattern reused for 'Order Summary' (13:345, no meta) — reuses the CardHeader proposed here."
+    },
+    {
+      "figma_node": "13:270",
+      "artboard_id": "13:243",
+      "code_component": "CartItemRow",
+      "status": "proposed_new",
+      "props": {
+        "thumbnail": "figma-asset-13-271-cart-left.png",
+        "name": "Classic Margherita",
+        "variant": "Neapolitan Woodfired",
+        "quantity": 2,
+        "price": "$29.00"
+      },
+      "notes": "Repeats 3x (13:270, 13:287, 13:304) — same component, different data. Contains ProductThumbnail, item name/variant text block, QuantityStepper, price, and a RemoveLineItemButton. A hairline divider under strokeAlign of the row's parent Frame (13:269) separates rows."
+    },
+    {
+      "figma_node": "13:271",
+      "artboard_id": "13:243",
+      "code_component": "ProductThumbnail",
+      "status": "proposed_new",
+      "props": { "size": 80, "radius": 12, "fit": "cover" },
+      "notes": "Image-fill node. Asset: ./.arc/designs/figma-asset-13-271-cart-left.png (Classic Margherita photo). css_object_fit: cover."
+    },
+    {
+      "figma_node": "13:288",
+      "artboard_id": "13:243",
+      "code_component": "ProductThumbnail",
+      "status": "proposed_new",
+      "props": { "size": 80, "radius": 12, "fit": "cover" },
+      "notes": "Reuses the ProductThumbnail proposed for 13:271. Asset: ./.arc/designs/figma-asset-13-288-cart-left.png (Diavola photo). css_object_fit: cover."
+    },
+    {
+      "figma_node": "13:305",
+      "artboard_id": "13:243",
+      "code_component": "ProductThumbnail",
+      "status": "proposed_new",
+      "props": { "size": 80, "radius": 12, "fit": "cover" },
+      "notes": "Reuses the ProductThumbnail proposed for 13:271. Asset: ./.arc/designs/figma-asset-13-305-cart-left.png (Rosemary Garlic Focaccia photo). css_object_fit: cover."
+    },
+    {
+      "figma_node": "13:275",
+      "artboard_id": "13:243",
+      "code_component": "QuantityStepper",
+      "status": "proposed_new",
+      "props": { "value": 2, "min": "unspecified" },
+      "notes": "Minus/count/plus in a light pill (#FCFAF6 bg, radius 8); minus/plus are individual white radius-6 hit targets. Repeats for each cart item (13:275, 13:292, 13:309) with different values (2, 1, 1). Behaviour at quantity 1 (does '-' remove the row?) is not drawn — see open question stepper-min-quantity."
+    },
+    {
+      "figma_node": "13:283",
+      "artboard_id": "13:243",
+      "code_component": "RemoveLineItemButton",
+      "status": "proposed_new",
+      "props": { "label": "Remove", "color": "var(--brand)" },
+      "notes": "Trash-can icon + 'Remove' text, both in brand red. Repeats per row (13:283, 13:300, 13:317)."
+    },
+    {
+      "figma_node": "13:321",
+      "artboard_id": "13:243",
+      "code_component": "Card",
+      "status": "proposed_new",
+      "notes": "Reuses the Card proposed for 13:265. Houses the delivery destination form."
+    },
+    {
+      "figma_node": "13:323",
+      "artboard_id": "13:243",
+      "code_component": "SectionHeadingWithIcon",
+      "status": "proposed_new",
+      "props": { "icon": "map-pin", "title": "Delivery Destination" },
+      "notes": "Map-pin glyph (13:324) + Fraunces 20/600 heading, paired on the same row with a right-aligned DeliveryEtaBadge (13:327, 'Est. Delivery: 25-35 mins' in --success green). Note this ETA range differs from the header's single '30 mins' figure — see open question two-delivery-estimates."
+    },
+    {
+      "figma_node": "13:331",
+      "artboard_id": "13:243",
+      "code_component": "TextField",
+      "status": "proposed_new",
+      "props": { "label": "Street Address", "value": "128 Pizzaiolo Boulevard" },
+      "notes": "Label (Geist 13/600) above an input styled as a #FCFAF6-filled, #EBE7DF-bordered radius-8 box. Repeats for 'Apt / Suite' (13:335)."
+    },
+    {
+      "figma_node": "13:335",
+      "artboard_id": "13:243",
+      "code_component": "TextField",
+      "status": "proposed_new",
+      "props": { "label": "Apt / Suite", "value": "Penthouse 4B" },
+      "notes": "Reuses the TextField proposed for 13:331."
+    },
+    {
+      "figma_node": "13:339",
+      "artboard_id": "13:243",
+      "code_component": "TextAreaField",
+      "status": "proposed_new",
+      "props": { "label": "Special Delivery Instructions", "value": "Ring doorbell or leave at front lobby desk. Please keep thermal bag zipped until handover!" },
+      "notes": "Same field chrome as TextField but multi-line (46px tall single line shown, would need to grow for more text — no multi-line example is drawn)."
+    },
+    {
+      "figma_node": "13:344",
+      "artboard_id": "13:243",
+      "code_component": "Card",
+      "status": "proposed_new",
+      "notes": "Reuses the Card proposed for 13:265. Houses the order summary, promo code field and checkout CTA."
+    },
+    {
+      "figma_node": "13:347",
+      "artboard_id": "13:243",
+      "code_component": "SummaryLineItem",
+      "status": "proposed_new",
+      "props": { "label": "Subtotal", "value": "$54.00" },
+      "notes": "Label/value row, Geist 14. Repeats for Delivery Fee ($ or 'FREE' in --success green, 13:350), Oven Surcharge (Eco-box) (13:353), Sales Tax (8.5%) (13:356)."
+    },
+    {
+      "figma_node": "13:359",
+      "artboard_id": "13:243",
+      "code_component": "SummaryTotalRow",
+      "status": "proposed_new",
+      "props": { "label": "Total", "value": "$60.22" },
+      "notes": "Distinct row: Fraunces 16/600 label, price in brand red at Geist 22/700 — visually separated from the line items above it."
+    },
+    {
+      "figma_node": "13:362",
+      "artboard_id": "13:243",
+      "code_component": "PromoCodeField",
+      "status": "proposed_new",
+      "props": {
+        "label": "PROMO CODE",
+        "value": "FORNOROSSO10",
+        "state": "applied",
+        "input_border": "var(--success)",
+        "input_text_color": "var(--success)",
+        "trailing_icon": "check-circle",
+        "action_button_label": "Applied",
+        "action_button_background": "var(--success)"
+      },
+      "notes": "THE CORE COMPONENT FOR THIS STORY (MT-STORY-029 promo-code-application). The frame only draws the SUCCESS/applied state: green-outlined input with the code, a green check-circle icon, and a solid-green 'Applied' pill button beside it. No default (empty, pre-submit), invalid-code, or loading state is drawn — see BLOCKING open question promo-code-states before building the interactive component."
+    },
+    {
+      "figma_node": "13:371",
+      "artboard_id": "13:243",
+      "code_component": "Button",
+      "status": "proposed_new",
+      "props": { "label": "Proceed to Checkout", "variant": "primary", "icon": "credit-card", "iconPosition": "trailing", "background": "var(--brand)", "radius": 12 },
+      "notes": "Full-width primary CTA button, brand-red fill, white Geist 16/600 label, trailing credit-card glyph."
+    },
+    {
+      "figma_node": "13:375",
+      "artboard_id": "13:243",
+      "code_component": "SiteFooter",
+      "status": "proposed_new",
+      "props": { "background": "var(--ink)" },
+      "notes": "Full-width dark footer (#151212), 476px tall: brand column + two info columns, a divider line, then a bottom bar."
+    },
+    {
+      "figma_node": "13:377",
+      "artboard_id": "13:243",
+      "code_component": "FooterBrandColumn",
+      "status": "proposed_new",
+      "props": { "description": "Artisanal wood-fired sourdough pizzas crafted with 48-hour fermented dough and imported San Marzano ingredients. Delivered fresh and piping hot." },
+      "notes": "Reuses the BrandLogo proposed for 13:246 (13:379/13:380/13:381 are the same mark+wordmark pattern, smaller scale) plus a description paragraph and a SocialIconRow."
+    },
+    {
+      "figma_node": "13:383",
+      "artboard_id": "13:243",
+      "code_component": "SocialIconRow",
+      "status": "proposed_new",
+      "props": { "icons": ["instagram", "facebook", "twitter"] },
+      "notes": "Three circular icon buttons (36px, translucent white chips). No href targets are present in the Figma data — link destinations need product input."
+    },
+    {
+      "figma_node": "13:393",
+      "artboard_id": "13:243",
+      "code_component": "FooterColumn",
+      "status": "proposed_new",
+      "props": { "title": "KITCHEN HOURS", "rows": [["Monday - Thursday", "12:00 PM - 10:00 PM"], ["Friday - Saturday", "12:00 PM - 11:30 PM"], ["Sunday", "1:00 PM - 9:30 PM"]] },
+      "notes": "Fraunces uppercase column title + stacked day/time rows. Reused for 'PIZZERIA LOCATION' (13:405) with an address + phone/email instead of day/time rows — same component, different row content shape."
+    },
+    {
+      "figma_node": "13:405",
+      "artboard_id": "13:243",
+      "code_component": "FooterColumn",
+      "status": "proposed_new",
+      "notes": "Reuses the FooterColumn proposed for 13:393, with address/contact rows instead of hours rows."
+    },
+    {
+      "figma_node": "13:413",
+      "artboard_id": "13:243",
+      "code_component": "FooterBottomBar",
+      "status": "proposed_new",
+      "props": { "copyright": "© 2026 Forno Rosso Pizzeria. All rights reserved.", "links": ["Privacy Policy", "Delivery Terms"] },
+      "notes": "Sits below a 1px divider (13:412, white @ 12% opacity) that spans the footer width."
+    }
+  ],
+  "excluded": [],
+  "open_questions": [
+    {
+      "id": "promo-code-states",
+      "topic": "Promo code field: only the 'applied' success state is designed",
+      "detail": "This story is specifically about promo code application, but the Figma frame only shows ONE state of the PromoCodeField (13:362-13:370): a code already typed in, validated, with a green border/check icon and a solid-green 'Applied' pill button. There is no drawn default/empty state (with an 'Apply' call-to-action button), no invalid/rejected-code state (e.g. red border + error message), and no loading/submitting state.",
+      "arc_assumption": "Built the default (empty input, neutral border, grey/outline 'Apply' button) and error (red border #C82D25, inline error text, button reverts to 'Apply') states by extension of the existing token palette (--border for default, --brand for error, --success for the drawn applied state), keeping the applied state pixel-faithful to the frame.",
+      "blocking": true,
+      "options": [
+        { "id": "extend-tokens", "label": "Derive default/error states from existing tokens — neutral #EBE7DF border for empty, brand red #C82D25 for error (assumed)" },
+        { "id": "request-states", "label": "Request the designer add explicit empty/error/loading frames for this component before building it" }
+      ],
+      "assumed_option": "extend-tokens"
+    },
+    {
+      "id": "two-delivery-estimates",
+      "topic": "Two different delivery-time estimates shown on the same screen",
+      "detail": "The header shows 'Estimated delivery: 30 mins' (13:258) while the Delivery Destination card shows 'Est. Delivery: 25-35 mins' (13:328). These could be two different metrics (a global site-wide estimate vs. a destination-specific range) or a design inconsistency.",
+      "arc_assumption": "Treated them as two distinct, intentional data points — a general site ETA in the header vs. a range specific to the entered delivery address — and wired them to separate props rather than reconciling them to one value.",
+      "blocking": false
+    },
+    {
+      "id": "nav-hover-state",
+      "topic": "No hover/focus state drawn for inactive nav links",
+      "detail": "'Home' and 'Our Menu' (13:251, 13:253) are only shown in their resting white-text state; only 'Cart' shows the active red-underline treatment. Hover/focus/visited treatments for the inactive links aren't specified.",
+      "arc_assumption": "Assumed a simple color shift to --brand on hover for inactive nav links, matching the active-state color, with no separate focus-ring token defined.",
+      "blocking": false
+    },
+    {
+      "id": "stepper-min-quantity",
+      "topic": "Quantity stepper behaviour at minimum quantity",
+      "detail": "Each cart line shows a '-' / count / '+' stepper (e.g. 13:275) but no state shows what '-' does at quantity 1 — decrement to 0 and auto-remove, disable the button, or clamp at 1.",
+      "arc_assumption": "Assumed '-' at quantity 1 removes the line item (equivalent to pressing 'Remove'), since no disabled-button state is drawn.",
+      "blocking": false
+    },
+    {
+      "id": "social-link-destinations",
+      "topic": "Footer social icons have no link targets in the Figma data",
+      "detail": "Instagram/Facebook/Twitter icon buttons (13:384-13:391) are visual-only nodes; no URLs are attached in the design file.",
+      "arc_assumption": "Left href values as placeholders ('#') pending real social profile URLs from the product/marketing team.",
+      "blocking": false
+    }
+  ]
+}
