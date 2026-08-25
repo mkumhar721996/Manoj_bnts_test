@@ -243,7 +243,7 @@ describe('MT-STORY-041 AC4: brand story is legible on mobile without horizontal 
     const badLoginRes = await request(app)
       .post('/login')
       .type('form')
-      .send({ email: 'nobody@example.com', password: 'irrelevant123' });
+      .send({ email: 'nobody@example.com', password: generateValidPassword() });
     expect(badLoginRes.text).not.toContain('fonts.googleapis.com');
   });
 });
