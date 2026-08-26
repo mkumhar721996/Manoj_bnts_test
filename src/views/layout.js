@@ -154,7 +154,8 @@ a:hover { text-decoration: underline; }
   margin-bottom: var(--space-1);
   color: var(--muted);
 }
-.field input {
+.field input,
+.field textarea {
   width: 100%;
   padding: var(--space-2) var(--space-3);
   font-size: var(--font-size-base);
@@ -164,7 +165,12 @@ a:hover { text-decoration: underline; }
   color: var(--fg);
   background: var(--surface);
 }
-.field input:focus {
+.field textarea {
+  resize: vertical;
+  min-height: 44px;
+}
+.field input:focus,
+.field textarea:focus {
   outline: 2px solid var(--focus-ring);
   outline-offset: 1px;
   border-color: var(--brand);
