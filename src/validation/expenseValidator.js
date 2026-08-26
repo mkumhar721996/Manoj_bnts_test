@@ -26,7 +26,7 @@ function validate(payload) {
     errors.push('Date must be a valid calendar date.');
   }
 
-  return { errors, amount, category, date, note };
+  return { errors, amount: errors.length > 0 ? rawAmount : amount, category, date, note };
 }
 
 module.exports = { validate };

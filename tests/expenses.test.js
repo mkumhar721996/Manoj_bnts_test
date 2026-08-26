@@ -61,6 +61,18 @@ describe('AC4: missing required fields blocks save with a validation error', () 
     const listRes = await request(app).get('/expenses');
     expect(listRes.text).toContain('No expenses yet — add your first one');
   });
+
+  it('redisplays the originally typed amount instead of a parsed NaN', async () => {
+    const res = await request(app)
+      .post('/expenses')
+      .type('form')
+      .send({ amount: 'abc', category: 'Food', date: todayDate(), note: '' });
+
+    expect(res.status).toBe(400);
+    expect(res.text).toContain('Amount must be a positive number.');
+    expect(res.text).toMatch(/id="expense-amount"[^>]*value="abc"/);
+    expect(res.text).not.toContain('NaN');
+  });
 });
 
 describe('AC2: valid submission puts the new expense at the top of the list', () => {
