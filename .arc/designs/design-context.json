@@ -1,0 +1,370 @@
+{
+  "frame": {
+    "file_key": "Kzae8FDEX2i6bB6tcai7JX",
+    "node_id": "13:243",
+    "name": "cart-page",
+    "node_type": "FRAME"
+  },
+  "artboards": [
+    {
+      "id": "13:243",
+      "name": "cart-page",
+      "figma_type": "FRAME",
+      "kind": "screen",
+      "bounds": { "x": 0, "y": 0, "width": 1440, "height": 1521 },
+      "role": "Cart / checkout-summary page: dark header with nav and cart badge, a two-column body (selected order items + the Delivery Destination entry form on the left, order totals + promo code + checkout CTA on the right), and a dark site footer. The Delivery Destination card (node 13:321) is the subject of this story."
+    }
+  ],
+  "resolved_decisions": [],
+  "tokens": {
+    "colors": {
+      "raw": ["#151212", "#2A7043", "#6B6661", "#C82D25", "#FCFAF6", "#FFFFFF"],
+      "semantic": {
+        "--fg": "#151212 (ink — headings, body text, header/footer surface)",
+        "--brand": "#C82D25 (brand red — logo badge, active nav, cart-count text, primary CTA)",
+        "--success": "#2A7043 (green — Est. Delivery text, map-pin icon, Applied promo badge, check icon)",
+        "--muted": "#6B6661 (secondary text — item count, variant labels, footer hours)",
+        "--bg": "#FCFAF6 (warm off-white — page background, input fill)",
+        "--surface": "#FFFFFF (card surfaces, stepper buttons)"
+      }
+    },
+    "stroke_colors": {
+      "raw": ["#2A7043", "#C82D25", "#EBE7DF", "#F3EFE9", "#FFFFFF"],
+      "semantic": {
+        "--border": "#EBE7DF (default card / input border)",
+        "border-light": "#F3EFE9 (rarely used, near-identical to --border)",
+        "border-success": "#2A7043 (implied border for a focused/applied promo input)"
+      }
+    },
+    "font_families": {
+      "--font-serif": "Fraunces (headings: brand wordmark, section titles, card titles, prices are NOT this — verify)",
+      "--font-sans": "Geist (body copy, labels, buttons, nav, footer)"
+    },
+    "font_weights": [400, 500, 600, 700],
+    "type_ramp": [
+      { "font_family": "Geist", "font_weight": 400, "font_size": 12, "line_height": 15.6, "text_case": null },
+      { "font_family": "Geist", "font_weight": 500, "font_size": 12, "line_height": 15.6, "text_case": null },
+      { "font_family": "Geist", "font_weight": 600, "font_size": 12, "line_height": 15.6, "text_case": "UPPER", "usage": "footer column eyebrows (KITCHEN HOURS, PIZZERIA LOCATION), PROMO CODE label" },
+      { "font_family": "Geist", "font_weight": 600, "font_size": 13, "line_height": 16.9, "usage": "field labels (Street Address, Apt / Suite, Special Delivery Instructions), Est. Delivery text" },
+      { "font_family": "Geist", "font_weight": 400, "font_size": 14, "line_height": 18.2, "usage": "body / input values" },
+      { "font_family": "Geist", "font_weight": 400, "font_size": 14, "line_height": 19.6 },
+      { "font_family": "Geist", "font_weight": 600, "font_size": 14, "line_height": 18.2, "usage": "Applied badge, summary row values" },
+      { "font_family": "Geist", "font_weight": 500, "font_size": 15, "line_height": 19.5, "usage": "nav links" },
+      { "font_family": "Geist", "font_weight": 600, "font_size": 15, "line_height": 19.5, "usage": "active nav link (Cart)" },
+      { "font_family": "Fraunces", "font_weight": 600, "font_size": 16, "line_height": 19.73, "usage": "item names" },
+      { "font_family": "Geist", "font_weight": 600, "font_size": 16, "line_height": 20.8, "usage": "checkout button, quantity stepper glyphs" },
+      { "font_family": "Fraunces", "font_weight": 600, "font_size": 18, "line_height": 22.19, "usage": "Order Summary title" },
+      { "font_family": "Fraunces", "font_weight": 700, "font_size": 18, "line_height": 22.19 },
+      { "font_family": "Geist", "font_weight": 700, "font_size": 18, "line_height": 23.4 },
+      { "font_family": "Fraunces", "font_weight": 600, "font_size": 20, "line_height": 24.66, "usage": "Delivery Destination title" },
+      { "font_family": "Fraunces", "font_weight": 600, "font_size": 22, "line_height": 27.13 },
+      { "font_family": "Fraunces", "font_weight": 700, "font_size": 22, "line_height": 27.13, "usage": "logo 'F' monogram" },
+      { "font_family": "Geist", "font_weight": 700, "font_size": 22, "line_height": 28.6 },
+      { "font_family": "Fraunces", "font_weight": 600, "font_size": 24, "line_height": 29.59, "usage": "'Your Selected Order' / wordmark" }
+    ],
+    "spacing": [2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 32, 40, 48, 64, 80],
+    "radii": {
+      "raw": [1, 6, 8, 12, 16, 18, 20, 24],
+      "semantic": {
+        "sm": "6px (stepper +/- buttons)",
+        "md": "8px (text inputs, textarea, applied badge)",
+        "lg": "12px (item thumbnails, checkout button)",
+        "xl": "16px (cards: order items, delivery destination, order summary)",
+        "pill": "20-24px (logo badge, header cart icon button)"
+      }
+    },
+    "stroke_weights": [1, 2],
+    "shadows": []
+  },
+  "component_map": [
+    {
+      "figma_node": "13:244",
+      "artboard_id": "13:243",
+      "code_component": "SiteHeader",
+      "status": "proposed_new",
+      "notes": "Dark (--fg) fixed-height top bar, 80px horizontal padding, contains BrandLogo, NavLinks, HeaderCartSummary."
+    },
+    {
+      "figma_node": "13:245",
+      "artboard_id": "13:243",
+      "code_component": "BrandLogo",
+      "status": "proposed_new",
+      "props": { "monogram": "F", "wordmark": "Forno Rosso" },
+      "notes": "40x40 circular red (--brand) badge with italic-bold serif 'F', plus serif wordmark. Node 13:246 is the badge, 13:248 the wordmark."
+    },
+    {
+      "figma_node": "13:249",
+      "artboard_id": "13:243",
+      "code_component": "NavLinks",
+      "status": "proposed_new",
+      "props": { "items": ["Home", "Our Menu", "Cart"], "active": "Cart" },
+      "notes": "Active item (Cart, node 13:254) renders in --brand red with a 2px red underline rectangle (13:256); inactive items are white."
+    },
+    {
+      "figma_node": "13:257",
+      "artboard_id": "13:243",
+      "code_component": "HeaderCartSummary",
+      "status": "proposed_new",
+      "notes": "Groups the ETA text (13:258, 80% opacity white) and CartIconButton (13:259)."
+    },
+    {
+      "figma_node": "13:259",
+      "artboard_id": "13:243",
+      "code_component": "CartIconButton",
+      "status": "proposed_new",
+      "props": { "count": 3 },
+      "notes": "Pill (radius 24) translucent-white (10% opacity) button, cart-outline icon (13:261) + numeric badge text (13:262)."
+    },
+    {
+      "figma_node": "13:263",
+      "artboard_id": "13:243",
+      "code_component": "CartPageLayout",
+      "status": "proposed_new",
+      "notes": "Two-column flex/grid wrapper on --bg background: left column 792px (13:264), right column 440px (13:343), 48px gutter, 80px page padding."
+    },
+    {
+      "figma_node": "13:265",
+      "artboard_id": "13:243",
+      "code_component": "OrderItemsCard",
+      "status": "proposed_new",
+      "props": { "title": "Your Selected Order", "itemCountLabel": "3 Items" },
+      "notes": "White card, radius 16, border --border, 32px padding. Contains the SectionHeading row (13:266) and the CartItemRow list (13:269, 13:287, 13:304)."
+    },
+    {
+      "figma_node": "13:269",
+      "artboard_id": "13:243",
+      "code_component": "CartItemRow",
+      "status": "proposed_new",
+      "props": { "name": "Classic Margherita", "variant": "Neapolitan Woodfired", "price": "$29.00", "quantity": 2, "image": "figma-asset-13-271-cart-left.png" },
+      "notes": "Repeating row: 80x80 rounded image, name/variant, QuantityStepper, price + RemoveItemButton. Image asset per figma-assets.json node 13:271, css_object_fit: cover."
+    },
+    {
+      "figma_node": "13:287",
+      "artboard_id": "13:243",
+      "code_component": "CartItemRow",
+      "status": "proposed_new",
+      "props": { "name": "Diavola", "variant": "Neapolitan Woodfired", "price": "$16.50", "quantity": 1, "image": "figma-asset-13-288-cart-left.png" },
+      "notes": "Reuses CartItemRow proposed for node 13:269. Image asset per figma-assets.json node 13:288, css_object_fit: cover."
+    },
+    {
+      "figma_node": "13:304",
+      "artboard_id": "13:243",
+      "code_component": "CartItemRow",
+      "status": "proposed_new",
+      "props": { "name": "Rosemary Garlic Focaccia", "variant": "Neapolitan Woodfired", "price": "$8.50", "quantity": 1, "image": "figma-asset-13-305-cart-left.png" },
+      "notes": "Reuses CartItemRow proposed for node 13:269. Image asset per figma-assets.json node 13:305, css_object_fit: cover."
+    },
+    {
+      "figma_node": "13:275",
+      "artboard_id": "13:243",
+      "code_component": "QuantityStepper",
+      "status": "proposed_new",
+      "props": { "value": 2, "min": 1 },
+      "notes": "--bg-filled pill (radius 8) with two white radius-6 buttons ('-' 13:276, '+' 13:279) around the numeric value. See open question quantity-stepper-floor-behavior for '-' at value 1. Same component reused inside 13:292 and 13:309."
+    },
+    {
+      "figma_node": "13:283",
+      "artboard_id": "13:243",
+      "code_component": "RemoveItemButton",
+      "status": "proposed_new",
+      "props": { "label": "Remove" },
+      "notes": "Trash icon (13:284/285) + red 'Remove' text (13:286). Reused inside 13:300 and 13:317."
+    },
+    {
+      "figma_node": "13:321",
+      "artboard_id": "13:243",
+      "code_component": "DeliveryDetailsCard",
+      "status": "proposed_new",
+      "notes": "PRIMARY FOCUS of this story. White card, radius 16, border --border, 32px padding, 24px internal gap. Contains DeliveryDetailsCardHeader (13:322) and the address/instructions form (13:329, 13:339)."
+    },
+    {
+      "figma_node": "13:322",
+      "artboard_id": "13:243",
+      "code_component": "DeliveryDetailsCardHeader",
+      "status": "proposed_new",
+      "props": { "title": "Delivery Destination", "eta": "Est. Delivery: 25-35 mins" },
+      "notes": "map-pin icon (13:324/325, --success stroke) + serif title (13:326) on the left, EtaBadge (13:327/328) right-aligned via space-between."
+    },
+    {
+      "figma_node": "13:327",
+      "artboard_id": "13:243",
+      "code_component": "EtaBadge",
+      "status": "proposed_new",
+      "props": { "text": "Est. Delivery: 25-35 mins" },
+      "notes": "Plain --success colored small-semibold text, no background — a simpler sibling of HeaderCartSummary's ETA text. See open question header-vs-card-eta-mismatch."
+    },
+    {
+      "figma_node": "13:330",
+      "artboard_id": "13:243",
+      "code_component": "TextField",
+      "status": "proposed_new",
+      "props": { "label": "Street Address", "value": "128 Pizzaiolo Boulevard", "layout": "fill" },
+      "notes": "Label (13:332, semibold 13px) above a --bg filled, --border bordered, radius-8 input (13:333/334). See open question delivery-form-prefill-vs-placeholder (BLOCKING)."
+    },
+    {
+      "figma_node": "13:335",
+      "artboard_id": "13:243",
+      "code_component": "TextField",
+      "status": "proposed_new",
+      "props": { "label": "Apt / Suite", "value": "Penthouse 4B", "layout": "fixed-200" },
+      "notes": "Reuses TextField proposed for node 13:330, fixed 200px width sitting beside Street Address in a horizontal row (13:329, 16px gap)."
+    },
+    {
+      "figma_node": "13:339",
+      "artboard_id": "13:243",
+      "code_component": "Textarea",
+      "status": "proposed_new",
+      "props": { "label": "Special Delivery Instructions", "value": "Ring doorbell or leave at front lobby desk. Please keep thermal bag zipped until handover!" },
+      "notes": "Same field-shell styling as TextField (--bg fill, --border border, radius 8) but full-width single visible line that should wrap; value text uses --muted color unlike the address fields' --fg."
+    },
+    {
+      "figma_node": "13:343",
+      "artboard_id": "13:243",
+      "code_component": "CartRightColumn",
+      "status": "proposed_new",
+      "notes": "Fixed 440px column stacking OrderSummaryCard, PromoCodeField and the checkout PrimaryButton with 24px gaps."
+    },
+    {
+      "figma_node": "13:344",
+      "artboard_id": "13:243",
+      "code_component": "OrderSummaryCard",
+      "status": "proposed_new",
+      "props": { "title": "Order Summary" },
+      "notes": "White card, radius 16, border --border, 32px padding. Holds 4 SummaryRow entries then a divider + TotalRow."
+    },
+    {
+      "figma_node": "13:347",
+      "artboard_id": "13:243",
+      "code_component": "SummaryRow",
+      "status": "proposed_new",
+      "props": { "label": "Subtotal", "value": "$54.00" },
+      "notes": "Reused for Delivery Fee/FREE (13:350, value in --success), Oven Surcharge (Eco-box)/$1.50 (13:353), Sales Tax (8.5%)/$4.72 (13:356)."
+    },
+    {
+      "figma_node": "13:359",
+      "artboard_id": "13:243",
+      "code_component": "TotalRow",
+      "status": "proposed_new",
+      "props": { "label": "Total", "value": "$60.22" },
+      "notes": "Visually heavier variant of SummaryRow — bold serif/sans label, value rendered in --brand red."
+    },
+    {
+      "figma_node": "13:362",
+      "artboard_id": "13:243",
+      "code_component": "PromoCodeField",
+      "status": "proposed_new",
+      "props": { "label": "Promo Code", "value": "FORNOROSSO10", "state": "applied" },
+      "notes": "Uppercase-style label (13:363) above a row: text input showing the code with a check-circle icon (13:364-368) plus a separate green 'Applied' pill button (13:369/370). Only the success state is drawn — see open question promo-code-alternate-states."
+    },
+    {
+      "figma_node": "13:371",
+      "artboard_id": "13:243",
+      "code_component": "PrimaryButton",
+      "status": "proposed_new",
+      "props": { "label": "Proceed to Checkout", "icon": "credit-card", "variant": "brand" },
+      "notes": "Full-width --brand red button, radius 12, white semibold label + credit-card icon (13:373/374)."
+    },
+    {
+      "figma_node": "13:375",
+      "artboard_id": "13:243",
+      "code_component": "SiteFooter",
+      "status": "proposed_new",
+      "notes": "Dark (--fg) full-bleed footer: FooterBrand + two FooterColumn instances + Divider + FooterBottom."
+    },
+    {
+      "figma_node": "13:377",
+      "artboard_id": "13:243",
+      "code_component": "FooterBrand",
+      "status": "proposed_new",
+      "notes": "Reuses BrandLogo (13:378/379/380/381) + a description paragraph (13:382) + SocialIconRow (13:383)."
+    },
+    {
+      "figma_node": "13:383",
+      "artboard_id": "13:243",
+      "code_component": "SocialIconRow",
+      "status": "proposed_new",
+      "notes": "3x SocialIconButton (circular, translucent-white bg): instagram (13:385), facebook (13:388), twitter (13:391)."
+    },
+    {
+      "figma_node": "13:393",
+      "artboard_id": "13:243",
+      "code_component": "FooterColumn",
+      "status": "proposed_new",
+      "props": { "heading": "Kitchen Hours", "rows": [["Monday - Thursday", "12:00 PM - 10:00 PM"], ["Friday - Saturday", "12:00 PM - 11:30 PM"], ["Sunday", "1:00 PM - 9:30 PM"]] },
+      "notes": "Uppercase eyebrow heading (13:394) + label/value row list (13:395-404)."
+    },
+    {
+      "figma_node": "13:405",
+      "artboard_id": "13:243",
+      "code_component": "FooterColumn",
+      "status": "proposed_new",
+      "props": { "heading": "Pizzeria Location", "address": "842 Rione Monti, Sourdough Avenue, Suite 100", "phone": "(555) 392-7677", "email": "ciao@fornorosso.pizza" },
+      "notes": "Reuses FooterColumn proposed for node 13:393, with an address paragraph plus phone/email lines instead of a row list."
+    },
+    {
+      "figma_node": "13:412",
+      "artboard_id": "13:243",
+      "code_component": "Divider",
+      "status": "proposed_new",
+      "notes": "1px full-width line, 12% opacity white, separating footer columns from the bottom bar."
+    },
+    {
+      "figma_node": "13:413",
+      "artboard_id": "13:243",
+      "code_component": "FooterBottom",
+      "status": "proposed_new",
+      "props": { "copyright": "© 2026 Forno Rosso Pizzeria. All rights reserved.", "links": ["Privacy Policy", "Delivery Terms"] },
+      "notes": "Space-between row: copyright text (13:414) and a link row (13:415-417)."
+    }
+  ],
+  "excluded": [],
+  "open_questions": [
+    {
+      "id": "delivery-form-prefill-vs-placeholder",
+      "topic": "Delivery details default state",
+      "detail": "The Street Address, Apt/Suite, and Special Delivery Instructions fields inside the Delivery Destination card (node 13:321) already contain full sentence values (\"128 Pizzaiolo Boulevard\", \"Penthouse 4B\", \"Ring doorbell or leave at front lobby desk...\"). Since this story's whole subject is 'delivery details entry', it matters whether these should render as real, editable saved-address values or as placeholder text in otherwise-empty inputs.",
+      "arc_assumption": "Mapped the three fields as populated TextInput/Textarea values (a returning customer's saved default address, pre-filled and editable), not as `placeholder` attributes on empty inputs.",
+      "blocking": true,
+      "options": [
+        { "id": "prefilled-default", "label": "Pre-filled saved address — values are real defaults for a returning customer; inputs start populated exactly as drawn" },
+        { "id": "placeholder-example", "label": "Placeholder/example copy only — inputs should start empty; this text is illustrative formatting guidance, not real data" }
+      ],
+      "assumed_option": "prefilled-default"
+    },
+    {
+      "id": "quantity-stepper-floor-behavior",
+      "topic": "Quantity stepper minimum value",
+      "detail": "Diavola and Rosemary Garlic Focaccia rows (13:292, 13:309) show quantity 1 with a normal-looking '-' button. No disabled/greyed state, or a 'decrementing below 1 removes the item' confirmation, is drawn.",
+      "arc_assumption": "Assumed clicking '-' at quantity 1 removes the line item (same effect as the Remove action) rather than the button being disabled at the floor.",
+      "blocking": false
+    },
+    {
+      "id": "promo-code-alternate-states",
+      "topic": "Promo code idle/invalid/removable states",
+      "detail": "The Promo Code field (13:362) only shows the successful 'Applied' state (populated input, check-circle icon, green 'Applied' pill). No idle/empty state, invalid-code error state, or a way to remove/edit an already-applied code is drawn.",
+      "arc_assumption": "Assumed PromoCodeField needs an idle state (empty input, neutral 'Apply' button label) and an error state (red border + inline message), built from the existing --brand/--success semantic colors, in addition to the drawn Applied state.",
+      "blocking": false
+    },
+    {
+      "id": "header-vs-card-eta-mismatch",
+      "topic": "Two different ETA values on the same page",
+      "detail": "The header shows 'Estimated delivery: 30 mins' (13:258) while the Delivery Destination card shows 'Est. Delivery: 25-35 mins' (13:328) for the same order.",
+      "arc_assumption": "Treated these as two intentionally independent data-bound values — a general site-wide estimate in the header vs. an address-specific calculated range in the delivery card — rather than a single shared value that should be reconciled.",
+      "blocking": false
+    },
+    {
+      "id": "no-empty-cart-state",
+      "topic": "Empty cart / zero items state",
+      "detail": "The frame only shows a cart populated with 3 items. No empty-cart state (e.g. 'Your cart is empty' with a CTA back to the menu) is designed anywhere in this frame.",
+      "arc_assumption": "Out of scope for this mapping; flagging so an empty-cart state is designed and confirmed before the cart/checkout flow ships.",
+      "blocking": false
+    },
+    {
+      "id": "form-validation-states",
+      "topic": "Delivery form validation / error states",
+      "detail": "No error, required-field, or inline-success validation states are drawn for Street Address, Apt/Suite, or Special Delivery Instructions.",
+      "arc_assumption": "Assumed Street Address is required (blocks 'Proceed to Checkout' if empty) while Apt/Suite and Special Delivery Instructions are optional; exact validation rules and error copy still need confirmation.",
+      "blocking": false
+    }
+  ]
+}

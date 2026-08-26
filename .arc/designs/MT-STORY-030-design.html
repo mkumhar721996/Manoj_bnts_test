@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MT-STORY-030 — Figma Mapping Review: cart-page</title>
+<style>
+  :root {
+    /* colors distilled from figma-frame.json tokens */
+    --bg: #FCFAF6;
+    --surface: #FFFFFF;
+    --border: #EBE7DF;
+    --fg: #151212;
+    --muted: #6B6661;
+    --brand: #C82D25;
+    --success: #2A7043;
+
+    /* fonts distilled from figma-frame.json tokens.font_families */
+    --font-serif: Fraunces, Georgia, serif;
+    --font-sans: Geist, "Segoe UI", Arial, sans-serif;
+
+    /* spacing / radii distilled from figma-frame.json tokens */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.5;
+  }
+
+  header.reviewer-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--fg);
+    color: var(--surface);
+    padding: var(--space-3) var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    font-family: var(--font-sans);
+    border-bottom: 1px solid var(--border);
+  }
+
+  header.reviewer-bar h1 {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    margin: 0;
+    font-weight: 600;
+  }
+
+  header.reviewer-bar .meta {
+    font-size: 13px;
+    color: var(--bg);
+    opacity: 0.75;
+  }
+
+  header.reviewer-bar .badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-lg);
+    background: var(--brand);
+    color: var(--surface);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--space-6);
+  }
+
+  section {
+    margin-bottom: var(--space-7);
+  }
+
+  h2 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  h3 {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 600;
+    margin: var(--space-5) 0 var(--space-2);
+  }
+
+  p.lede {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 80ch;
+  }
+
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--brand);
+    border-radius: var(--radius-md);
+    padding: var(--space-4) var(--space-5);
+    font-size: 14px;
+    color: var(--fg);
+  }
+
+  .callout strong { color: var(--brand); }
+
+  .frame-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-4);
+  }
+
+  .frame-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+
+  .frame-wrap figcaption {
+    margin-top: var(--space-2);
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  th {
+    background: var(--bg);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--muted);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  td code, .mono {
+    font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+    font-size: 12px;
+    background: var(--bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .status-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: var(--radius-lg);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .status-existing { background: var(--success); color: var(--surface); }
+  .status-proposed_new { background: var(--bg); color: var(--brand); border: 1px solid var(--brand); }
+
+  .artboard-group {
+    margin-bottom: var(--space-6);
+  }
+
+  .artboard-group summary {
+    cursor: pointer;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 16px;
+    padding: var(--space-3) var(--space-4);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    list-style: none;
+  }
+
+  .artboard-group summary::-webkit-details-marker { display: none; }
+
+  .artboard-group summary .kind-tag {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--muted);
+    margin-left: var(--space-3);
+  }
+
+  .artboard-group[open] summary { border-radius: var(--radius-md) var(--radius-md) 0 0; margin-bottom: 0; }
+
+  .artboard-body {
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    padding: var(--space-4);
+    background: var(--surface);
+  }
+
+  .token-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-3);
+  }
+
+  .token-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-3);
+    font-size: 13px;
+  }
+
+  .swatch {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    vertical-align: middle;
+    margin-right: var(--space-2);
+  }
+
+  .type-sample-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    padding: var(--space-2) 0;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .type-sample-row .label {
+    width: 320px;
+    flex: none;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--font-sans);
+  }
+
+  .oq-list { display: flex; flex-direction: column; gap: var(--space-4); }
+
+  .oq-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+  }
+
+  .oq-card.blocking { border-left: 4px solid var(--brand); }
+  .oq-card.non-blocking { border-left: 4px solid var(--muted); }
+
+  .oq-card h4 {
+    margin: 0 0 var(--space-2);
+    font-size: 15px;
+    font-family: var(--font-sans);
+  }
+
+  .oq-flag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 2px 8px;
+    border-radius: var(--radius-lg);
+    margin-right: var(--space-2);
+  }
+
+  .oq-flag.blocking { background: var(--brand); color: var(--surface); }
+  .oq-flag.non-blocking { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+
+  .oq-assumption {
+    background: var(--bg);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+    font-size: 13px;
+    margin-top: var(--space-2);
+  }
+
+  .oq-assumption strong { color: var(--brand); }
+
+  ul.options {
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-5);
+    font-size: 13px;
+  }
+
+  ul.options li.assumed {
+    font-weight: 600;
+  }
+
+  ul.options li.assumed::after {
+    content: " ← assumed";
+    font-weight: 400;
+    color: var(--brand);
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  .empty-note {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  footer.page-footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    padding: var(--space-6) 0 var(--space-7);
+  }
+</style>
+</head>
+<body>
+
+<header class="reviewer-bar">
+  <div>
+    <h1>Figma Mapping Review — cart-page</h1>
+    <div class="meta">MT-STORY-030 · delivery-details-entry · node 13:243</div>
+  </div>
+  <span class="badge">Review surface — not a prototype</span>
+</header>
+
+<main>
+
+  <section>
+    <p class="lede">
+      This page shows <strong>how arc read the Figma frame</strong> and proposes a mapping onto
+      code components — it does not redraw the design. The rendered PNG below is authoritative
+      for all visual details (spacing, color, type). This project currently has no design system
+      or component catalogue, so every mapped component is <code>proposed_new</code>.
+    </p>
+    <div class="callout">
+      <strong>Story focus:</strong> this frame is the full cart / checkout-summary page, but the
+      MT-STORY-030 scope is the <strong>Delivery Destination</strong> card (Figma node
+      <code class="mono">13:321</code>) — the Street Address, Apt / Suite, and Special Delivery
+      Instructions form. See the blocking open question below about whether its fields are
+      pre-filled saved data or placeholder copy.
+    </div>
+  </section>
+
+  <section>
+    <h2>Rendered frame (source of truth for visuals)</h2>
+    <figure class="frame-wrap">
+      <img src="figma-frame.png" alt="Rendered Figma frame: cart-page">
+      <figcaption>figma-frame.png — 1440×1521, exported from Figma node 13:243 (file key Kzae8FDEX2i6bB6tcai7JX)</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Artboards found</h2>
+    <table>
+      <thead>
+        <tr><th>Node</th><th>Name</th><th>Figma type</th><th>Kind</th><th>Bounds</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code class="mono">13:243</code></td>
+          <td>cart-page</td>
+          <td>FRAME</td>
+          <td><span class="status-pill status-existing" style="background:var(--fg)">screen</span></td>
+          <td class="mono">0,0 · 1440×1521</td>
+          <td>Cart / checkout-summary page: dark header + nav + cart badge, two-column body (order items &amp; Delivery Destination entry on the left, totals/promo/checkout on the right), dark footer.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="empty-note" style="margin-top:8px;">
+      The linked node (13:243) is itself a single FRAME, not a CANVAS with multiple sibling
+      artboards — so this frame IS the one artboard. Its direct children (<code class="mono">header</code>
+      13:244, <code class="mono">cart-body</code> 13:263, <code class="mono">footer</code> 13:375) are
+      sections of this one screen, not separate screens, and are treated as such in the component
+      map below. No revision/superseded pairs were found.
+    </p>
+  </section>
+
+  <section>
+    <h2>Component map (by artboard / section)</h2>
+
+    <details class="artboard-group" open>
+      <summary>Header — <code class="mono">13:244</code><span class="kind-tag">top nav bar</span></summary>
+      <div class="artboard-body">
+        <table id="map-header"></table>
+      </div>
+    </details>
+
+    <details class="artboard-group" open>
+      <summary>Cart body · left column — order items &amp; Delivery Destination — <code class="mono">13:264</code><span class="kind-tag">story focus</span></summary>
+      <div class="artboard-body">
+        <table id="map-left"></table>
+      </div>
+    </details>
+
+    <details class="artboard-group" open>
+      <summary>Cart body · right column — order summary, promo, checkout — <code class="mono">13:343</code><span class="kind-tag">sidebar</span></summary>
+      <div class="artboard-body">
+        <table id="map-right"></table>
+      </div>
+    </details>
+
+    <details class="artboard-group" open>
+      <summary>Footer — <code class="mono">13:375</code><span class="kind-tag">site footer</span></summary>
+      <div class="artboard-body">
+        <table id="map-footer"></table>
+      </div>
+    </details>
+  </section>
+
+  <section>
+    <h2>Distilled tokens</h2>
+
+    <h3>Color</h3>
+    <div class="token-grid" id="token-colors"></div>
+
+    <h3>Type ramp (Fraunces = headings, Geist = UI/body)</h3>
+    <div id="token-type"></div>
+
+    <h3>Spacing &amp; radii</h3>
+    <div class="token-grid">
+      <div class="token-card"><strong>Spacing scale (px)</strong><br>2, 4, 6, 8, 10, 12, 14, 16, 20, 24, 32, 40, 48, 64, 80</div>
+      <div class="token-card"><strong>Radii (px)</strong><br>sm 6 (stepper btns) · md 8 (inputs) · lg 12 (thumbnails, CTA) · xl 16 (cards) · pill 20–24 (badges)</div>
+      <div class="token-card"><strong>Stroke weights</strong><br>1px (borders), 2px (icon strokes)</div>
+      <div class="token-card"><strong>Shadows</strong><br>none observed in this frame</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Excluded nodes (OS / device chrome, mockup scaffolding)</h2>
+    <p class="empty-note" id="excluded-note">None found — this is a plain desktop web frame (1440px), with no simulated browser chrome, status bar, notch, or on-screen keyboard to exclude.</p>
+    <table id="excluded-table" style="display:none;">
+      <thead><tr><th>Node</th><th>Reason</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Open questions</h2>
+    <p class="lede">Blocking questions are listed first — the assumption applied stands until a reviewer picks an option.</p>
+    <div class="oq-list" id="open-questions"></div>
+  </section>
+
+</main>
+
+<footer class="page-footer">
+  Generated as a Figma → code mapping review for MT-STORY-030. Structure and copy sourced from
+  <code class="mono">figma-frame.json</code>; visuals authoritative in <code class="mono">figma-frame.png</code>.
+</footer>
+
+<script>
+const componentMap = [
+  { section: "map-header", rows: [
+    ["13:244", "SiteHeader", "proposed_new", "—", "Dark (--fg) fixed top bar, 80px h-padding; contains BrandLogo, NavLinks, HeaderCartSummary."],
+    ["13:245", "BrandLogo", "proposed_new", "monogram: F, wordmark: Forno Rosso", "40×40 circular red (--brand) badge with italic-bold serif 'F' + serif wordmark."],
+    ["13:249", "NavLinks", "proposed_new", "items: Home, Our Menu, Cart; active: Cart", "Active item red + 2px underline rectangle (13:256); inactive items white."],
+    ["13:257", "HeaderCartSummary", "proposed_new", "—", "Groups ETA text (13:258, 80% opacity white) and CartIconButton (13:259)."],
+    ["13:259", "CartIconButton", "proposed_new", "count: 3", "Pill (radius 24), translucent-white 10% bg, cart-outline icon + numeric badge."]
+  ]},
+  { section: "map-left", rows: [
+    ["13:263", "CartPageLayout", "proposed_new", "—", "Two-column wrapper on --bg: left 792px (13:264), right 440px (13:343), 48px gutter, 80px page padding."],
+    ["13:265", "OrderItemsCard", "proposed_new", "title: Your Selected Order, count: 3 Items", "White card, radius 16, border --border, 32px padding. Holds heading row + CartItemRow list."],
+    ["13:269", "CartItemRow", "proposed_new", "name: Classic Margherita, variant: Neapolitan Woodfired, price: $29.00, qty: 2, image: figma-asset-13-271-cart-left.png", "80×80 rounded image (object-fit: cover), name/variant, QuantityStepper, price + RemoveItemButton."],
+    ["13:287", "CartItemRow", "proposed_new", "name: Diavola, price: $16.50, qty: 1, image: figma-asset-13-288-cart-left.png", "Reuses CartItemRow proposed for 13:269."],
+    ["13:304", "CartItemRow", "proposed_new", "name: Rosemary Garlic Focaccia, price: $8.50, qty: 1, image: figma-asset-13-305-cart-left.png", "Reuses CartItemRow proposed for 13:269."],
+    ["13:275", "QuantityStepper", "proposed_new", "value: 2, min: 1", "--bg filled pill (radius 8), two white radius-6 +/- buttons. Reused in 13:292 &amp; 13:309. See open question quantity-stepper-floor-behavior."],
+    ["13:283", "RemoveItemButton", "proposed_new", "label: Remove", "Trash icon + red 'Remove' text. Reused in 13:300 &amp; 13:317."],
+    ["13:321", "DeliveryDetailsCard", "proposed_new", "—", "★ STORY FOCUS. White card, radius 16, border --border, 32px padding, 24px gap. Header + address form + instructions."],
+    ["13:322", "DeliveryDetailsCardHeader", "proposed_new", "title: Delivery Destination, eta: Est. Delivery: 25-35 mins", "Map-pin icon (--success stroke) + serif title, left; EtaBadge right (space-between)."],
+    ["13:327", "EtaBadge", "proposed_new", "text: Est. Delivery: 25-35 mins", "Plain --success colored small-semibold text, no background. See open question header-vs-card-eta-mismatch."],
+    ["13:330", "TextField", "proposed_new", "label: Street Address, value: 128 Pizzaiolo Boulevard, layout: fill", "Label above --bg filled / --border bordered radius-8 input. See BLOCKING open question delivery-form-prefill-vs-placeholder."],
+    ["13:335", "TextField", "proposed_new", "label: Apt / Suite, value: Penthouse 4B, layout: fixed-200", "Reuses TextField proposed for 13:330; fixed 200px, sits beside Street Address."],
+    ["13:339", "Textarea", "proposed_new", "label: Special Delivery Instructions, value: 'Ring doorbell or leave at front lobby desk. Please keep thermal bag zipped until handover!'", "Same field-shell styling as TextField; value text rendered in --muted."]
+  ]},
+  { section: "map-right", rows: [
+    ["13:343", "CartRightColumn", "proposed_new", "—", "Fixed 440px column: OrderSummaryCard, PromoCodeField, checkout PrimaryButton, 24px gaps."],
+    ["13:344", "OrderSummaryCard", "proposed_new", "title: Order Summary", "White card, radius 16, border --border, 32px padding. 4× SummaryRow + divider + TotalRow."],
+    ["13:347", "SummaryRow", "proposed_new", "label: Subtotal, value: $54.00", "Reused for Delivery Fee/FREE (13:350, --success value), Oven Surcharge (Eco-box)/$1.50 (13:353), Sales Tax (8.5%)/$4.72 (13:356)."],
+    ["13:359", "TotalRow", "proposed_new", "label: Total, value: $60.22", "Heavier SummaryRow variant; value rendered in --brand red."],
+    ["13:362", "PromoCodeField", "proposed_new", "label: Promo Code, value: FORNOROSSO10, state: applied", "Uppercase label; input w/ check-circle icon + separate green 'Applied' pill. Only success state drawn — see open question promo-code-alternate-states."],
+    ["13:371", "PrimaryButton", "proposed_new", "label: Proceed to Checkout, icon: credit-card, variant: brand", "Full-width --brand red button, radius 12, white semibold label + icon."]
+  ]},
+  { section: "map-footer", rows: [
+    ["13:375", "SiteFooter", "proposed_new", "—", "Dark (--fg) full-bleed footer: FooterBrand + 2× FooterColumn + Divider + FooterBottom."],
+    ["13:377", "FooterBrand", "proposed_new", "—", "Reuses BrandLogo + description paragraph + SocialIconRow."],
+    ["13:383", "SocialIconRow", "proposed_new", "icons: instagram, facebook, twitter", "3× circular translucent-white SocialIconButton."],
+    ["13:393", "FooterColumn", "proposed_new", "heading: Kitchen Hours, rows: Mon-Thu/Fri-Sat/Sun", "Uppercase eyebrow heading + label/value row list."],
+    ["13:405", "FooterColumn", "proposed_new", "heading: Pizzeria Location, address/phone/email", "Reuses FooterColumn proposed for 13:393, with address/phone/email content instead of a row list."],
+    ["13:412", "Divider", "proposed_new", "—", "1px full-width line, 12% opacity white."],
+    ["13:413", "FooterBottom", "proposed_new", "copyright + links: Privacy Policy, Delivery Terms", "Space-between row: copyright text + link row."]
+  ]}
+];
+
+for (const group of componentMap) {
+  const table = document.getElementById(group.section);
+  const thead = document.createElement("thead");
+  thead.innerHTML = "<tr><th>Figma node</th><th>Code component</th><th>Status</th><th>Props</th><th>Notes</th></tr>";
+  table.appendChild(thead);
+  const tbody = document.createElement("tbody");
+  for (const [node, comp, status, props, notes] of group.rows) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><code class="mono">${node}</code></td>
+      <td>${comp}</td>
+      <td><span class="status-pill status-${status}">${status.replace("_"," ")}</span></td>
+      <td>${props}</td>
+      <td>${notes}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+}
+
+const colorTokens = [
+  ["--fg", "#151212", "Ink — headings, body text, header/footer surface"],
+  ["--brand", "#C82D25", "Brand red — logo badge, active nav, cart-count text, primary CTA"],
+  ["--success", "#2A7043", "Green — Est. Delivery text, map-pin icon, Applied badge, check icon"],
+  ["--muted", "#6B6661", "Secondary text — item count, variant labels, footer hours"],
+  ["--bg", "#FCFAF6", "Warm off-white — page background, input fill"],
+  ["--surface", "#FFFFFF", "Card surfaces, stepper buttons"],
+  ["--border", "#EBE7DF", "Default card / input border"]
+];
+const colorGrid = document.getElementById("token-colors");
+for (const [name, hex, desc] of colorTokens) {
+  const div = document.createElement("div");
+  div.className = "token-card";
+  div.innerHTML = `<span class="swatch" style="background:${hex}"></span><strong>${name}</strong> <span class="mono">${hex}</span><br><span style="color:var(--muted)">${desc}</span>`;
+  colorGrid.appendChild(div);
+}
+
+const typeSamples = [
+  ["Fraunces 700 22px", "italic bold — logo 'F' monogram / wordmark accent", "Fraunces", "700", "22px", "italic"],
+  ["Fraunces 600 24px", "'Your Selected Order' section title", "Fraunces", "600", "24px", "normal"],
+  ["Fraunces 600 20px", "'Delivery Destination' card title", "Fraunces", "600", "20px", "normal"],
+  ["Fraunces 600 18px", "'Order Summary' card title", "Fraunces", "600", "18px", "normal"],
+  ["Fraunces 600 16px", "item names (Classic Margherita, Diavola...)", "Fraunces", "600", "16px", "normal"],
+  ["Geist 600 16px", "checkout button label, stepper glyphs", "Geist", "600", "16px", "normal"],
+  ["Geist 600 15px", "active nav link (Cart)", "Geist", "600", "15px", "normal"],
+  ["Geist 500 15px", "nav links (Home, Our Menu)", "Geist", "500", "15px", "normal"],
+  ["Geist 600 13px UPPER", "eyebrow labels — PROMO CODE, KITCHEN HOURS", "Geist", "600", "13px", "normal"],
+  ["Geist 600 13px", "field labels — Street Address, Apt / Suite", "Geist", "600", "13px", "normal"],
+  ["Geist 400 14px", "body copy, input values, footer text", "Geist", "400", "14px", "normal"]
+];
+const typeWrap = document.getElementById("token-type");
+for (const [label, usage, family, weight, size, style] of typeSamples) {
+  const row = document.createElement("div");
+  row.className = "type-sample-row";
+  const famVar = family === "Fraunces" ? "var(--font-serif)" : "var(--font-sans)";
+  const textCase = label.includes("UPPER") ? "text-transform:uppercase; letter-spacing:0.04em;" : "";
+  row.innerHTML = `<div class="label">${label}<br><span style="color:var(--muted)">${usage}</span></div>
+    <div style="font-family:${famVar}; font-weight:${weight}; font-size:${size}; font-style:${style}; ${textCase}">Forno Rosso — Delivery Destination</div>`;
+  typeWrap.appendChild(row);
+}
+
+const openQuestions = [
+  {
+    id: "delivery-form-prefill-vs-placeholder",
+    topic: "Delivery details default state",
+    detail: "The Street Address, Apt/Suite, and Special Delivery Instructions fields inside the Delivery Destination card (node 13:321) already contain full sentence values (\"128 Pizzaiolo Boulevard\", \"Penthouse 4B\", \"Ring doorbell or leave at front lobby desk...\"). Since this story's whole subject is 'delivery details entry', it matters whether these should render as real, editable saved-address values or as placeholder text in otherwise-empty inputs.",
+    assumption: "Mapped the three fields as populated TextInput/Textarea values (a returning customer's saved default address, pre-filled and editable), not as <code>placeholder</code> attributes on empty inputs.",
+    blocking: true,
+    options: [
+      { id: "prefilled-default", label: "Pre-filled saved address — values are real defaults for a returning customer; inputs start populated exactly as drawn", assumed: true },
+      { id: "placeholder-example", label: "Placeholder/example copy only — inputs should start empty; this text is illustrative formatting guidance, not real data", assumed: false }
+    ]
+  },
+  {
+    id: "quantity-stepper-floor-behavior",
+    topic: "Quantity stepper minimum value",
+    detail: "Diavola and Rosemary Garlic Focaccia rows (13:292, 13:309) show quantity 1 with a normal-looking '-' button. No disabled/greyed state, or a 'decrementing below 1 removes the item' confirmation, is drawn.",
+    assumption: "Assumed clicking '-' at quantity 1 removes the line item (same effect as the Remove action) rather than the button being disabled at the floor.",
+    blocking: false
+  },
+  {
+    id: "promo-code-alternate-states",
+    topic: "Promo code idle/invalid/removable states",
+    detail: "The Promo Code field (13:362) only shows the successful 'Applied' state (populated input, check-circle icon, green 'Applied' pill). No idle/empty state, invalid-code error state, or a way to remove/edit an already-applied code is drawn.",
+    assumption: "Assumed PromoCodeField needs an idle state (empty input, neutral 'Apply' button label) and an error state (red border + inline message), built from the existing --brand/--success semantic colors, in addition to the drawn Applied state.",
+    blocking: false
+  },
+  {
+    id: "header-vs-card-eta-mismatch",
+    topic: "Two different ETA values on the same page",
+    detail: "The header shows 'Estimated delivery: 30 mins' (13:258) while the Delivery Destination card shows 'Est. Delivery: 25-35 mins' (13:328) for the same order.",
+    assumption: "Treated these as two intentionally independent data-bound values — a general site-wide estimate in the header vs. an address-specific calculated range in the delivery card — rather than a single shared value that should be reconciled.",
+    blocking: false
+  },
+  {
+    id: "no-empty-cart-state",
+    topic: "Empty cart / zero items state",
+    detail: "The frame only shows a cart populated with 3 items. No empty-cart state (e.g. 'Your cart is empty' with a CTA back to the menu) is designed anywhere in this frame.",
+    assumption: "Out of scope for this mapping; flagging so an empty-cart state is designed and confirmed before the cart/checkout flow ships.",
+    blocking: false
+  },
+  {
+    id: "form-validation-states",
+    topic: "Delivery form validation / error states",
+    detail: "No error, required-field, or inline-success validation states are drawn for Street Address, Apt/Suite, or Special Delivery Instructions.",
+    assumption: "Assumed Street Address is required (blocks 'Proceed to Checkout' if empty) while Apt/Suite and Special Delivery Instructions are optional; exact validation rules and error copy still need confirmation.",
+    blocking: false
+  }
+];
+
+openQuestions.sort((a, b) => (b.blocking === true) - (a.blocking === true));
+
+const oqWrap = document.getElementById("open-questions");
+for (const q of openQuestions) {
+  const card = document.createElement("div");
+  card.className = "oq-card " + (q.blocking ? "blocking" : "non-blocking");
+  let optionsHtml = "";
+  if (q.options) {
+    optionsHtml = "<ul class='options'>" + q.options.map(o =>
+      `<li class="${o.assumed ? 'assumed' : ''}"><span class="mono">${o.id}</span> — ${o.label}</li>`
+    ).join("") + "</ul>";
+  }
+  card.innerHTML = `
+    <span class="oq-flag ${q.blocking ? 'blocking' : 'non-blocking'}">${q.blocking ? 'Blocking' : 'Non-blocking'}</span>
+    <h4>${q.topic} <span class="mono" style="font-weight:400;color:var(--muted)">(${q.id})</span></h4>
+    <p style="margin:var(--space-2) 0; font-size:14px;">${q.detail}</p>
+    ${optionsHtml}
+    <div class="oq-assumption"><strong>arc's assumption:</strong> ${q.assumption}</div>
+  `;
+  oqWrap.appendChild(card);
+}
+</script>
+
+</body>
+</html>
+
+<!-- arc:css-inlined -->

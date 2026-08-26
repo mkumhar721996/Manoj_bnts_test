@@ -5,7 +5,10 @@ const { renderRegistrationSuccessPage } = require('../views/pages/registrationSu
 const { renderRegistrationErrorPage } = require('../views/pages/registrationErrorPage');
 const { renderFeedPage } = require('../views/pages/feedPage');
 const { renderLoginErrorPage } = require('../views/pages/loginErrorPage');
+const { renderCartPage } = require('../views/pages/cartPage');
+const { renderCheckoutPage } = require('../views/pages/checkoutPage');
 const { validate } = require('../validation/webRegistrationValidator');
+const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
 const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
 const emailService = require('../services/emailService');
@@ -74,6 +77,28 @@ router.post('/login', (req, res) => {
   }
 
   return res.status(200).type('html').send(renderFeedPage(user));
+});
+
+router.get('/cart', (req, res) => {
+  res.type('html').send(renderCartPage());
+});
+
+router.post('/checkout', (req, res) => {
+  const { errors, streetAddress, aptSuite, deliveryInstructions } = validateDeliveryDetails(
+    req.body || {}
+  );
+
+  if (errors.length > 0) {
+    return res
+      .status(400)
+      .type('html')
+      .send(renderCartPage({ errors, values: { streetAddress, aptSuite, deliveryInstructions } }));
+  }
+
+  return res
+    .status(200)
+    .type('html')
+    .send(renderCheckoutPage({ streetAddress, aptSuite, deliveryInstructions }));
 });
 
 module.exports = router;
