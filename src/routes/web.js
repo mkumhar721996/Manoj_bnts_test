@@ -7,10 +7,14 @@ const { renderFeedPage } = require('../views/pages/feedPage');
 const { renderLoginErrorPage } = require('../views/pages/loginErrorPage');
 const { renderCartPage } = require('../views/pages/cartPage');
 const { renderCheckoutPage } = require('../views/pages/checkoutPage');
+const { renderExpensesPage } = require('../views/pages/expensesPage');
+const { renderAddExpensePage } = require('../views/pages/addExpensePage');
 const { validate } = require('../validation/webRegistrationValidator');
 const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
+const { validate: validateExpense } = require('../validation/expenseValidator');
 const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
+const expenseStore = require('../store/expenseStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
 
@@ -99,6 +103,39 @@ router.post('/checkout', (req, res) => {
     .status(200)
     .type('html')
     .send(renderCheckoutPage({ streetAddress, aptSuite, deliveryInstructions }));
+});
+
+router.get('/expenses', (req, res) => {
+  res.type('html').send(
+    renderExpensesPage({
+      expenses: expenseStore.listForCurrentPeriod(),
+      total: expenseStore.totalForCurrentPeriod(),
+    })
+  );
+});
+
+router.get('/expenses/new', (req, res) => {
+  res.type('html').send(renderAddExpensePage());
+});
+
+router.post('/expenses', (req, res) => {
+  const { errors, amount, category, date, note } = validateExpense(req.body || {});
+
+  if (errors.length > 0) {
+    return res
+      .status(400)
+      .type('html')
+      .send(renderAddExpensePage({ errors, values: { amount, category, date, note } }));
+  }
+
+  expenseStore.save({ id: crypto.randomUUID(), amount, category, date, note });
+
+  return res.status(200).type('html').send(
+    renderExpensesPage({
+      expenses: expenseStore.listForCurrentPeriod(),
+      total: expenseStore.totalForCurrentPeriod(),
+    })
+  );
 });
 
 module.exports = router;
