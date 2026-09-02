@@ -11,7 +11,14 @@ function parseCookies(header) {
 
     const name = pair.slice(0, separatorIndex).trim();
     const value = pair.slice(separatorIndex + 1).trim();
-    cookies[name] = decodeURIComponent(value);
+
+    try {
+      cookies[name] = decodeURIComponent(value);
+    } catch (err) {
+      // Malformed percent-encoding (e.g. a lone "%"): skip this cookie
+      // rather than letting decodeURIComponent's URIError crash the request.
+    }
+
     return cookies;
   }, {});
 }
