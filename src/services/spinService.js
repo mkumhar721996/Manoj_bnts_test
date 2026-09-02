@@ -12,6 +12,7 @@ async function placeSpin({ userId, amount, resolveOutcome }) {
     spinStore.markResolved(id);
     return { spinId: id, status: 'resolved', outcome };
   } catch (err) {
+    refundSpin(id);
     return { spinId: id, status: 'refunded' };
   }
 }
