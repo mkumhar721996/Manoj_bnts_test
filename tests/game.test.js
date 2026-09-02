@@ -3,27 +3,27 @@ const request = require('supertest');
 const app = require('../src/app');
 const userStore = require('../src/store/userStore');
 const emailService = require('../src/services/emailService');
+const sessionStore = require('../src/store/sessionStore');
 
 const generateValidPassword = () => `longenough${crypto.randomBytes(4).toString('hex')}`;
 
-async function loginNewPlayer() {
+async function loginNewPlayer(agent) {
   const pwd = generateValidPassword();
   const email = `player-${crypto.randomBytes(4).toString('hex')}@example.com`;
-  await request(app)
-    .post('/register')
-    .type('form')
-    .send({ name: 'Jordan Rivera', email, password: pwd });
-  return request(app).post('/login').type('form').send({ email, password: pwd });
+  await agent.post('/register').type('form').send({ name: 'Jordan Rivera', email, password: pwd });
+  return agent.post('/login').type('form').send({ email, password: pwd });
 }
 
 beforeEach(() => {
   userStore.reset();
   emailService.reset();
+  sessionStore.reset();
 });
 
 describe('AC1: feed page shows a visible link to the game', () => {
   it('renders a visible play-game link on the feed page', async () => {
-    const res = await loginNewPlayer();
+    const agent = request.agent(app);
+    const res = await loginNewPlayer(agent);
 
     expect(res.status).toBe(200);
     expect(res.text).toMatch(/id="play-game-link"[^>]*href="\/game"/);
@@ -32,31 +32,42 @@ describe('AC1: feed page shows a visible link to the game', () => {
 });
 
 describe('AC2: clicking the game link navigates to GET /game', () => {
-  it('follows the play-game link href to a working GET /game route', async () => {
-    const feedRes = await loginNewPlayer();
+  it('follows the play-game link href to a working GET /game route for the logged-in player', async () => {
+    const agent = request.agent(app);
+    const feedRes = await loginNewPlayer(agent);
 
     const hrefMatch = feedRes.text.match(/id="play-game-link"[^>]*href="([^"]+)"/);
     expect(hrefMatch[1]).toBe('/game');
 
-    const gameRes = await request(app).get(hrefMatch[1]);
+    const gameRes = await agent.get(hrefMatch[1]);
     expect(gameRes.status).toBe(200);
   });
 });
 
 describe('AC3: GET /game renders the slot-machine page', () => {
-  it('renders the slot machine page', async () => {
-    const res = await request(app).get('/game');
+  it('renders the slot machine page for a logged-in player', async () => {
+    const agent = request.agent(app);
+    await loginNewPlayer(agent);
+
+    const res = await agent.get('/game');
 
     expect(res.status).toBe(200);
     expect(res.headers['content-type']).toMatch(/html/);
     expect(res.text).toContain('id="slot-machine-page"');
     expect(res.text).toContain('Slot Machine');
   });
+
+  it('does not render the slot machine page for a visitor without a logged-in session', async () => {
+    const res = await request(app).get('/game');
+
+    expect(res.text).not.toContain('id="slot-machine-page"');
+  });
 });
 
 describe('AC4: successful login lands on the feed page, not the game page', () => {
   it('renders the feed page shell and not the slot machine page', async () => {
-    const res = await loginNewPlayer();
+    const agent = request.agent(app);
+    const res = await loginNewPlayer(agent);
 
     expect(res.status).toBe(200);
     expect(res.text).toContain('class="app-shell"');

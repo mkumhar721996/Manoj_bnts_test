@@ -17,7 +17,9 @@ const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
 const expenseStore = require('../store/expenseStore');
 const emailService = require('../services/emailService');
+const sessionStore = require('../store/sessionStore');
 const { hashPassword, verifyPassword } = require('../utils/password');
+const { requireWebSession, SESSION_COOKIE_NAME } = require('../middleware/requireWebSession');
 
 const router = express.Router();
 
@@ -81,6 +83,9 @@ router.post('/login', (req, res) => {
     return res.status(401).type('html').send(renderLoginErrorPage());
   }
 
+  const sessionToken = sessionStore.create(user.id);
+  res.cookie(SESSION_COOKIE_NAME, sessionToken, { httpOnly: true });
+
   return res.status(200).type('html').send(renderFeedPage(user));
 });
 
@@ -88,7 +93,7 @@ router.get('/cart', (req, res) => {
   res.type('html').send(renderCartPage());
 });
 
-router.get('/game', (req, res) => {
+router.get('/game', requireWebSession, (req, res) => {
   res.type('html').send(renderGamePage());
 });
 
