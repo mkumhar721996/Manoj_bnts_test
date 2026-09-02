@@ -12,7 +12,11 @@ function parseCookies(header) {
     const key = pair.slice(0, separatorIndex).trim();
     const value = pair.slice(separatorIndex + 1).trim();
     if (key) {
-      cookies[key] = decodeURIComponent(value);
+      try {
+        cookies[key] = decodeURIComponent(value);
+      } catch {
+        // Malformed percent-encoding: skip this cookie rather than 500.
+      }
     }
   }
 

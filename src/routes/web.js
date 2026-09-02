@@ -84,7 +84,11 @@ router.post('/login', (req, res) => {
   }
 
   const sessionToken = sessionStore.create(user.id);
-  res.cookie(SESSION_COOKIE_NAME, sessionToken, { httpOnly: true });
+  res.cookie(SESSION_COOKIE_NAME, sessionToken, {
+    httpOnly: true,
+    sameSite: 'Lax',
+    secure: process.env.NODE_ENV === 'production',
+  });
 
   return res.status(200).type('html').send(renderFeedPage(user));
 });
