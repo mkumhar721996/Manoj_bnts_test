@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { expireTokenRecord } = require('../utils/expireTokenRecord');
 
 const DEFAULT_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -31,10 +32,7 @@ function markUsed(token) {
 }
 
 function expire(token) {
-  const record = tokens.get(token);
-  if (record) {
-    record.expiresAt = Date.now() - 1;
-  }
+  expireTokenRecord(tokens, token);
 }
 
 module.exports = { create, findByToken, markUsed, expire, reset };
