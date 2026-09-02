@@ -9,14 +9,17 @@ const { renderCartPage } = require('../views/pages/cartPage');
 const { renderCheckoutPage } = require('../views/pages/checkoutPage');
 const { renderExpensesPage } = require('../views/pages/expensesPage');
 const { renderAddExpensePage } = require('../views/pages/addExpensePage');
+const { renderGamePage } = require('../views/pages/gamePage');
 const { validate } = require('../validation/webRegistrationValidator');
 const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
 const { validate: validateExpense } = require('../validation/expenseValidator');
 const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
 const expenseStore = require('../store/expenseStore');
+const sessionStore = require('../store/sessionStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
+const requireGameSession = require('../middleware/requireGameSession');
 
 const router = express.Router();
 
@@ -80,6 +83,9 @@ router.post('/login', (req, res) => {
     return res.status(401).type('html').send(renderLoginErrorPage());
   }
 
+  const sessionToken = sessionStore.create(user.id);
+  res.cookie('sessionToken', sessionToken, { httpOnly: true });
+
   return res.status(200).type('html').send(renderFeedPage(user));
 });
 
@@ -136,6 +142,10 @@ router.post('/expenses', (req, res) => {
       total: expenseStore.totalForCurrentPeriod(),
     })
   );
+});
+
+router.get('/game', requireGameSession, (req, res) => {
+  res.type('html').send(renderGamePage());
 });
 
 module.exports = router;
