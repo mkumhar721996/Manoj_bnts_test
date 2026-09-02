@@ -8,6 +8,7 @@ const { renderLoginErrorPage } = require('../views/pages/loginErrorPage');
 const { renderCartPage } = require('../views/pages/cartPage');
 const { renderCheckoutPage } = require('../views/pages/checkoutPage');
 const { renderExpensesPage } = require('../views/pages/expensesPage');
+const { renderGamePage } = require('../views/pages/gamePage');
 const { renderAddExpensePage } = require('../views/pages/addExpensePage');
 const { validate } = require('../validation/webRegistrationValidator');
 const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
@@ -85,6 +86,10 @@ router.post('/login', (req, res) => {
 
 router.get('/cart', (req, res) => {
   res.type('html').send(renderCartPage());
+});
+
+router.get('/game', (req, res) => {
+  res.type('html').send(renderGamePage());
 });
 
 router.post('/checkout', (req, res) => {
