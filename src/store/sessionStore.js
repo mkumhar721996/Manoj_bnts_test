@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { expireTokenRecord } = require('../utils/expireTokenRecord');
 
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 const IDLE_TIMEOUT_MS = 10 * 60 * 1000;
@@ -43,10 +44,7 @@ function touch(token) {
 }
 
 function expire(token) {
-  const record = sessions.get(token);
-  if (record) {
-    record.expiresAt = Date.now() - 1;
-  }
+  expireTokenRecord(sessions, token);
 }
 
 module.exports = { create, findUserId, isActive, touch, expire, reset };
