@@ -30,6 +30,11 @@ function renderFeedPage(user) {
       <p>You're logged in. Here's what's new in your feed.</p>
     </div>
     <div class="card">
+      <h2>Feeling lucky?</h2>
+      <p>Take a break and try your luck on the slot machine.</p>
+      <a class="btn btn-brand" id="play-game-link" href="/game">Play the Slot Machine</a>
+    </div>
+    <div class="card">
       <div class="post">
         <div class="avatar">A</div>
         <div>
