@@ -78,4 +78,19 @@ describe('AC4: a spin already refunded is never refunded a second time', () => {
     spinService.refundSpin(spinId);
     expect(walletStore.getBalance('user-1')).toBe(500);
   });
+
+  it('does not credit a spin that already resolved successfully', async () => {
+    walletStore.credit('user-1', 400);
+
+    const { spinId } = await spinService.placeSpin({
+      userId: 'user-1',
+      amount: 400,
+      resolveOutcome: () => Promise.resolve('win'),
+    });
+
+    expect(walletStore.getBalance('user-1')).toBe(0);
+
+    spinService.refundSpin(spinId);
+    expect(walletStore.getBalance('user-1')).toBe(0);
+  });
 });

@@ -19,7 +19,7 @@ async function placeSpin({ userId, amount, resolveOutcome }) {
 
 function refundSpin(spinId) {
   const record = spinStore.get(spinId);
-  if (!record || record.status === 'refunded') {
+  if (!record || record.status !== 'pending') {
     return;
   }
 
