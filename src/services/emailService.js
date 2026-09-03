@@ -8,6 +8,10 @@ function sendVerificationEmail(email, token) {
   outbox.push({ to: email.toLowerCase(), token });
 }
 
+function sendPasswordResetEmail(email, token) {
+  outbox.push({ to: email.toLowerCase(), token });
+}
+
 function getLastEmailTo(email) {
   const target = email.toLowerCase();
   for (let i = outbox.length - 1; i >= 0; i -= 1) {
@@ -18,4 +22,4 @@ function getLastEmailTo(email) {
   return undefined;
 }
 
-module.exports = { sendVerificationEmail, getLastEmailTo, reset };
+module.exports = { sendVerificationEmail, sendPasswordResetEmail, getLastEmailTo, reset };

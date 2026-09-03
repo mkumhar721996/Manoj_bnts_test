@@ -29,7 +29,7 @@ function renderHomePage() {
           <input type="password" id="login-password" name="password" placeholder="Enter your password" autocomplete="current-password">
         </div>
         <button class="btn btn-brand btn-block" type="submit">Log In</button>
-        <p class="helper-text"><a href="#">Forgotten password?</a></p>
+        <p class="helper-text"><a href="/forgot-password">Forgotten password?</a></p>
       </form>
     </div>
 
