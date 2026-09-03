@@ -11,7 +11,7 @@ function renderFeedPage(user) {
   <span class="brand-wordmark">Facebook</span>
   <div class="header-actions">
     <div class="avatar" id="feedAvatarInitial">${safeInitial}</div>
-    <a class="btn btn-ghost" href="/">Log Out</a>
+    <form method="post" action="/logout"><button class="btn btn-ghost" type="submit">Log Out</button></form>
   </div>
 </header>
 

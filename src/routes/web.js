@@ -20,6 +20,7 @@ const sessionStore = require('../store/sessionStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const requireGameSession = require('../middleware/requireGameSession');
+const { parseCookies } = require('../utils/cookies');
 
 const router = express.Router();
 
@@ -142,6 +143,13 @@ router.post('/expenses', (req, res) => {
       total: expenseStore.totalForCurrentPeriod(),
     })
   );
+});
+
+router.post('/logout', (req, res) => {
+  const cookies = parseCookies(req.headers.cookie);
+  sessionStore.expire(cookies.sessionToken);
+  res.clearCookie('sessionToken');
+  return res.redirect('/');
 });
 
 router.get('/game', requireGameSession, (req, res) => {
