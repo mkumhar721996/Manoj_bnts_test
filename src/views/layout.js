@@ -176,6 +176,8 @@ a:hover { text-decoration: underline; }
   border-color: var(--brand);
 }
 .field.has-error input { border-color: var(--danger); background: var(--danger-tint); }
+.field input.checkbox-input { width: auto; margin-right: var(--space-2); }
+.field label:has(input.checkbox-input) { display: flex; align-items: center; font-weight: var(--font-weight-normal); color: var(--fg); }
 .field-error {
   color: var(--danger);
   font-size: var(--font-size-xs);
