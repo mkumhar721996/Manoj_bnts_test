@@ -166,7 +166,7 @@ describe('AC4: wrong email or password shows one generic error, without authenti
     await agent
       .post('/login')
       .type('form')
-      .send({ email: 'still-anon@example.com', password: 'totally-wrong-password' });
+      .send({ email: 'still-anon@example.com', password: generateValidPassword() });
 
     const feedRes = await agent.get('/feed');
     expect(feedRes.status).toBe(302);
