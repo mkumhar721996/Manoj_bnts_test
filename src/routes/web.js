@@ -10,7 +10,6 @@ const { renderCartPage } = require('../views/pages/cartPage');
 const { renderCheckoutPage } = require('../views/pages/checkoutPage');
 const { renderExpensesPage } = require('../views/pages/expensesPage');
 const { renderAddExpensePage } = require('../views/pages/addExpensePage');
-const { renderGamePage } = require('../views/pages/gamePage');
 const { validate } = require('../validation/webRegistrationValidator');
 const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
 const { validate: validateExpense } = require('../validation/expenseValidator');
@@ -20,7 +19,6 @@ const expenseStore = require('../store/expenseStore');
 const sessionStore = require('../store/sessionStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
-const requireGameSession = require('../middleware/requireGameSession');
 const requireSession = require('../middleware/requireSession');
 
 const router = express.Router();
@@ -102,7 +100,7 @@ router.post('/login', (req, res) => {
   const rememberMe = Boolean(rememberMeInput);
   const sessionToken = sessionStore.create(user.id, { rememberMe });
 
-  const cookieOptions = { httpOnly: true };
+  const cookieOptions = { httpOnly: true, sameSite: 'Lax' };
   if (rememberMe) {
     cookieOptions.maxAge = sessionStore.REMEMBER_ME_TTL_MS;
   }
@@ -169,10 +167,6 @@ router.post('/expenses', (req, res) => {
       total: expenseStore.totalForCurrentPeriod(),
     })
   );
-});
-
-router.get('/game', requireGameSession, (req, res) => {
-  res.type('html').send(renderGamePage());
 });
 
 module.exports = router;

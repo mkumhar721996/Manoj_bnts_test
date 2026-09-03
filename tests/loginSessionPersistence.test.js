@@ -133,6 +133,34 @@ describe('security: redirectTo cannot be used for an open redirect', () => {
   });
 });
 
+describe('security: session cookie is protected against cross-site requests', () => {
+  it('sets SameSite=Lax on the session cookie regardless of remember-me', async () => {
+    const agent = request.agent(app);
+    const payload = await register(agent);
+
+    const res = await agent
+      .post('/login')
+      .type('form')
+      .send({ email: payload.email, password: payload.password });
+
+    const cookieLine = extractSetCookieLine(res);
+    expect(cookieLine).toMatch(/SameSite=Lax/i);
+  });
+
+  it('sets SameSite=Lax on the session cookie when remember-me is checked', async () => {
+    const agent = request.agent(app);
+    const payload = await register(agent);
+
+    const res = await agent
+      .post('/login')
+      .type('form')
+      .send({ email: payload.email, password: payload.password, rememberMe: 'on' });
+
+    const cookieLine = extractSetCookieLine(res);
+    expect(cookieLine).toMatch(/SameSite=Lax/i);
+  });
+});
+
 describe('AC4: wrong email or password shows one generic error, without authenticating', () => {
   it('returns the same status and message for a wrong password as for an unregistered email', async () => {
     const payload = await register(request.agent(app));
