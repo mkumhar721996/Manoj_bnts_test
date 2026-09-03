@@ -53,7 +53,7 @@ describe('AC2: valid, active session serves the game page without a credential p
   it('serves the slot-machine page after logging in', async () => {
     const agent = request.agent(app);
     const { loginRes } = await registerAndLogin(agent);
-    expect(loginRes.status).toBe(200);
+    expect(loginRes.status).toBe(302);
 
     const res = await agent.get('/game');
 

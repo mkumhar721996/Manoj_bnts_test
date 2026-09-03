@@ -4,6 +4,7 @@ const { renderHomePage } = require('../views/pages/homePage');
 const { renderRegistrationSuccessPage } = require('../views/pages/registrationSuccessPage');
 const { renderRegistrationErrorPage } = require('../views/pages/registrationErrorPage');
 const { renderFeedPage } = require('../views/pages/feedPage');
+const { renderLoginPage } = require('../views/pages/loginPage');
 const { renderLoginErrorPage } = require('../views/pages/loginErrorPage');
 const { renderCartPage } = require('../views/pages/cartPage');
 const { renderCheckoutPage } = require('../views/pages/checkoutPage');
@@ -20,6 +21,7 @@ const sessionStore = require('../store/sessionStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const requireGameSession = require('../middleware/requireGameSession');
+const requireSession = require('../middleware/requireSession');
 
 const router = express.Router();
 
@@ -27,8 +29,22 @@ const router = express.Router();
 // comparison's timing identical whether or not the email is registered.
 const DUMMY_HASH = hashPassword('not-a-real-password');
 
+function isSafeRedirectTarget(target) {
+  return (
+    typeof target === 'string' &&
+    target.startsWith('/') &&
+    !target.startsWith('//') &&
+    !target.includes('://')
+  );
+}
+
 router.get('/', (req, res) => {
   res.type('html').send(renderHomePage());
+});
+
+router.get('/login', (req, res) => {
+  const redirectTo = typeof req.query.redirectTo === 'string' ? req.query.redirectTo : '';
+  res.type('html').send(renderLoginPage({ redirectTo }));
 });
 
 router.post('/register', (req, res) => {
@@ -63,7 +79,7 @@ router.post('/register', (req, res) => {
 });
 
 router.post('/login', (req, res) => {
-  const { email, password } = req.body || {};
+  const { email, password, redirectTo, rememberMe: rememberMeInput } = req.body || {};
 
   const user =
     typeof email === 'string' ? userStore.findByEmail(email) : undefined;
@@ -83,10 +99,21 @@ router.post('/login', (req, res) => {
     return res.status(401).type('html').send(renderLoginErrorPage());
   }
 
-  const sessionToken = sessionStore.create(user.id);
-  res.cookie('sessionToken', sessionToken, { httpOnly: true });
+  const rememberMe = Boolean(rememberMeInput);
+  const sessionToken = sessionStore.create(user.id, { rememberMe });
 
-  return res.status(200).type('html').send(renderFeedPage(user));
+  const cookieOptions = { httpOnly: true };
+  if (rememberMe) {
+    cookieOptions.maxAge = sessionStore.REMEMBER_ME_TTL_MS;
+  }
+  res.cookie('sessionToken', sessionToken, cookieOptions);
+
+  const destination = isSafeRedirectTarget(redirectTo) ? redirectTo : '/feed';
+  return res.redirect(destination);
+});
+
+router.get('/feed', requireSession, (req, res) => {
+  res.type('html').send(renderFeedPage(req.user));
 });
 
 router.get('/cart', (req, res) => {

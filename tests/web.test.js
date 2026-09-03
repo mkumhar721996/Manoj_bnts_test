@@ -142,26 +142,32 @@ describe('AC4: missing or invalid registration fields show which fields are inva
 });
 
 describe('AC5: valid login credentials authenticate and redirect to the feed', () => {
-  it('shows the feed with a welcome banner and avatar initial on valid credentials', async () => {
+  it('redirects to /feed on valid credentials, which then shows the welcome banner and avatar initial', async () => {
     const pwd = generateValidPassword();
     await request(app)
       .post('/register')
       .type('form')
       .send({ name: 'Jordan Rivera', email: 'jordan@example.com', password: pwd });
 
-    const res = await request(app)
+    const agent = request.agent(app);
+    const res = await agent
       .post('/login')
       .type('form')
       .send({ email: 'jordan@example.com', password: pwd });
 
-    expect(res.status).toBe(200);
-    expect(res.text).toContain('class="app-shell"');
-    expect(res.text).toContain('Welcome back, Jordan!');
-    expect(res.text).toContain('class="avatar" id="feedAvatarInitial">J<');
-    expect(res.text).toContain('Aisha Khan');
-    expect(res.text).toContain('Diego Fernandez');
-    expect(res.text).toContain('Lin Wei');
-    expect(res.text).toContain('Sam Okafor');
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/feed');
+
+    const feedRes = await agent.get('/feed');
+
+    expect(feedRes.status).toBe(200);
+    expect(feedRes.text).toContain('class="app-shell"');
+    expect(feedRes.text).toContain('Welcome back, Jordan!');
+    expect(feedRes.text).toContain('class="avatar" id="feedAvatarInitial">J<');
+    expect(feedRes.text).toContain('Aisha Khan');
+    expect(feedRes.text).toContain('Diego Fernandez');
+    expect(feedRes.text).toContain('Lin Wei');
+    expect(feedRes.text).toContain('Sam Okafor');
   });
 });
 
