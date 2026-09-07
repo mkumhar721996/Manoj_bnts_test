@@ -3,6 +3,7 @@ const registrationRouter = require('./routes/registration');
 const accountRouter = require('./routes/account');
 const verificationRouter = require('./routes/verification');
 const loginRouter = require('./routes/login');
+const tasksRouter = require('./routes/tasks');
 const webRouter = require('./routes/web');
 
 const app = express();
@@ -12,6 +13,7 @@ app.use('/api', registrationRouter);
 app.use('/api', accountRouter);
 app.use('/api', verificationRouter);
 app.use('/api', loginRouter);
+// app.use('/api', tasksRouter);
 app.use('/', webRouter);
 
 module.exports = app;
