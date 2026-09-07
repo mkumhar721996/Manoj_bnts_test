@@ -17,6 +17,7 @@ function parseCookies(header) {
     } catch (err) {
       // Malformed percent-encoding (e.g. a lone "%"): skip this cookie
       // rather than letting decodeURIComponent's URIError crash the request.
+      console.debug('[cookies] Failed to decode cookie value', { name });
     }
 
     return cookies;

@@ -7,6 +7,7 @@ function authenticateRequest(req, res) {
   const authHeader = req.headers.authorization;
 
   if (typeof authHeader !== 'string' || !authHeader.startsWith(BEARER_PREFIX)) {
+    console.warn('[auth] Missing or invalid Authorization header');
     res.status(401).json({ error: 'Authentication required' });
     return undefined;
   }
@@ -15,6 +16,7 @@ function authenticateRequest(req, res) {
   const userId = sessionStore.findUserId(sessionToken);
 
   if (!userId) {
+    console.warn('[auth] Session token not found or invalid');
     res.status(401).json({ error: 'Authentication required' });
     return undefined;
   }
@@ -22,6 +24,7 @@ function authenticateRequest(req, res) {
   const user = userStore.findById(userId);
 
   if (!user) {
+    console.warn('[auth] User lookup failed for session token', { userId });
     res.status(401).json({ error: 'Authentication required' });
     return undefined;
   }

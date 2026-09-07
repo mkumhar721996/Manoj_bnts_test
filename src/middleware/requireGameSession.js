@@ -6,6 +6,9 @@ function requireGameSession(req, res, next) {
   const sessionToken = cookies.sessionToken;
 
   if (!sessionToken || !sessionStore.isActive(sessionToken)) {
+    console.warn('[game] Rejected request with missing or inactive session', {
+      hasSessionToken: !!sessionToken,
+    });
     return res.redirect('/');
   }
 
