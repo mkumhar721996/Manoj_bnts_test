@@ -21,6 +21,10 @@ function parsePagination(query) {
   return { limit, offset };
 }
 
+function logTaskEvent(level, message, details) {
+  setImmediate(() => console[level](message, details));
+}
+
 function serialize(task) {
   const { id, title, description, dueDate, priority, tags, category, completed } = task;
   return { id, title, description, dueDate, priority, tags, category, completed };
@@ -59,7 +63,7 @@ router.post('/tasks', requireAuthenticatedUser, (req, res) => {
     completed: false,
   };
   taskStore.save(task);
-  console.info('[tasks] Task created', { userId: req.user.id, taskId: task.id });
+  logTaskEvent('info', '[tasks] Task created', { userId: req.user.id, taskId: task.id });
 
   return res.status(201).json(serialize(task));
 });
@@ -100,7 +104,7 @@ router.put('/tasks/:id', requireAuthenticatedUser, (req, res) => {
   task.priority = result.priority;
   task.tags = result.tags;
   task.category = result.category;
-  console.info('[tasks] Task updated', { userId: req.user.id, taskId: task.id });
+  logTaskEvent('info', '[tasks] Task updated', { userId: req.user.id, taskId: task.id });
 
   return res.status(200).json(serialize(task));
 });
@@ -112,7 +116,7 @@ router.delete('/tasks/:id', requireAuthenticatedUser, (req, res) => {
   }
 
   taskStore.removeById(task.id);
-  console.info('[tasks] Task deleted', { userId: req.user.id, taskId: task.id });
+  logTaskEvent('info', '[tasks] Task deleted', { userId: req.user.id, taskId: task.id });
 
   return res.status(200).json({ message: 'Task deleted' });
 });
@@ -124,7 +128,7 @@ router.patch('/tasks/:id/toggle', requireAuthenticatedUser, (req, res) => {
   }
 
   task.completed = !task.completed;
-  console.info('[tasks] Task toggled', {
+  logTaskEvent('info', '[tasks] Task toggled', {
     userId: req.user.id,
     taskId: task.id,
     completed: task.completed,
