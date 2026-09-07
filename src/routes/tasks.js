@@ -6,6 +6,21 @@ const { validate } = require('../validation/taskValidator');
 
 const router = express.Router();
 
+const DEFAULT_PAGE_SIZE = 50;
+const MAX_PAGE_SIZE = 50;
+
+function parsePagination(query) {
+  const rawLimit = Number.parseInt(query.limit, 10);
+  const rawOffset = Number.parseInt(query.offset, 10);
+
+  const limit = Number.isFinite(rawLimit) && rawLimit > 0
+    ? Math.min(rawLimit, MAX_PAGE_SIZE)
+    : DEFAULT_PAGE_SIZE;
+  const offset = Number.isFinite(rawOffset) && rawOffset > 0 ? rawOffset : 0;
+
+  return { limit, offset };
+}
+
 function serialize(task) {
   const { id, title, description, dueDate, priority, tags, category, completed } = task;
   return { id, title, description, dueDate, priority, tags, category, completed };
@@ -45,7 +60,11 @@ router.post('/tasks', requireAuthenticatedUser, (req, res) => {
 });
 
 router.get('/tasks', requireAuthenticatedUser, (req, res) => {
-  const tasks = taskStore.listForUser(req.user.id).map(serialize);
+  const { limit, offset } = parsePagination(req.query);
+  const tasks = taskStore
+    .listForUser(req.user.id)
+    .slice(offset, offset + limit)
+    .map(serialize);
   return res.status(200).json(tasks);
 });
 

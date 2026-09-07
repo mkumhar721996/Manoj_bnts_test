@@ -13,7 +13,7 @@ app.use('/api', registrationRouter);
 app.use('/api', accountRouter);
 app.use('/api', verificationRouter);
 app.use('/api', loginRouter);
-// app.use('/api', tasksRouter);
+app.use('/api', tasksRouter);
 app.use('/', webRouter);
 
 module.exports = app;
