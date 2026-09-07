@@ -57,6 +57,20 @@ beforeEach(() => {
   emailService.reset();
 });
 
+describe('the session cookie backing dashboard auth is hardened against cookie theft/CSRF replay', () => {
+  it('sets HttpOnly and SameSite=Strict on the sessionToken cookie issued at login', async () => {
+    const agent = request.agent(app);
+    const { loginRes } = await registerAndLogin(agent);
+
+    const setCookie = loginRes.headers['set-cookie'] || [];
+    const cookieLine = setCookie.find((line) => line.startsWith('sessionToken='));
+
+    expect(cookieLine).toBeDefined();
+    expect(cookieLine).toMatch(/HttpOnly/i);
+    expect(cookieLine).toMatch(/SameSite=Strict/i);
+  });
+});
+
 describe('AC1: status summary widget shows complete vs incomplete counts', () => {
   it('counts completed and incomplete tasks separately', async () => {
     const agent = request.agent(app);

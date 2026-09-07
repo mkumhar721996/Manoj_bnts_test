@@ -87,7 +87,14 @@ router.post('/login', (req, res) => {
   }
 
   const sessionToken = sessionStore.create(user.id);
-  res.cookie('sessionToken', sessionToken, { httpOnly: true });
+  res.cookie('sessionToken', sessionToken, {
+    httpOnly: true,
+    sameSite: 'strict',
+    // Only over HTTPS in production: supertest/jest run the app over plain
+    // HTTP, and a `secure` cookie would silently be dropped by the client
+    // there, breaking every authenticated-agent test.
+    secure: process.env.NODE_ENV === 'production',
+  });
 
   return res.status(200).type('html').send(renderFeedPage(user));
 });
