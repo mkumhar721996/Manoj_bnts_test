@@ -6,6 +6,12 @@ function requireSession(req, res, next) {
   const sessionToken = cookies.sessionToken;
 
   if (!sessionToken || !sessionStore.isActive(sessionToken)) {
+    const { reason, userId } = sessionStore.describeRejection(sessionToken);
+    console.info('requireSession: rejecting request', {
+      tokenPresent: Boolean(sessionToken),
+      reason,
+      userId,
+    });
     return res.redirect('/');
   }
 

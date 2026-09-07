@@ -429,3 +429,37 @@ describe('AC14: unauthenticated access to the dashboard redirects to the login p
     expect(res.text).not.toContain('id="dashboard"');
   });
 });
+
+describe('session rejection on /dashboard is logged instead of failing silently', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('logs that the token was missing when there is no session cookie', async () => {
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
+
+    await request(app).get('/dashboard');
+
+    expect(infoSpy).toHaveBeenCalledWith(
+      'requireSession: rejecting request',
+      expect.objectContaining({ tokenPresent: false, reason: 'missing' })
+    );
+  });
+
+  it('logs the expired reason and userId when the session token has expired', async () => {
+    const agent = request.agent(app);
+    const { loginRes, payload } = await registerAndLogin(agent);
+    const token = extractSessionToken(loginRes);
+    sessionStore.expire(token);
+    const userId = userIdFor(payload.email);
+
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
+
+    await agent.get('/dashboard');
+
+    expect(infoSpy).toHaveBeenCalledWith(
+      'requireSession: rejecting request',
+      expect.objectContaining({ tokenPresent: true, reason: 'expired', userId })
+    );
+  });
+});

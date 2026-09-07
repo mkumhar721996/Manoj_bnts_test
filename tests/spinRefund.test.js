@@ -7,6 +7,33 @@ beforeEach(() => {
   spinStore.reset();
 });
 
+describe('a failed spin resolution is logged instead of failing silently', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('logs the spin id, user id, amount, and error before refunding', async () => {
+    walletStore.credit('user-1', 500);
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+    const result = await spinService.placeSpin({
+      userId: 'user-1',
+      amount: 100,
+      resolveOutcome: () => Promise.reject(new Error('game engine error')),
+    });
+
+    expect(errorSpy).toHaveBeenCalledWith(
+      'spinService.placeSpin: resolveOutcome failed, refunding spin',
+      expect.objectContaining({
+        spinId: result.spinId,
+        userId: 'user-1',
+        amount: 100,
+        error: 'game engine error',
+      })
+    );
+  });
+});
+
 describe('AC1: failed resolution immediately credits the full wager back', () => {
   it('refunds the wager when the spin outcome cannot be resolved', async () => {
     walletStore.credit('user-1', 500);

@@ -49,6 +49,40 @@ describe('AC1: no session token redirects to the homepage', () => {
   });
 });
 
+describe('session rejection on /game is logged instead of failing silently', () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it('logs that the token was missing when there is no session cookie', async () => {
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
+
+    await request(app).get('/game');
+
+    expect(infoSpy).toHaveBeenCalledWith(
+      'requireGameSession: rejecting request',
+      expect.objectContaining({ tokenPresent: false, reason: 'missing' })
+    );
+  });
+
+  it('logs the expired reason and userId when the session token has expired', async () => {
+    const agent = request.agent(app);
+    const { loginRes, payload } = await registerAndLogin(agent);
+    const token = extractSessionToken(loginRes);
+    sessionStore.expire(token);
+    const userId = userStore.findByEmail(payload.email).id;
+
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
+
+    await agent.get('/game');
+
+    expect(infoSpy).toHaveBeenCalledWith(
+      'requireGameSession: rejecting request',
+      expect.objectContaining({ tokenPresent: true, reason: 'expired', userId })
+    );
+  });
+});
+
 describe('AC2: valid, active session serves the game page without a credential prompt', () => {
   it('serves the slot-machine page after logging in', async () => {
     const agent = request.agent(app);

@@ -9,11 +9,15 @@ function getBalance(userId) {
 }
 
 function credit(userId, amount) {
-  balances.set(userId, getBalance(userId) + amount);
+  const balance = getBalance(userId) + amount;
+  balances.set(userId, balance);
+  console.info('walletStore.credit', { userId, amount, balance });
 }
 
 function debit(userId, amount) {
-  balances.set(userId, getBalance(userId) - amount);
+  const balance = getBalance(userId) - amount;
+  balances.set(userId, balance);
+  console.info('walletStore.debit', { userId, amount, balance });
 }
 
 module.exports = { reset, getBalance, credit, debit };
