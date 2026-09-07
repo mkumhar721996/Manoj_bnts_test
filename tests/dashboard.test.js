@@ -438,8 +438,11 @@ describe('session rejection on /dashboard is logged instead of failing silently'
   it('logs that the token was missing when there is no session cookie', async () => {
     const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
 
-    await request(app).get('/dashboard');
+    const res = await request(app).get('/dashboard');
 
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/');
+    expect(res.text).not.toContain('id="dashboard"');
     expect(infoSpy).toHaveBeenCalledWith(
       'requireSession: rejecting request',
       expect.objectContaining({ tokenPresent: false, reason: 'missing' })
@@ -455,8 +458,11 @@ describe('session rejection on /dashboard is logged instead of failing silently'
 
     const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
 
-    await agent.get('/dashboard');
+    const res = await agent.get('/dashboard');
 
+    expect(res.status).toBe(302);
+    expect(res.headers.location).toBe('/');
+    expect(res.text).not.toContain('id="dashboard"');
     expect(infoSpy).toHaveBeenCalledWith(
       'requireSession: rejecting request',
       expect.objectContaining({ tokenPresent: true, reason: 'expired', userId })

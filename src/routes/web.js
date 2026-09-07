@@ -9,7 +9,6 @@ const { renderCartPage } = require('../views/pages/cartPage');
 const { renderCheckoutPage } = require('../views/pages/checkoutPage');
 const { renderExpensesPage } = require('../views/pages/expensesPage');
 const { renderAddExpensePage } = require('../views/pages/addExpensePage');
-const { renderGamePage } = require('../views/pages/gamePage');
 const { renderDashboardPage } = require('../views/pages/dashboardPage');
 const { validate } = require('../validation/webRegistrationValidator');
 const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
@@ -20,7 +19,6 @@ const expenseStore = require('../store/expenseStore');
 const sessionStore = require('../store/sessionStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
-const requireGameSession = require('../middleware/requireGameSession');
 const requireSession = require('../middleware/requireSession');
 const dashboardService = require('../services/dashboardService');
 
@@ -152,10 +150,6 @@ router.post('/expenses', (req, res) => {
       total: expenseStore.totalForCurrentPeriod(),
     })
   );
-});
-
-router.get('/game', requireGameSession, (req, res) => {
-  res.type('html').send(renderGamePage());
 });
 
 router.get('/dashboard', requireSession, (req, res) => {

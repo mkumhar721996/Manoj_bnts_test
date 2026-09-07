@@ -16,8 +16,9 @@ describe('parseCookies', () => {
   it('logs a warning with the cookie name and error when decoding fails', () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    parseCookies('sessionToken=%; other=xyz');
+    const result = parseCookies('sessionToken=%; other=xyz');
 
+    expect(result).toEqual({ other: 'xyz' });
     expect(warnSpy).toHaveBeenCalledWith(
       'parseCookies: failed to decode cookie value',
       expect.objectContaining({ name: 'sessionToken', value: '%', error: expect.any(String) })
