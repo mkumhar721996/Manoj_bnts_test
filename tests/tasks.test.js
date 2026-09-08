@@ -237,10 +237,16 @@ describe('AC5: pagination controls and navigation between pages', () => {
     expect(page1.status).toBe(200);
     expect(page1.text).toContain('id="pagination"');
     expect(page1.text).toMatch(/Page 1 of 2/);
+    expect(page1.text).toContain('Task Three');
+    expect(page1.text).toContain('Task Two');
+    expect(page1.text).not.toContain('Task One');
 
     const page2 = await agent.get('/tasks?page=2&pageSize=2');
     expect(page2.status).toBe(200);
     expect(page2.text).toMatch(/Page 2 of 2/);
+    expect(page2.text).toContain('Task One');
+    expect(page2.text).not.toContain('Task Two');
+    expect(page2.text).not.toContain('Task Three');
   });
 });
 
