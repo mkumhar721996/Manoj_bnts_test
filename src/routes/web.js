@@ -10,16 +10,20 @@ const { renderCheckoutPage } = require('../views/pages/checkoutPage');
 const { renderExpensesPage } = require('../views/pages/expensesPage');
 const { renderAddExpensePage } = require('../views/pages/addExpensePage');
 const { renderGamePage } = require('../views/pages/gamePage');
+const { renderTasksPage } = require('../views/pages/tasksPage');
 const { validate } = require('../validation/webRegistrationValidator');
 const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
 const { validate: validateExpense } = require('../validation/expenseValidator');
+const { validate: validateTaskListQuery } = require('../validation/taskListQueryValidator');
 const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
 const expenseStore = require('../store/expenseStore');
 const sessionStore = require('../store/sessionStore');
+const taskStore = require('../store/taskStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const requireGameSession = require('../middleware/requireGameSession');
+const requireWebSession = require('../middleware/requireWebSession');
 
 const router = express.Router();
 
@@ -146,6 +150,21 @@ router.post('/expenses', (req, res) => {
 
 router.get('/game', requireGameSession, (req, res) => {
   res.type('html').send(renderGamePage());
+});
+
+router.get('/tasks', requireWebSession, (req, res) => {
+  const options = validateTaskListQuery(req.query);
+  const result = taskStore.list(req.user.id, options);
+
+  res.type('html').send(
+    renderTasksPage({
+      items: result.items,
+      totalCount: result.totalCount,
+      page: result.page,
+      totalPages: result.totalPages,
+      filters: options,
+    })
+  );
 });
 
 module.exports = router;
