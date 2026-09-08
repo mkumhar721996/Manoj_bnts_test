@@ -17,6 +17,11 @@ function parseCookies(header) {
     } catch (err) {
       // Malformed percent-encoding (e.g. a lone "%"): skip this cookie
       // rather than letting decodeURIComponent's URIError crash the request.
+      console.warn('parseCookies: failed to decode cookie value', {
+        name,
+        value: value.length > 50 ? `${value.slice(0, 50)}...` : value,
+        error: err.message,
+      });
     }
 
     return cookies;

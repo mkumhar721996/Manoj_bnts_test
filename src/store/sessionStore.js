@@ -47,4 +47,27 @@ function expire(token) {
   expireTokenRecord(sessions, token);
 }
 
-module.exports = { create, findUserId, isActive, touch, expire, reset };
+// Only meaningful to call after isActive(token) has already returned false;
+// gives middleware enough detail (without touching state) to log *why* a
+// session was rejected instead of redirecting silently.
+function describeRejection(token) {
+  if (!token) {
+    return { reason: 'missing', userId: undefined };
+  }
+
+  const record = sessions.get(token);
+  if (!record) {
+    return { reason: 'missing', userId: undefined };
+  }
+
+  const now = Date.now();
+  if (now > record.expiresAt) {
+    return { reason: 'expired', userId: record.userId };
+  }
+  if (now - record.lastActiveAt > IDLE_TIMEOUT_MS) {
+    return { reason: 'idle', userId: record.userId };
+  }
+  return { reason: 'active', userId: record.userId };
+}
+
+module.exports = { create, findUserId, isActive, touch, expire, reset, describeRejection };

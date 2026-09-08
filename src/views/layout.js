@@ -278,6 +278,17 @@ a:hover { text-decoration: underline; }
 .contact { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
 
 .back-link { display: inline-block; margin-top: var(--space-4); font-size: var(--font-size-sm); }
+
+.task-overdue { border-left: 3px solid var(--danger); padding-left: var(--space-2); }
+.overdue-badge {
+  display: inline-block;
+  background: var(--danger-tint);
+  color: var(--danger);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-sm);
+  padding: 1px var(--space-2);
+}
 `;
 
 function renderLayout(title, bodyHtml) {

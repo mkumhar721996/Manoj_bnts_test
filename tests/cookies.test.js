@@ -12,4 +12,18 @@ describe('parseCookies', () => {
     expect(() => parseCookies('sessionToken=%; other=xyz')).not.toThrow();
     expect(parseCookies('sessionToken=%; other=xyz')).toEqual({ other: 'xyz' });
   });
+
+  it('logs a warning with the cookie name and error when decoding fails', () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const result = parseCookies('sessionToken=%; other=xyz');
+
+    expect(result).toEqual({ other: 'xyz' });
+    expect(warnSpy).toHaveBeenCalledWith(
+      'parseCookies: failed to decode cookie value',
+      expect.objectContaining({ name: 'sessionToken', value: '%', error: expect.any(String) })
+    );
+
+    warnSpy.mockRestore();
+  });
 });
