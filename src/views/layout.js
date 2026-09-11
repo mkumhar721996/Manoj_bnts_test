@@ -107,8 +107,17 @@ a:hover { text-decoration: underline; }
 .btn-success:hover { background: var(--success-dark); }
 .btn-ghost { background: transparent; color: var(--brand); border: 1px solid var(--border); }
 .btn-ghost:hover { background: var(--brand-tint); }
+.btn-danger { background: var(--danger); color: var(--brand-contrast); }
+.btn-danger:hover { background: var(--danger); opacity: 0.9; }
 .btn:disabled { opacity: 0.6; cursor: default; }
 .btn-block { width: 100%; }
+
+.loading-indicator {
+  font-size: var(--font-size-sm);
+  color: var(--muted);
+  margin-bottom: var(--space-2);
+}
+.loading-indicator[hidden] { display: none; }
 
 .hero {
   max-width: var(--max-content-width);

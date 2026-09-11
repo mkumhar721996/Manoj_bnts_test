@@ -7,6 +7,7 @@ function validate(payload) {
   const category = typeof payload.category === 'string' ? payload.category.trim() : '';
   const date = typeof payload.date === 'string' ? payload.date.trim() : '';
   const note = typeof payload.note === 'string' ? payload.note.trim() : '';
+  const merchant = typeof payload.merchant === 'string' ? payload.merchant.trim() : '';
 
   const amount = rawAmount === '' ? NaN : Number(rawAmount);
 
@@ -26,7 +27,7 @@ function validate(payload) {
     errors.push('Date must be a valid calendar date.');
   }
 
-  return { errors, amount: errors.length > 0 ? rawAmount : amount, category, date, note };
+  return { errors, amount: errors.length > 0 ? rawAmount : amount, category, date, merchant, note };
 }
 
 module.exports = { validate };

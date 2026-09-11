@@ -1,7 +1,7 @@
 const { renderLayout } = require('../layout');
 const { escapeHtml } = require('../../utils/escapeHtml');
 
-function renderAddExpensePage({ errors = [], values = {} } = {}) {
+function renderEditExpensePage({ id, errors = [], values = {} } = {}) {
   const amount = values.amount !== undefined ? values.amount : '';
   const category = values.category !== undefined ? values.category : '';
   const date = values.date !== undefined ? values.date : '';
@@ -16,8 +16,8 @@ function renderAddExpensePage({ errors = [], values = {} } = {}) {
 
   const body = `
 <div class="status-screen">
-  <form class="card" action="/expenses" method="post" novalidate>
-    <h2>Add Expense</h2>
+  <form class="card" action="/expenses/${escapeHtml(id)}" method="post" novalidate>
+    <h2>Edit Expense</h2>
     ${
       errors.length > 0
         ? `<div class="alert alert-danger"><ul>${errors
@@ -77,12 +77,26 @@ function renderAddExpensePage({ errors = [], values = {} } = {}) {
       <textarea id="expense-note" name="note">${escapeHtml(note)}</textarea>
     </div>
 
-    <button class="btn btn-brand btn-block" type="submit">Save Expense</button>
+    <p class="loading-indicator" id="save-loading-indicator" hidden role="status" aria-live="polite">Saving…</p>
+    <button class="btn btn-brand btn-block" type="submit" id="save-expense-action">Save Expense</button>
   </form>
+  <a class="back-link" href="/expenses">Back to expenses</a>
 </div>
+<script>
+  (function () {
+    var form = document.querySelector('form[action="/expenses/${escapeHtml(id)}"]');
+    if (!form) { return; }
+    form.addEventListener('submit', function () {
+      var indicator = document.getElementById('save-loading-indicator');
+      var button = document.getElementById('save-expense-action');
+      if (indicator) { indicator.hidden = false; }
+      if (button) { button.disabled = true; }
+    });
+  })();
+</script>
 `;
 
-  return renderLayout('Add Expense', body);
+  return renderLayout('Edit Expense', body);
 }
 
-module.exports = { renderAddExpensePage };
+module.exports = { renderEditExpensePage };
