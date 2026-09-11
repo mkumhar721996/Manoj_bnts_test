@@ -198,7 +198,7 @@ describe('Edit AC1: editing any field persists the update and reflects it in the
       .send({
         amount: '42.50',
         category: 'Transport',
-        date: '2020-05-05',
+        date: todayDate(),
         merchant: 'Metro',
         note: 'train pass',
       });
@@ -295,6 +295,35 @@ describe('Delete AC6: cancelling the delete confirmation leaves the expense unto
 
     const listRes = await request(app).get('/expenses');
     expect(listRes.text).toContain('Corner Cafe');
+  });
+});
+
+describe('404 handling: mutation routes reject nonexistent expense ids', () => {
+  it('returns 404 for GET /expenses/:id/edit when the expense does not exist', async () => {
+    const res = await request(app).get('/expenses/does-not-exist/edit');
+
+    expect(res.status).toBe(404);
+  });
+
+  it('returns 404 for POST /expenses/:id when the expense does not exist', async () => {
+    const res = await request(app)
+      .post('/expenses/does-not-exist')
+      .type('form')
+      .send({ amount: '10', category: 'Food', date: todayDate(), merchant: '', note: '' });
+
+    expect(res.status).toBe(404);
+  });
+
+  it('returns 404 for GET /expenses/:id/delete-confirm when the expense does not exist', async () => {
+    const res = await request(app).get('/expenses/does-not-exist/delete-confirm');
+
+    expect(res.status).toBe(404);
+  });
+
+  it('returns 404 for POST /expenses/:id/delete when the expense does not exist', async () => {
+    const res = await request(app).post('/expenses/does-not-exist/delete');
+
+    expect(res.status).toBe(404);
   });
 });
 

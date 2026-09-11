@@ -5,6 +5,7 @@ function renderAddExpensePage({ errors = [], values = {} } = {}) {
   const amount = values.amount !== undefined ? values.amount : '';
   const category = values.category !== undefined ? values.category : '';
   const date = values.date !== undefined ? values.date : '';
+  const merchant = values.merchant !== undefined ? values.merchant : '';
   const note = values.note !== undefined ? values.note : '';
 
   const amountError = errors.includes('Amount is required.') ||
@@ -59,6 +60,16 @@ function renderAddExpensePage({ errors = [], values = {} } = {}) {
         ${dateError ? 'aria-invalid="true" aria-describedby="expense-date-error"' : ''}
       >
       ${dateError ? `<p class="field-error" id="expense-date-error">${escapeHtml(errors.find((error) => error.startsWith('Date')))}</p>` : ''}
+    </div>
+
+    <div class="field">
+      <label for="expense-merchant">Merchant</label>
+      <input
+        type="text"
+        id="expense-merchant"
+        name="merchant"
+        value="${escapeHtml(merchant)}"
+      >
     </div>
 
     <div class="field">

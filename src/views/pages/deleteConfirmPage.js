@@ -17,7 +17,7 @@ function renderDeleteConfirmPage({ expense } = {}) {
     </div>
 
     <form action="/expenses/${escapeHtml(expense.id)}/delete" method="post">
-      <p class="loading-indicator" id="delete-loading-indicator" hidden>Deleting…</p>
+      <p class="loading-indicator" id="delete-loading-indicator" hidden role="status" aria-live="polite">Deleting…</p>
       <button class="btn btn-danger btn-block" type="submit" id="confirm-delete-action">Delete Expense</button>
     </form>
     <a class="back-link" id="cancel-delete-action" href="/expenses">Cancel</a>

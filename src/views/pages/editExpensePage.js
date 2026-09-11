@@ -77,7 +77,7 @@ function renderEditExpensePage({ id, errors = [], values = {} } = {}) {
       <textarea id="expense-note" name="note">${escapeHtml(note)}</textarea>
     </div>
 
-    <p class="loading-indicator" id="save-loading-indicator" hidden>Saving…</p>
+    <p class="loading-indicator" id="save-loading-indicator" hidden role="status" aria-live="polite">Saving…</p>
     <button class="btn btn-brand btn-block" type="submit" id="save-expense-action">Save Expense</button>
   </form>
   <a class="back-link" href="/expenses">Back to expenses</a>
