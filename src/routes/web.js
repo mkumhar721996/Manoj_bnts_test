@@ -9,6 +9,8 @@ const { renderCartPage } = require('../views/pages/cartPage');
 const { renderCheckoutPage } = require('../views/pages/checkoutPage');
 const { renderExpensesPage } = require('../views/pages/expensesPage');
 const { renderAddExpensePage } = require('../views/pages/addExpensePage');
+const { renderEditExpensePage } = require('../views/pages/editExpensePage');
+const { renderDeleteConfirmPage } = require('../views/pages/deleteConfirmPage');
 const { renderGamePage } = require('../views/pages/gamePage');
 const { validate } = require('../validation/webRegistrationValidator');
 const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
@@ -135,6 +137,73 @@ router.post('/expenses', (req, res) => {
   }
 
   expenseStore.save({ id: crypto.randomUUID(), amount, category, date, note });
+
+  return res.status(200).type('html').send(
+    renderExpensesPage({
+      expenses: expenseStore.listForCurrentPeriod(),
+      total: expenseStore.totalForCurrentPeriod(),
+    })
+  );
+});
+
+router.get('/expenses/:id/edit', (req, res) => {
+  const expense = expenseStore.findById(req.params.id);
+
+  if (!expense) {
+    return res.status(404).end();
+  }
+
+  return res.type('html').send(renderEditExpensePage({ id: expense.id, values: expense }));
+});
+
+router.post('/expenses/:id', (req, res) => {
+  const expense = expenseStore.findById(req.params.id);
+
+  if (!expense) {
+    return res.status(404).end();
+  }
+
+  const { errors, amount, category, date, merchant, note } = validateExpense(req.body || {});
+
+  if (errors.length > 0) {
+    return res
+      .status(400)
+      .type('html')
+      .send(
+        renderEditExpensePage({
+          id: expense.id,
+          errors,
+          values: { amount, category, date, merchant, note },
+        })
+      );
+  }
+
+  expenseStore.update(expense.id, { amount, category, date, merchant, note });
+
+  return res.status(200).type('html').send(
+    renderExpensesPage({
+      expenses: expenseStore.listForCurrentPeriod(),
+      total: expenseStore.totalForCurrentPeriod(),
+    })
+  );
+});
+
+router.get('/expenses/:id/delete-confirm', (req, res) => {
+  const expense = expenseStore.findById(req.params.id);
+
+  if (!expense) {
+    return res.status(404).end();
+  }
+
+  return res.type('html').send(renderDeleteConfirmPage({ expense }));
+});
+
+router.post('/expenses/:id/delete', (req, res) => {
+  const removed = expenseStore.remove(req.params.id);
+
+  if (!removed) {
+    return res.status(404).end();
+  }
 
   return res.status(200).type('html').send(
     renderExpensesPage({

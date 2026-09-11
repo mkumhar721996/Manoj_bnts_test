@@ -12,7 +12,13 @@ function renderExpensesPage({ expenses = [], total = 0 } = {}) {
         <div>
           <div class="post-author">${escapeHtml(expense.category)} — $${expense.amount.toFixed(2)}</div>
           <div class="post-meta">${escapeHtml(expense.date)}</div>
+          ${expense.merchant ? `<p>${escapeHtml(expense.merchant)}</p>` : ''}
           ${expense.note ? `<p>${escapeHtml(expense.note)}</p>` : ''}
+          <div>
+            <a id="edit-expense-${escapeHtml(expense.id)}" href="/expenses/${escapeHtml(expense.id)}/edit">Edit</a>
+            &middot;
+            <a id="delete-expense-${escapeHtml(expense.id)}" href="/expenses/${escapeHtml(expense.id)}/delete-confirm">Delete</a>
+          </div>
         </div>
       </li>`
           )
