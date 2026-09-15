@@ -17,8 +17,17 @@ function findById(id) {
   return undefined;
 }
 
+function findByPhone(phone) {
+  for (const user of users.values()) {
+    if (user.phone === phone) {
+      return user;
+    }
+  }
+  return undefined;
+}
+
 function save(user) {
   users.set(user.email.toLowerCase(), user);
 }
 
-module.exports = { findByEmail, findById, save, reset };
+module.exports = { findByEmail, findById, findByPhone, save, reset };

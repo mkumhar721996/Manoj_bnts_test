@@ -238,6 +238,23 @@ describe('Edit AC2: clearing a required field on edit blocks the save with an in
   });
 });
 
+describe('Edit logging: changedFields only lists fields whose value actually changed', () => {
+  it('reports only merchant as changed when other fields are resubmitted unchanged', async () => {
+    const id = await createExpense();
+    const infoSpy = jest.spyOn(console, 'info').mockImplementation(() => {});
+
+    await request(app)
+      .post(`/expenses/${id}`)
+      .type('form')
+      .send({ amount: '10', category: 'Food', date: todayDate(), merchant: 'New Cafe', note: 'lunch' });
+
+    const startLog = infoSpy.mock.calls.map((call) => call[0]).find((line) => line.includes('update starting'));
+    expect(startLog).toContain('changedFields=merchant');
+
+    infoSpy.mockRestore();
+  });
+});
+
 describe('Delete AC3: deleting removes the expense immediately with no undo option', () => {
   it('removes the expense from the list and offers no undo', async () => {
     const id = await createExpense();
