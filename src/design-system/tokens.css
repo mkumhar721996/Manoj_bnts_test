@@ -3,30 +3,30 @@
  */
 
 :root {
-  --color-fg: [object Object]; /** Default text color on light backgrounds. Paired with color-bg, contrast ratio is ~15.3:1 (WCAG AAA). */
-  --color-bg: [object Object]; /** Default page/surface background color. */
-  --color-primary: [object Object]; /** Primary brand/action color used for buttons, links, and focus accents. */
-  --color-primary-fg: [object Object]; /** Text/icon color for content placed on top of color-primary. Contrast against color-primary is ~5.2:1 (WCAG AA). */
-  --color-border: [object Object]; /** Default border color for cards, inputs, and dividers. */
-  --color-surface: [object Object]; /** Slightly raised surface background, e.g. cards on top of color-bg. */
-  --color-danger: [object Object]; /** Destructive/error color for delete actions and error states. */
-  --color-danger-fg: [object Object]; /** Text/icon color for content placed on top of color-danger. */
-  --color-muted-fg: [object Object]; /** Secondary/muted text color, e.g. helper text and placeholders. */
-  --space-1: [object Object]; /** Smallest spacing step, used for tight gaps (e.g. icon-to-label). */
-  --space-2: [object Object]; /** Base spacing step, used for compact padding and gaps. */
-  --space-3: [object Object]; /** Medium spacing step, used for component padding. */
-  --space-4: [object Object]; /** Large spacing step, used for section/card padding. */
-  --radius-sm: [object Object]; /** Corner radius for small controls like chips and inputs. */
-  --radius-md: [object Object]; /** Corner radius for buttons and form controls. */
-  --radius-lg: [object Object]; /** Corner radius for cards and large containers. */
-  --font-size-sm: [object Object]; /** Small text size, used for helper/caption text and chips. */
-  --font-size-md: [object Object]; /** Base body text size. */
-  --font-size-lg: [object Object]; /** Large text size, used for headings and emphasis. */
-  --border-width-sm: [object Object]; /** Default hairline border width used across inputs, chips, and cards. */
+  --color-fg: #1b1f25; /** Default text color on light backgrounds. Paired with color-bg, contrast ratio is ~15.3:1 (WCAG AAA). */
+  --color-bg: #ffffff; /** Default page/surface background color. */
+  --color-primary: #2563eb; /** Primary brand/action color used for buttons, links, and focus accents. */
+  --color-primary-fg: #ffffff; /** Text/icon color for content placed on top of color-primary. Contrast against color-primary is ~5.2:1 (WCAG AA). */
+  --color-border: #d8dde5; /** Default border color for cards, inputs, and dividers. */
+  --color-surface: #f9fafc; /** Slightly raised surface background, e.g. cards on top of color-bg. */
+  --color-danger: #c81b25; /** Destructive/error color for delete actions and error states. */
+  --color-danger-fg: #ffffff; /** Text/icon color for content placed on top of color-danger. */
+  --color-muted-fg: #5d656f; /** Secondary/muted text color, e.g. helper text and placeholders. */
+  --space-1: 4px; /** Smallest spacing step, used for tight gaps (e.g. icon-to-label). */
+  --space-2: 8px; /** Base spacing step, used for compact padding and gaps. */
+  --space-3: 16px; /** Medium spacing step, used for component padding. */
+  --space-4: 24px; /** Large spacing step, used for section/card padding. */
+  --radius-sm: 4px; /** Corner radius for small controls like chips and inputs. */
+  --radius-md: 8px; /** Corner radius for buttons and form controls. */
+  --radius-lg: 16px; /** Corner radius for cards and large containers. */
+  --font-size-sm: 12px; /** Small text size, used for helper/caption text and chips. */
+  --font-size-md: 16px; /** Base body text size. */
+  --font-size-lg: 24px; /** Large text size, used for headings and emphasis. */
+  --border-width-sm: 1px; /** Default hairline border width used across inputs, chips, and cards. */
   --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /** Default system font stack for body text and UI. */
   --font-weight-regular: 400; /** Regular text weight. */
   --font-weight-bold: 700; /** Bold text weight, used for headings and emphasis. */
-  --shadow-card: [object Object] [object Object] [object Object] [object Object] [object Object]; /** Subtle elevation shadow used on cards. */
+  --shadow-card: 0px 2px 8px 0px rgba(27, 31, 37, 0.08); /** Subtle elevation shadow used on cards. */
   --button-primary-background: var(--color-primary); /** Alias to the base brand color for primary button backgrounds. */
   --button-primary-foreground: var(--color-primary-fg); /** Alias for text/icon color on primary buttons. */
   --button-primary-radius: var(--radius-md); /** Alias for primary button corner radius. */
