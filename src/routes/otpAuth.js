@@ -12,8 +12,27 @@ const { renderOtpAccountPage } = require('../views/pages/otpAccountPage');
 
 const router = express.Router();
 
-function isInvalidOtp(record, code) {
-  return !record || record.used || record.expiresAt < Date.now() || record.code !== code;
+const INCORRECT_CODE_ERROR = 'That code is incorrect. Please try again.';
+const LOCKED_OUT_ERROR = 'Too many incorrect attempts. Please request a new code.';
+
+function verifyOtp(identifier, purpose, code) {
+  if (typeof identifier !== 'string') {
+    return { status: 'invalid' };
+  }
+  if (otpStore.isLocked(identifier, purpose)) {
+    return { status: 'locked' };
+  }
+
+  const record = otpStore.find(identifier, purpose);
+  if (!record || record.used || record.expiresAt < Date.now() || record.code !== code) {
+    otpStore.recordFailedAttempt(identifier, purpose);
+    if (otpStore.isLocked(identifier, purpose)) {
+      return { status: 'locked' };
+    }
+    return { status: 'invalid' };
+  }
+
+  return { status: 'valid', record };
 }
 
 router.get('/signup', (req, res) => {
@@ -38,19 +57,19 @@ router.post('/signup', (req, res) => {
 
 router.post('/signup/verify', (req, res) => {
   const { identifier, code } = req.body || {};
-  const record = typeof identifier === 'string' ? otpStore.find(identifier, 'signup') : undefined;
+  const result = verifyOtp(identifier, 'signup', code);
 
-  if (isInvalidOtp(record, code)) {
+  if (result.status === 'locked') {
+    return res
+      .status(429)
+      .type('html')
+      .send(renderOtpCodePage({ mode: 'signup', identifier, error: LOCKED_OUT_ERROR }));
+  }
+  if (result.status === 'invalid') {
     return res
       .status(400)
       .type('html')
-      .send(
-        renderOtpCodePage({
-          mode: 'signup',
-          identifier,
-          error: 'That code is incorrect. Please try again.',
-        })
-      );
+      .send(renderOtpCodePage({ mode: 'signup', identifier, error: INCORRECT_CODE_ERROR }));
   }
 
   otpStore.markUsed(identifier, 'signup');
@@ -58,7 +77,7 @@ router.post('/signup/verify', (req, res) => {
   if (!user) {
     user = {
       id: crypto.randomUUID(),
-      ...(record.type === 'email' ? { email: identifier } : { phone: identifier }),
+      ...(result.record.type === 'email' ? { email: identifier } : { phone: identifier }),
       verified: true,
     };
     userStore.save(user);
@@ -99,23 +118,35 @@ router.post('/login', (req, res) => {
 
 router.post('/login/verify', (req, res) => {
   const { identifier, code } = req.body || {};
-  const record = typeof identifier === 'string' ? otpStore.find(identifier, 'login') : undefined;
+  const result = verifyOtp(identifier, 'login', code);
 
-  if (isInvalidOtp(record, code)) {
+  if (result.status === 'locked') {
+    return res
+      .status(429)
+      .type('html')
+      .send(renderOtpCodePage({ mode: 'login', identifier, error: LOCKED_OUT_ERROR }));
+  }
+  if (result.status === 'invalid') {
     return res
       .status(400)
       .type('html')
-      .send(
-        renderOtpCodePage({
-          mode: 'login',
-          identifier,
-          error: 'That code is incorrect. Please try again.',
-        })
-      );
+      .send(renderOtpCodePage({ mode: 'login', identifier, error: INCORRECT_CODE_ERROR }));
   }
 
   otpStore.markUsed(identifier, 'login');
   const user = userStore.findByIdentifier(identifier);
+  if (!user) {
+    return res
+      .status(400)
+      .type('html')
+      .send(
+        renderOtpIdentifierPage({
+          mode: 'login',
+          error: 'No account found for that phone number or email address.',
+        })
+      );
+  }
+
   const sessionToken = sessionStore.create(user.id);
   res.cookie('sessionToken', sessionToken, { httpOnly: true });
   return res.status(200).type('html').send(renderOtpAccountPage({ identifier }));

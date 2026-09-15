@@ -159,6 +159,21 @@ describe('edge case: malformed identifier input', () => {
   });
 });
 
+describe('security: brute-force lockout on repeated incorrect OTP attempts', () => {
+  it('returns 429 after too many incorrect signup verification attempts', async () => {
+    const identifier = 'lockout.signup@example.com';
+    await request(app).post('/otp/signup').type('form').send({ identifier });
+
+    let res;
+    for (let i = 0; i < 5; i += 1) {
+      res = await request(app).post('/otp/signup/verify').type('form').send({ identifier, code: '000000' });
+    }
+
+    expect(res.status).toBe(429);
+    expect(userStore.findByIdentifier(identifier)).toBeUndefined();
+  });
+});
+
 describe('edge case: duplicate sign-up reuses the existing account', () => {
   it('does not create a second user record for an already-registered identifier', async () => {
     const identifier = 'existing.signup@example.com';

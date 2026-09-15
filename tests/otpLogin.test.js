@@ -127,6 +127,56 @@ describe('edge case: malformed identifier input', () => {
   });
 });
 
+describe('edge case: the account is removed between OTP creation and verification', () => {
+  it('returns a 400 instead of crashing when the user record no longer exists', async () => {
+    const identifier = 'deleted.before.verify@example.com';
+    userStore.save({ id: crypto.randomUUID(), email: identifier, verified: true });
+    await request(app).post('/otp/login').type('form').send({ identifier });
+    const { code } = emailService.getLastOtpEmailTo(identifier);
+
+    userStore.reset();
+
+    const res = await request(app).post('/otp/login/verify').type('form').send({ identifier, code });
+
+    expect(res.status).toBe(400);
+  });
+});
+
+describe('security: brute-force lockout on repeated incorrect OTP attempts', () => {
+  it('returns 429 after too many incorrect login verification attempts', async () => {
+    const identifier = 'lockout.user@example.com';
+    userStore.save({ id: crypto.randomUUID(), email: identifier, verified: true });
+    await request(app).post('/otp/login').type('form').send({ identifier });
+
+    let res;
+    for (let i = 0; i < 5; i += 1) {
+      res = await request(app).post('/otp/login/verify').type('form').send({ identifier, code: '000000' });
+    }
+
+    expect(res.status).toBe(429);
+  });
+
+  it('rejects the correct code once locked out, until a new OTP is requested', async () => {
+    const identifier = 'lockout.correct.user@example.com';
+    userStore.save({ id: crypto.randomUUID(), email: identifier, verified: true });
+    await request(app).post('/otp/login').type('form').send({ identifier });
+    const { code } = emailService.getLastOtpEmailTo(identifier);
+
+    for (let i = 0; i < 5; i += 1) {
+      await request(app).post('/otp/login/verify').type('form').send({ identifier, code: '000000' });
+    }
+
+    const lockedRes = await request(app).post('/otp/login/verify').type('form').send({ identifier, code });
+    expect(lockedRes.status).toBe(429);
+
+    await request(app).post('/otp/login').type('form').send({ identifier });
+    const { code: freshCode } = emailService.getLastOtpEmailTo(identifier);
+    const res = await request(app).post('/otp/login/verify').type('form').send({ identifier, code: freshCode });
+
+    expect(res.status).toBe(200);
+  });
+});
+
 describe('edge case: identifier normalization', () => {
   it('matches a registered email regardless of case', async () => {
     userStore.save({ id: crypto.randomUUID(), email: 'case.test@example.com', verified: true });

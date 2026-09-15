@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const { expireTokenRecord } = require('../utils/expireTokenRecord');
 
 const OTP_TTL_MS = 5 * 60 * 1000;
+const MAX_ATTEMPTS = 5;
 
 let otps = new Map();
 
@@ -21,6 +22,7 @@ function create(identifier, purpose, type) {
     purpose,
     expiresAt: Date.now() + OTP_TTL_MS,
     used: false,
+    attempts: 0,
   });
   return code;
 }
@@ -40,4 +42,16 @@ function expire(identifier, purpose) {
   expireTokenRecord(otps, key(identifier, purpose));
 }
 
-module.exports = { create, find, markUsed, expire, reset };
+function recordFailedAttempt(identifier, purpose) {
+  const record = find(identifier, purpose);
+  if (record) {
+    record.attempts += 1;
+  }
+}
+
+function isLocked(identifier, purpose) {
+  const record = find(identifier, purpose);
+  return Boolean(record && record.attempts >= MAX_ATTEMPTS);
+}
+
+module.exports = { create, find, markUsed, expire, reset, recordFailedAttempt, isLocked };
