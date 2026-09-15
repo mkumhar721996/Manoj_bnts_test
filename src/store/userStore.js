@@ -18,7 +18,12 @@ function findById(id) {
 }
 
 function save(user) {
-  users.set(user.email.toLowerCase(), user);
+  const key = user.email || user.phone;
+  users.set(key.toLowerCase(), user);
 }
 
-module.exports = { findByEmail, findById, save, reset };
+function findByIdentifier(identifier) {
+  return users.get(identifier.toLowerCase());
+}
+
+module.exports = { findByEmail, findById, findByIdentifier, save, reset };
