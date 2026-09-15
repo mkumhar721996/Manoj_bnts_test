@@ -1,0 +1,38 @@
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: [object Object]; /** Default text color on light backgrounds. Paired with color-bg, contrast ratio is ~15.3:1 (WCAG AAA). */
+  --color-bg: [object Object]; /** Default page/surface background color. */
+  --color-primary: [object Object]; /** Primary brand/action color used for buttons, links, and focus accents. */
+  --color-primary-fg: [object Object]; /** Text/icon color for content placed on top of color-primary. Contrast against color-primary is ~5.2:1 (WCAG AA). */
+  --color-border: [object Object]; /** Default border color for cards, inputs, and dividers. */
+  --color-surface: [object Object]; /** Slightly raised surface background, e.g. cards on top of color-bg. */
+  --color-danger: [object Object]; /** Destructive/error color for delete actions and error states. */
+  --color-danger-fg: [object Object]; /** Text/icon color for content placed on top of color-danger. */
+  --color-muted-fg: [object Object]; /** Secondary/muted text color, e.g. helper text and placeholders. */
+  --space-1: [object Object]; /** Smallest spacing step, used for tight gaps (e.g. icon-to-label). */
+  --space-2: [object Object]; /** Base spacing step, used for compact padding and gaps. */
+  --space-3: [object Object]; /** Medium spacing step, used for component padding. */
+  --space-4: [object Object]; /** Large spacing step, used for section/card padding. */
+  --radius-sm: [object Object]; /** Corner radius for small controls like chips and inputs. */
+  --radius-md: [object Object]; /** Corner radius for buttons and form controls. */
+  --radius-lg: [object Object]; /** Corner radius for cards and large containers. */
+  --font-size-sm: [object Object]; /** Small text size, used for helper/caption text and chips. */
+  --font-size-md: [object Object]; /** Base body text size. */
+  --font-size-lg: [object Object]; /** Large text size, used for headings and emphasis. */
+  --border-width-sm: [object Object]; /** Default hairline border width used across inputs, chips, and cards. */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /** Default system font stack for body text and UI. */
+  --font-weight-regular: 400; /** Regular text weight. */
+  --font-weight-bold: 700; /** Bold text weight, used for headings and emphasis. */
+  --shadow-card: [object Object] [object Object] [object Object] [object Object] [object Object]; /** Subtle elevation shadow used on cards. */
+  --button-primary-background: var(--color-primary); /** Alias to the base brand color for primary button backgrounds. */
+  --button-primary-foreground: var(--color-primary-fg); /** Alias for text/icon color on primary buttons. */
+  --button-primary-radius: var(--radius-md); /** Alias for primary button corner radius. */
+  --button-danger-background: var(--color-danger); /** Alias to the base danger color for destructive button backgrounds. */
+  --button-danger-foreground: var(--color-danger-fg); /** Alias for text/icon color on danger buttons. */
+  --card-default-background: var(--color-surface); /** Alias to the base surface color for card backgrounds. */
+  --card-default-border: var(--color-border); /** Alias to the base border color for card outlines. */
+  --card-default-radius: var(--radius-lg); /** Alias for card corner radius. */
+}

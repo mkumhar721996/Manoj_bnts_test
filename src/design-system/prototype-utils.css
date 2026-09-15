@@ -1,0 +1,154 @@
+/* Prototype utility & component classes.
+   All values reference CSS custom properties rendered from tokens.json — no literals. */
+
+/* ---------- Layout / spacing utilities ---------- */
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.u-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ---------- Typography utilities ---------- */
+
+.u-text-sm { font-size: var(--font-size-sm); }
+.u-text-md { font-size: var(--font-size-md); }
+.u-text-lg { font-size: var(--font-size-lg); }
+
+.u-text-muted { color: var(--color-muted-fg); }
+
+.u-font-regular { font-weight: var(--font-weight-regular); }
+.u-font-bold { font-weight: var(--font-weight-bold); }
+
+body {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background-color: var(--color-bg);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--button-primary-radius);
+  border: var(--border-width-sm) solid transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+}
+
+.btn-danger {
+  background-color: var(--button-danger-background);
+  color: var(--button-danger-foreground);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+  background-color: var(--card-default-background);
+  border: var(--border-width-sm) solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+
+.card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+}
+
+/* ---------- Chips ---------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+  border: var(--border-width-sm) solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.chip-danger {
+  color: var(--color-danger-fg);
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+/* ---------- Form controls ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+.field-input {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background-color: var(--color-bg);
+  border: var(--border-width-sm) solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+}
+
+.field-input:focus {
+  outline: var(--border-width-sm) solid var(--color-primary);
+  outline-offset: var(--space-1);
+}
+
+.field-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted-fg);
+}

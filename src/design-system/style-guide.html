@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Design System Style Guide</title>
+<link rel="stylesheet" href="./tokens.css" />
+<link rel="stylesheet" href="./prototype-utils.css" />
+<style>
+  /* Page-level layout only — no design token values live here. */
+  .guide-section {
+    margin-bottom: 3rem;
+  }
+  .guide-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    border: var(--border-width-sm, 1px) solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .swatch-color {
+    height: 64px;
+  }
+  .swatch-label {
+    padding: var(--space-2);
+    font-family: monospace;
+    font-size: var(--font-size-sm);
+    line-height: 1.4;
+    color: var(--color-fg);
+  }
+  .dimension-bar {
+    background: var(--color-primary);
+  }
+  .component-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .guide-wrapper {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1rem 4rem;
+  }
+  h1, h2, h3 {
+    font-family: sans-serif;
+  }
+</style>
+</head>
+<body>
+<div class="guide-wrapper">
+  <h1>Design System Style Guide</h1>
+  <p>Live rendering of tokens (<code>tokens.css</code>) and utility/component classes (<code>prototype-utils.css</code>).</p>
+
+  <section class="guide-section">
+    <h2>Colors</h2>
+    <div class="guide-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-fg);"></div>
+        <div class="swatch-label">--color-fg<br>#1b1f25</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-bg); border-bottom: var(--border-width-sm) solid var(--color-border);"></div>
+        <div class="swatch-label">--color-bg<br>#ffffff</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-primary);"></div>
+        <div class="swatch-label">--color-primary<br>#2563eb</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-primary-fg); border-bottom: var(--border-width-sm) solid var(--color-border);"></div>
+        <div class="swatch-label">--color-primary-fg<br>#ffffff</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-border);"></div>
+        <div class="swatch-label">--color-border<br>#d8dde5</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-surface); border-bottom: var(--border-width-sm) solid var(--color-border);"></div>
+        <div class="swatch-label">--color-surface<br>#f9fafc</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-danger);"></div>
+        <div class="swatch-label">--color-danger<br>#c81b25</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-danger-fg); border-bottom: var(--border-width-sm) solid var(--color-border);"></div>
+        <div class="swatch-label">--color-danger-fg<br>#ffffff</div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background-color: var(--color-muted-fg);"></div>
+        <div class="swatch-label">--color-muted-fg<br>#5d656f</div>
+      </div>
+    </div>
+    <p class="u-text-sm u-text-muted" style="margin-top: 0.75rem;">
+      color-fg on color-bg meets WCAG AA (and AAA) contrast for normal text.
+    </p>
+  </section>
+
+  <section class="guide-section">
+    <h2>Spacing scale</h2>
+    <div class="guide-grid">
+      <div class="swatch">
+        <div class="dimension-bar" style="width: var(--space-1); height: 24px;"></div>
+        <div class="swatch-label">--space-1<br>4px</div>
+      </div>
+      <div class="swatch">
+        <div class="dimension-bar" style="width: var(--space-2); height: 24px;"></div>
+        <div class="swatch-label">--space-2<br>8px</div>
+      </div>
+      <div class="swatch">
+        <div class="dimension-bar" style="width: var(--space-3); height: 24px;"></div>
+        <div class="swatch-label">--space-3<br>16px</div>
+      </div>
+      <div class="swatch">
+        <div class="dimension-bar" style="width: var(--space-4); height: 24px;"></div>
+        <div class="swatch-label">--space-4<br>24px</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Radii</h2>
+    <div class="guide-grid">
+      <div class="swatch">
+        <div class="dimension-bar" style="width: 64px; height: 64px; border-radius: var(--radius-sm);"></div>
+        <div class="swatch-label">--radius-sm<br>4px</div>
+      </div>
+      <div class="swatch">
+        <div class="dimension-bar" style="width: 64px; height: 64px; border-radius: var(--radius-md);"></div>
+        <div class="swatch-label">--radius-md<br>8px</div>
+      </div>
+      <div class="swatch">
+        <div class="dimension-bar" style="width: 64px; height: 64px; border-radius: var(--radius-lg);"></div>
+        <div class="swatch-label">--radius-lg<br>16px</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Type scale</h2>
+    <div class="u-stack">
+      <div class="u-text-sm">--font-size-sm (12px) — The quick brown fox jumps over the lazy dog.</div>
+      <div class="u-text-md">--font-size-md (16px) — The quick brown fox jumps over the lazy dog.</div>
+      <div class="u-text-lg">--font-size-lg (24px) — The quick brown fox jumps over the lazy dog.</div>
+      <div class="u-text-md u-font-regular">--font-weight-regular (400) sample text</div>
+      <div class="u-text-md u-font-bold">--font-weight-bold (700) sample text</div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Shadow</h2>
+    <div class="card" style="max-width: 240px;">
+      <div class="card-body">--shadow-card applied to a card</div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Buttons</h2>
+    <div class="component-row">
+      <button class="btn btn-primary">Primary action</button>
+      <button class="btn btn-danger">Delete</button>
+      <button class="btn btn-secondary">Secondary</button>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Cards</h2>
+    <div class="component-row">
+      <div class="card" style="width: 280px;">
+        <h3 class="card-title">Card title</h3>
+        <p class="card-body">This card uses card.default.background, card.default.border, and card.default.radius alias tokens.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Chips</h2>
+    <div class="component-row">
+      <span class="chip">Default chip</span>
+      <span class="chip chip-danger">Danger chip</span>
+    </div>
+  </section>
+
+  <section class="guide-section">
+    <h2>Form controls</h2>
+    <div class="field" style="max-width: 320px;">
+      <label class="field-label" for="sample-input">Amount</label>
+      <input class="field-input" id="sample-input" type="text" placeholder="0.00" />
+      <span class="field-hint">Enter the expense amount in USD.</span>
+    </div>
+  </section>
+</div>
+</body>
+</html>
