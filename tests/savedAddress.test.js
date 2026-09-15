@@ -298,6 +298,21 @@ describe('AC12: a new address is not saved once the user already has 10 saved ad
   });
 });
 
+describe('POST /checkout/save-address rejects an address that fails validation', () => {
+  it('does not save an address with a blank street address', async () => {
+    const agent = request.agent(app);
+    const { payload } = await registerAndLogin(agent);
+    const user = userStore.findByEmail(payload.email);
+
+    const res = await agent.post('/checkout/save-address').type('form').send({
+      streetAddress: '',
+    });
+
+    expect(addressStore.list(user.id)).toHaveLength(0);
+    expect(res.text).toMatch(/validation errors/i);
+  });
+});
+
 describe('AC13: a new address is added when the user has fewer than 10 saved addresses', () => {
   it('adds the new address to the saved addresses', async () => {
     const agent = request.agent(app);

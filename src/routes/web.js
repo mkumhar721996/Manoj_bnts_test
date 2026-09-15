@@ -170,6 +170,18 @@ router.post('/checkout/save-address', attachOptionalUser, (req, res) => {
 
   const { errors, ...address } = validateDeliveryDetails(req.body || {});
 
+  if (errors.length > 0) {
+    return res.status(200).type('html').send(
+      renderCheckoutPage({
+        ...address,
+        addressSaveNotice: {
+          type: 'error',
+          message: 'Your address has validation errors. Please check all required fields.',
+        },
+      })
+    );
+  }
+
   if (addressStore.list(req.user.id).length >= 10) {
     return res.status(200).type('html').send(
       renderCheckoutPage({
