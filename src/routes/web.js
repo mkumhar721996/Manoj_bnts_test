@@ -12,17 +12,22 @@ const { renderAddExpensePage } = require('../views/pages/addExpensePage');
 const { renderEditExpensePage } = require('../views/pages/editExpensePage');
 const { renderDeleteConfirmPage } = require('../views/pages/deleteConfirmPage');
 const { renderGamePage } = require('../views/pages/gamePage');
+const { renderAddressesPage } = require('../views/pages/addressesPage');
+const { renderAddressDeleteConfirmPage } = require('../views/pages/addressDeleteConfirmPage');
 const { validate } = require('../validation/webRegistrationValidator');
 const { validate: validateDeliveryDetails } = require('../validation/deliveryDetailsValidator');
 const { validate: validateExpense } = require('../validation/expenseValidator');
 const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
 const expenseStore = require('../store/expenseStore');
+const addressStore = require('../store/addressStore');
 const sessionStore = require('../store/sessionStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const requireGameSession = require('../middleware/requireGameSession');
 const requireExpense = require('../middleware/requireExpense');
+const requireWebUser = require('../middleware/requireWebUser');
+const requireOwnAddress = require('../middleware/requireOwnAddress');
 
 const router = express.Router();
 
@@ -211,6 +216,19 @@ router.post('/expenses/:id/delete', requireExpense, (req, res) => {
 
 router.get('/game', requireGameSession, (req, res) => {
   res.type('html').send(renderGamePage());
+});
+
+router.get('/addresses', requireWebUser, (req, res) => {
+  res.type('html').send(renderAddressesPage({ addresses: addressStore.listForUser(req.user.id) }));
+});
+
+router.get('/addresses/:id/delete-confirm', requireWebUser, requireOwnAddress, (req, res) => {
+  res.type('html').send(renderAddressDeleteConfirmPage({ address: req.address }));
+});
+
+router.post('/addresses/:id/delete', requireWebUser, requireOwnAddress, (req, res) => {
+  addressStore.remove(req.address.id);
+  res.type('html').send(renderAddressesPage({ addresses: addressStore.listForUser(req.user.id) }));
 });
 
 module.exports = router;
