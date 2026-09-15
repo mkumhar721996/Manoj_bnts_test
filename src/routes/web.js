@@ -7,6 +7,7 @@ const { renderFeedPage } = require('../views/pages/feedPage');
 const { renderLoginErrorPage } = require('../views/pages/loginErrorPage');
 const { renderCartPage } = require('../views/pages/cartPage');
 const { renderCheckoutPage } = require('../views/pages/checkoutPage');
+const { renderAddressesPage } = require('../views/pages/addressesPage');
 const { renderExpensesPage } = require('../views/pages/expensesPage');
 const { renderAddExpensePage } = require('../views/pages/addExpensePage');
 const { renderEditExpensePage } = require('../views/pages/editExpensePage');
@@ -19,10 +20,12 @@ const userStore = require('../store/userStore');
 const verificationTokenStore = require('../store/verificationTokenStore');
 const expenseStore = require('../store/expenseStore');
 const sessionStore = require('../store/sessionStore');
+const addressStore = require('../store/addressStore');
 const emailService = require('../services/emailService');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const requireGameSession = require('../middleware/requireGameSession');
 const requireExpense = require('../middleware/requireExpense');
+const attachOptionalUser = require('../middleware/attachOptionalUser');
 
 const router = express.Router();
 
@@ -92,26 +95,130 @@ router.post('/login', (req, res) => {
   return res.status(200).type('html').send(renderFeedPage(user));
 });
 
-router.get('/cart', (req, res) => {
-  res.type('html').send(renderCartPage());
+const BLANK_ADDRESS_VALUES = {
+  recipientName: '',
+  streetAddress: '',
+  aptSuite: '',
+  floor: '',
+  city: '',
+  state: '',
+  postalCode: '',
+  country: '',
+  deliveryInstructions: '',
+};
+
+router.get('/cart', attachOptionalUser, (req, res) => {
+  if (!req.user) {
+    return res.type('html').send(renderCartPage());
+  }
+
+  const savedAddresses = addressStore.list(req.user.id);
+  const validAddresses = savedAddresses.filter(
+    (address) => validateDeliveryDetails(address).errors.length === 0
+  );
+  if (validAddresses.length !== savedAddresses.length) {
+    addressStore.replaceAll(req.user.id, validAddresses);
+  }
+
+  if (validAddresses.length === 0) {
+    return res.type('html').send(renderCartPage());
+  }
+
+  const requestedAddressId =
+    typeof req.query.addressId === 'string' ? req.query.addressId : undefined;
+  const selectedAddress = requestedAddressId
+    ? validAddresses.find((address) => address.id === requestedAddressId)
+    : undefined;
+
+  const values = selectedAddress
+    ? { ...BLANK_ADDRESS_VALUES, ...selectedAddress }
+    : { ...BLANK_ADDRESS_VALUES };
+  const selectedAddressId = selectedAddress
+    ? selectedAddress.id
+    : requestedAddressId === 'new'
+      ? 'new'
+      : undefined;
+
+  return res
+    .type('html')
+    .send(renderCartPage({ values, savedAddresses: validAddresses, selectedAddressId }));
 });
 
-router.post('/checkout', (req, res) => {
-  const { errors, streetAddress, aptSuite, deliveryInstructions } = validateDeliveryDetails(
-    req.body || {}
-  );
+router.post('/checkout', attachOptionalUser, (req, res) => {
+  const body = req.body || {};
+  const { errors, ...address } = validateDeliveryDetails(body);
 
   if (errors.length > 0) {
-    return res
-      .status(400)
-      .type('html')
-      .send(renderCartPage({ errors, values: { streetAddress, aptSuite, deliveryInstructions } }));
+    return res.status(400).type('html').send(renderCartPage({ errors, values: address }));
   }
+
+  const submittedAddressId = typeof body.addressId === 'string' ? body.addressId : '';
+  const matchesSavedAddress =
+    req.user && submittedAddressId && addressStore.findById(req.user.id, submittedAddressId);
+  const addressSaveOffer = Boolean(req.user) && !matchesSavedAddress;
 
   return res
     .status(200)
     .type('html')
-    .send(renderCheckoutPage({ streetAddress, aptSuite, deliveryInstructions }));
+    .send(renderCheckoutPage({ ...address, addressSaveOffer }));
+});
+
+router.post('/checkout/save-address', attachOptionalUser, (req, res) => {
+  if (!req.user) {
+    return res.redirect('/');
+  }
+
+  const { errors, ...address } = validateDeliveryDetails(req.body || {});
+
+  if (addressStore.list(req.user.id).length >= 10) {
+    return res.status(200).type('html').send(
+      renderCheckoutPage({
+        ...address,
+        addressSaveNotice: {
+          type: 'capacity',
+          message: 'You already have 10 saved addresses. Delete one to save a new address.',
+        },
+      })
+    );
+  }
+
+  const record = { id: crypto.randomUUID(), ...address };
+  const attemptSave = () => addressStore.save(req.user.id, record);
+
+  try {
+    attemptSave();
+  } catch (err) {
+    try {
+      attemptSave();
+    } catch (err2) {
+      return res.status(200).type('html').send(
+        renderCheckoutPage({
+          ...address,
+          addressSaveNotice: {
+            type: 'error',
+            message: 'We could not save your address. Please try again from your account settings.',
+          },
+        })
+      );
+    }
+  }
+
+  return res.status(200).type('html').send(
+    renderCheckoutPage({
+      ...address,
+      addressSaveNotice: { type: 'success', message: 'Address saved to your account.' },
+    })
+  );
+});
+
+router.get('/account/addresses', attachOptionalUser, (req, res) => {
+  if (!req.user) {
+    return res.redirect('/');
+  }
+
+  return res
+    .type('html')
+    .send(renderAddressesPage({ addresses: addressStore.list(req.user.id) }));
 });
 
 router.get('/expenses', (req, res) => {

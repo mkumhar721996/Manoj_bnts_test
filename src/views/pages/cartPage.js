@@ -83,6 +83,11 @@ const CART_PAGE_STYLE = `
   color: var(--muted);
 }
 
+.cart-page .field input[readonly] {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
 .cart-page .btn-block {
   border-radius: 12px;
   display: flex;
@@ -90,23 +95,86 @@ const CART_PAGE_STYLE = `
   justify-content: center;
   gap: 8px;
 }
+
+.cart-page .saved-addresses {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cart-page .saved-address-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 `;
 
-function renderCartPage({ errors = [], values = {} } = {}) {
+function renderCartPage({ errors = [], values = {}, savedAddresses = [], selectedAddressId } = {}) {
+  const hasSavedAddresses = savedAddresses.length > 0;
+  const selectedSavedAddress = hasSavedAddresses
+    ? savedAddresses.find((address) => address.id === selectedAddressId)
+    : undefined;
+  const isSavedAddressSelected = Boolean(selectedSavedAddress);
+
+  const recipientName = values.recipientName !== undefined ? values.recipientName : '';
   const streetAddress =
     values.streetAddress !== undefined ? values.streetAddress : '128 Pizzaiolo Boulevard';
   const aptSuite = values.aptSuite !== undefined ? values.aptSuite : 'Penthouse 4B';
+  const floor = values.floor !== undefined ? values.floor : '';
+  const city = values.city !== undefined ? values.city : '';
+  const state = values.state !== undefined ? values.state : '';
+  const postalCode = values.postalCode !== undefined ? values.postalCode : '';
+  const country = values.country !== undefined ? values.country : '';
   const deliveryInstructions =
     values.deliveryInstructions !== undefined
       ? values.deliveryInstructions
       : 'Ring doorbell or leave at front lobby desk. Please keep thermal bag zipped until handover!';
 
   const streetAddressError = errors.includes('Street address is required.');
+  const readonlyAttr = isSavedAddressSelected ? ' readonly' : '';
+
+  const savedAddressesSection = hasSavedAddresses
+    ? `
+  <div class="card saved-addresses">
+    <h2>Choose a delivery address</h2>
+    ${savedAddresses
+      .map(
+        (address) => `
+    <label class="saved-address-option">
+      <input type="radio" name="addressId" value="${escapeHtml(address.id)}" ${
+          selectedAddressId === address.id ? 'checked' : ''
+        }>
+      <span>${escapeHtml(address.streetAddress || '')}${address.city ? `, ${escapeHtml(address.city)}` : ''}</span>
+    </label>`
+      )
+      .join('')}
+    <label class="saved-address-option">
+      <input type="radio" name="addressId" value="new" ${selectedAddressId === 'new' ? 'checked' : ''}>
+      <span>Enter a new address</span>
+    </label>
+  </div>
+  <script>
+    (function () {
+      var radios = document.querySelectorAll('.saved-addresses input[name="addressId"]');
+      radios.forEach(function (radio) {
+        radio.addEventListener('change', function () {
+          window.location.href = '/cart?addressId=' + encodeURIComponent(this.value);
+        });
+      });
+    })();
+  </script>`
+    : '';
+
+  const changeAddressLink = isSavedAddressSelected
+    ? '<a href="/account/addresses">Change address</a>'
+    : '';
 
   const body = `
 <div class="cart-page">
   <style>${CART_PAGE_STYLE}</style>
+  ${savedAddressesSection}
   <form class="card" action="/checkout" method="post" novalidate>
+    ${hasSavedAddresses ? `<input type="hidden" name="addressId" value="${escapeHtml(selectedAddressId || '')}">` : ''}
     <div class="delivery-header">
       <div class="delivery-header__title">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -118,6 +186,13 @@ function renderCartPage({ errors = [], values = {} } = {}) {
       <span class="delivery-eta">Est. Delivery: 25-35 mins</span>
     </div>
 
+    ${changeAddressLink}
+
+    <div class="field">
+      <label for="recipient-name">Recipient Name</label>
+      <input type="text" id="recipient-name" name="recipientName" value="${escapeHtml(recipientName)}"${readonlyAttr}>
+    </div>
+
     <div class="field-row">
       <div class="field${streetAddressError ? ' has-error' : ''}">
         <label for="street-address">Street Address</label>
@@ -126,6 +201,7 @@ function renderCartPage({ errors = [], values = {} } = {}) {
           id="street-address"
           name="streetAddress"
           value="${escapeHtml(streetAddress)}"
+          ${readonlyAttr}
           ${streetAddressError ? 'aria-invalid="true" aria-describedby="street-address-error"' : ''}
         >
         ${streetAddressError ? '<p class="field-error" id="street-address-error">Street address is required.</p>' : ''}
@@ -133,6 +209,32 @@ function renderCartPage({ errors = [], values = {} } = {}) {
       <div class="field field-apt">
         <label for="apt-suite">Apt / Suite</label>
         <input type="text" id="apt-suite" name="aptSuite" value="${escapeHtml(aptSuite)}">
+      </div>
+      <div class="field field-apt">
+        <label for="floor">Floor</label>
+        <input type="text" id="floor" name="floor" value="${escapeHtml(floor)}">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" value="${escapeHtml(city)}"${readonlyAttr}>
+      </div>
+      <div class="field">
+        <label for="state">State</label>
+        <input type="text" id="state" name="state" value="${escapeHtml(state)}"${readonlyAttr}>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="postal-code">Postal Code</label>
+        <input type="text" id="postal-code" name="postalCode" value="${escapeHtml(postalCode)}"${readonlyAttr}>
+      </div>
+      <div class="field">
+        <label for="country">Country</label>
+        <input type="text" id="country" name="country" value="${escapeHtml(country)}"${readonlyAttr}>
       </div>
     </div>
 
