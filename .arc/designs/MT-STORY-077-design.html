@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MT-STORY-077 · User Login — Design Prototype</title>
+
+<!-- Shared design system (this project's bootstrapped tokens — proj_188aff79).
+     Linked, not inlined, per UI guidelines §11: the sdlc.ux-design workflow's
+     inline_css node substitutes real file content before a reviewer sees this. -->
+<style>
+/**
+ * Do not edit directly, this file was auto-generated.
+ */
+
+:root {
+  --color-fg: [object Object]; /** Default text color on light backgrounds. Paired with color-bg, contrast ratio is ~15.3:1 (WCAG AAA). */
+  --color-bg: [object Object]; /** Default page/surface background color. */
+  --color-primary: [object Object]; /** Primary brand/action color used for buttons, links, and focus accents. */
+  --color-primary-fg: [object Object]; /** Text/icon color for content placed on top of color-primary. Contrast against color-primary is ~5.2:1 (WCAG AA). */
+  --color-border: [object Object]; /** Default border color for cards, inputs, and dividers. */
+  --color-surface: [object Object]; /** Slightly raised surface background, e.g. cards on top of color-bg. */
+  --color-danger: [object Object]; /** Destructive/error color for delete actions and error states. */
+  --color-danger-fg: [object Object]; /** Text/icon color for content placed on top of color-danger. */
+  --color-muted-fg: [object Object]; /** Secondary/muted text color, e.g. helper text and placeholders. */
+  --space-1: [object Object]; /** Smallest spacing step, used for tight gaps (e.g. icon-to-label). */
+  --space-2: [object Object]; /** Base spacing step, used for compact padding and gaps. */
+  --space-3: [object Object]; /** Medium spacing step, used for component padding. */
+  --space-4: [object Object]; /** Large spacing step, used for section/card padding. */
+  --radius-sm: [object Object]; /** Corner radius for small controls like chips and inputs. */
+  --radius-md: [object Object]; /** Corner radius for buttons and form controls. */
+  --radius-lg: [object Object]; /** Corner radius for cards and large containers. */
+  --font-size-sm: [object Object]; /** Small text size, used for helper/caption text and chips. */
+  --font-size-md: [object Object]; /** Base body text size. */
+  --font-size-lg: [object Object]; /** Large text size, used for headings and emphasis. */
+  --border-width-sm: [object Object]; /** Default hairline border width used across inputs, chips, and cards. */
+  --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /** Default system font stack for body text and UI. */
+  --font-weight-regular: 400; /** Regular text weight. */
+  --font-weight-bold: 700; /** Bold text weight, used for headings and emphasis. */
+  --shadow-card: [object Object] [object Object] [object Object] [object Object] [object Object]; /** Subtle elevation shadow used on cards. */
+  --button-primary-background: var(--color-primary); /** Alias to the base brand color for primary button backgrounds. */
+  --button-primary-foreground: var(--color-primary-fg); /** Alias for text/icon color on primary buttons. */
+  --button-primary-radius: var(--radius-md); /** Alias for primary button corner radius. */
+  --button-danger-background: var(--color-danger); /** Alias to the base danger color for destructive button backgrounds. */
+  --button-danger-foreground: var(--color-danger-fg); /** Alias for text/icon color on danger buttons. */
+  --card-default-background: var(--color-surface); /** Alias to the base surface color for card backgrounds. */
+  --card-default-border: var(--color-border); /** Alias to the base border color for card outlines. */
+  --card-default-radius: var(--radius-lg); /** Alias for card corner radius. */
+}
+
+</style>
+<style>
+/* Prototype utility & component classes.
+   All values reference CSS custom properties rendered from tokens.json — no literals. */
+
+/* ---------- Layout / spacing utilities ---------- */
+
+.u-gap-1 { gap: var(--space-1); }
+.u-gap-2 { gap: var(--space-2); }
+.u-gap-3 { gap: var(--space-3); }
+.u-gap-4 { gap: var(--space-4); }
+
+.u-p-1 { padding: var(--space-1); }
+.u-p-2 { padding: var(--space-2); }
+.u-p-3 { padding: var(--space-3); }
+.u-p-4 { padding: var(--space-4); }
+
+.u-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.u-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ---------- Typography utilities ---------- */
+
+.u-text-sm { font-size: var(--font-size-sm); }
+.u-text-md { font-size: var(--font-size-md); }
+.u-text-lg { font-size: var(--font-size-lg); }
+
+.u-text-muted { color: var(--color-muted-fg); }
+
+.u-font-regular { font-weight: var(--font-weight-regular); }
+.u-font-bold { font-weight: var(--font-weight-bold); }
+
+body {
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background-color: var(--color-bg);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--button-primary-radius);
+  border: var(--border-width-sm) solid transparent;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: var(--button-primary-background);
+  color: var(--button-primary-foreground);
+}
+
+.btn-danger {
+  background-color: var(--button-danger-background);
+  color: var(--button-danger-foreground);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+  background-color: var(--card-default-background);
+  border: var(--border-width-sm) solid var(--card-default-border);
+  border-radius: var(--card-default-radius);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+
+.card-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.card-body {
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+}
+
+/* ---------- Chips ---------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+  border: var(--border-width-sm) solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.chip-danger {
+  color: var(--color-danger-fg);
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+/* ---------- Form controls ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.field-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-fg);
+}
+
+.field-input {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-md);
+  color: var(--color-fg);
+  background-color: var(--color-bg);
+  border: var(--border-width-sm) solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+}
+
+.field-input:focus {
+  outline: var(--border-width-sm) solid var(--color-primary);
+  outline-offset: var(--space-1);
+}
+
+.field-hint {
+  font-size: var(--font-size-sm);
+  color: var(--color-muted-fg);
+}
+
+</style>
+
+<!--
+  App nav: this app is the existing "Facebook"-style product (see
+  src/views/pages/homePage.js / feedPage.js). Signed-out screens use a simple
+  top bar (brand wordmark + Log In / Create Account). The post-login
+  destination reuses the product's existing Feed / Friends / Groups /
+  Marketplace / Watch side nav. No arc-platform chrome applies — MT-STORY-077
+  is not an ARC-* story.
+
+  Design-system note: tokens.json (proj_188aff79) has no "success" color —
+  only color-primary, color-danger, color-muted-fg, color-border, color-surface.
+  Authenticated/success states below reuse color-primary rather than inventing
+  a new hex. If a future story wants a distinct success color, that token
+  doesn't exist yet and would need to be added by sdlc.design-system-bootstrap,
+  not composed here.
+-->
+<style>
+  /* Page-level layout & page-specific components only.
+     No literal color/spacing/font values below — every rule composes the
+     tokens from tokens.css via var(), or reuses a class from
+     prototype-utils.css. */
+
+  body { margin: 0; padding-top: 48px; } /* fixed reviewer-bar height; structural chrome, not a design token */
+  h1, h2, h3, p { margin: 0; }
+  a { color: var(--color-primary); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ---------------------------------------------------------------------
+     Reviewer bar (canonical scaffold)
+     --------------------------------------------------------------------- */
+  #review-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-surface);
+    border-bottom: var(--border-width-sm) solid var(--color-border);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family-base);
+  }
+  #review-bar button {
+    background: none;
+    border: var(--border-width-sm) solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-primary);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family-base);
+    cursor: pointer;
+  }
+  #review-bar button:hover { background: var(--color-surface); }
+  #review-bar .story-id { font-family: monospace; color: var(--color-muted-fg); }
+  #screen-label { flex: 1; text-align: center; font-weight: var(--font-weight-bold); color: var(--color-fg); }
+  .reviewer-spacer { height: 48px; }
+
+  /* ---------------------------------------------------------------------
+     Top bar (product chrome, signed-out and signed-in variants)
+     --------------------------------------------------------------------- */
+  .top-bar {
+    background: var(--color-bg);
+    border-bottom: var(--border-width-sm) solid var(--color-border);
+    padding: var(--space-3) var(--space-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .wordmark {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+  }
+  .top-bar-actions { display: flex; align-items: center; gap: var(--space-2); }
+
+  /* ---------------------------------------------------------------------
+     Screens
+     --------------------------------------------------------------------- */
+  .screen { display: none; min-height: calc(100dvh - 48px); background: var(--color-bg); }
+  .screen.is-active { display: block; }
+
+  .auth-layout {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: var(--space-4) var(--space-3) var(--space-4);
+  }
+  @media (min-width: 640px) {
+    .auth-layout { padding: var(--space-4); }
+  }
+
+  .auth-layout .card-title { text-align: left; }
+  .auth-intro {
+    color: var(--color-muted-fg);
+    font-size: var(--font-size-sm);
+    margin: 0 0 var(--space-3) 0;
+  }
+
+  form.login-form { display: flex; flex-direction: column; gap: var(--space-3); }
+
+  .field-input.has-error {
+    border-color: var(--color-danger);
+  }
+  .field-error-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-danger);
+  }
+
+  .btn-block { width: 100%; }
+  .btn[disabled] { opacity: 0.65; cursor: default; pointer-events: none; }
+
+  .form-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--radius-md);
+    border: var(--border-width-sm) solid var(--color-danger);
+    background-color: var(--color-surface);
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-3);
+  }
+  .form-alert .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px; height: 20px;
+    border-radius: var(--radius-sm);
+    background-color: var(--color-danger);
+    color: var(--color-danger-fg);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    flex-shrink: 0;
+  }
+
+  .helper-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--font-size-sm);
+  }
+
+  .fixture-hint {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--color-muted-fg);
+    border: var(--border-width-sm) dashed var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3);
+  }
+  .fixture-hint strong { color: var(--color-fg); }
+
+  /* ---------------------------------------------------------------------
+     Authenticated destination (post-login) — reuses existing Feed shell
+     structure, restyled onto the new tokens rather than the app's legacy
+     ad-hoc :root variables in src/views/layout.js.
+     --------------------------------------------------------------------- */
+  .app-shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: var(--space-3);
+  }
+  @media (min-width: 860px) {
+    .app-shell { grid-template-columns: 200px 1fr 220px; }
+  }
+
+  .side-nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .side-nav-item {
+    display: flex; align-items: center;
+    padding: var(--space-2) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-fg);
+    min-height: 44px;
+  }
+  .side-nav-item.is-current { background: var(--color-surface); color: var(--color-primary); }
+
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    flex-shrink: 0;
+  }
+
+  .welcome-banner {
+    background: var(--color-primary);
+    color: var(--color-primary-fg);
+    border-radius: var(--card-default-radius);
+    padding: var(--space-4);
+    margin-bottom: var(--space-3);
+  }
+  .welcome-banner h1 { font-size: var(--font-size-lg); margin-bottom: var(--space-1); }
+  .welcome-banner p { font-size: var(--font-size-sm); opacity: 0.9; }
+
+  .post-row {
+    display: flex; gap: var(--space-3);
+    padding-bottom: var(--space-3);
+    margin-bottom: var(--space-3);
+    border-bottom: var(--border-width-sm) solid var(--color-border);
+  }
+  .post-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .post-author { font-weight: var(--font-weight-bold); font-size: var(--font-size-sm); }
+  .post-meta { color: var(--color-muted-fg); font-size: var(--font-size-sm); margin-bottom: var(--space-1); }
+
+  .right-rail h3 {
+    font-size: var(--font-size-sm); color: var(--color-muted-fg);
+    margin: 0 0 var(--space-2) 0; text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .contact-row { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-2); }
+
+  .back-link { display: inline-block; margin-top: var(--space-3); font-size: var(--font-size-sm); }
+</style>
+</head>
+<body>
+
+<!-- Reviewer bar -->
+<div id="review-bar">
+  <span class="story-id">MT-STORY-077</span>
+  <button id="prev-btn" type="button">&larr; Prev</button>
+  <span id="screen-label"></span>
+  <button id="next-btn" type="button">Next &rarr;</button>
+</div>
+<div class="reviewer-spacer"></div>
+
+<div id="screens">
+
+<!-- ===================================================================
+     Screen: Login form (default)
+     Notes:
+       - Satisfies the entry point for AC1/AC2/AC3 — this is the single
+         login form all three acceptance criteria act on.
+       - Email + password are the two required credential fields.
+       - "Log in" is disabled and re-labelled "Signing in…" while the
+         simulated 300ms request runs, per motion/interaction guidelines.
+       - Fixture hint documents the seeded valid credentials, and shows how
+         any other combination fails AC2, and how an empty field fails AC3.
+=================================================================== -->
+<div class="screen is-active" data-name="Login — default">
+  <!-- State: default -->
+  <div class="top-bar">
+    <span class="wordmark">Facebook</span>
+    <div class="top-bar-actions">
+      <a class="btn btn-secondary" href="#" onclick="return false;">Create account</a>
+    </div>
+  </div>
+  <div class="auth-layout">
+    <div class="card">
+      <h1 class="card-title">Log into your account</h1>
+      <p class="auth-intro">Enter your email and password to continue.</p>
+
+      <div id="login-alert-slot"></div>
+
+      <form class="login-form" id="loginForm" novalidate onsubmit="return handleLogin(event)">
+        <div class="field" id="email-field">
+          <label class="field-label" for="login-email">Email address</label>
+          <input class="field-input" type="text" id="login-email" name="email" placeholder="jordan@example.com" autocomplete="username">
+          <span class="field-error-text" id="email-error" hidden></span>
+        </div>
+        <div class="field" id="password-field">
+          <label class="field-label" for="login-password">Password</label>
+          <input class="field-input" type="password" id="login-password" name="password" placeholder="Enter your password" autocomplete="current-password">
+          <span class="field-error-text" id="password-error" hidden></span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="loginSubmitBtn">Log in</button>
+        <div class="helper-row">
+          <a href="#" onclick="return false;">Forgotten password?</a>
+        </div>
+      </form>
+
+      <div class="fixture-hint">
+        Try it: <strong>jordan@example.com</strong> / <strong>Passw0rd!</strong> logs in successfully (AC1).
+        Any other value shows "invalid credentials" (AC2). Leaving a field blank shows a
+        missing-field validation error (AC3).
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     Screen: Login — missing-field validation error
+     Notes:
+       - Covers AC3: a required field left empty on submit shows a
+         validation error naming the missing field, and the form is not
+         submitted.
+       - Input values the user already typed are preserved (see guideline
+         §6 — never make the user retype a whole form after one bad field).
+       - Reached by leaving the password field empty and submitting from
+         the default screen; reproduced here as its own reviewable state.
+=================================================================== -->
+<div class="screen" data-name="Login — missing field">
+  <!-- State: validation-error -->
+  <div class="top-bar">
+    <span class="wordmark">Facebook</span>
+    <div class="top-bar-actions">
+      <a class="btn btn-secondary" href="#" onclick="return false;">Create account</a>
+    </div>
+  </div>
+  <div class="auth-layout">
+    <div class="card">
+      <h1 class="card-title">Log into your account</h1>
+      <p class="auth-intro">Enter your email and password to continue.</p>
+
+      <form class="login-form" novalidate onsubmit="return false;">
+        <div class="field">
+          <label class="field-label" for="login-email-missing">Email address</label>
+          <input class="field-input" type="text" id="login-email-missing" value="jordan@example.com">
+        </div>
+        <div class="field">
+          <label class="field-label" for="login-password-missing">Password</label>
+          <input class="field-input has-error" type="password" id="login-password-missing" value="" aria-invalid="true" aria-describedby="password-missing-error">
+          <span class="field-error-text" id="password-missing-error">Password is required.</span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Log in</button>
+        <div class="helper-row">
+          <a href="#" onclick="return false;">Forgotten password?</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     Screen: Login — invalid credentials
+     Notes:
+       - Covers AC2: a registered-looking but incorrect email/password
+         combination is rejected — form-level error, access denied, no
+         indication of which field (email vs. password) was wrong, to
+         avoid leaking which emails are registered.
+       - Reached from the default screen by submitting any value that
+         doesn't match the fixture credentials; reproduced here as its
+         own reviewable state.
+=================================================================== -->
+<div class="screen" data-name="Login — invalid credentials">
+  <!-- State: error -->
+  <div class="top-bar">
+    <span class="wordmark">Facebook</span>
+    <div class="top-bar-actions">
+      <a class="btn btn-secondary" href="#" onclick="return false;">Create account</a>
+    </div>
+  </div>
+  <div class="auth-layout">
+    <div class="card">
+      <h1 class="card-title">Log into your account</h1>
+      <p class="auth-intro">Enter your email and password to continue.</p>
+
+      <div class="form-alert" role="alert">
+        <span class="icon">!</span>
+        <span>The email or password you entered is incorrect. Access denied.</span>
+      </div>
+
+      <form class="login-form" novalidate onsubmit="return false;">
+        <div class="field">
+          <label class="field-label" for="login-email-invalid">Email address</label>
+          <input class="field-input" type="text" id="login-email-invalid" value="jordan@example.com">
+        </div>
+        <div class="field">
+          <label class="field-label" for="login-password-invalid">Password</label>
+          <input class="field-input" type="password" id="login-password-invalid" value="wrongpassword">
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Try again</button>
+        <div class="helper-row">
+          <a href="#" onclick="return false;">Forgotten password?</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     Screen: Authenticated — access granted
+     Notes:
+       - Covers AC1: valid credentials authenticate the user and grant
+         access to the application. Shown here as the product's existing
+         Feed destination, restyled onto the shared design-system tokens.
+       - Log out returns to the default login screen.
+=================================================================== -->
+<div class="screen" data-name="Authenticated — access granted">
+  <!-- State: authenticated -->
+  <div class="top-bar">
+    <span class="wordmark">Facebook</span>
+    <div class="top-bar-actions">
+      <div class="avatar">J</div>
+      <button class="btn btn-secondary" type="button" onclick="showScreen(0)">Log out</button>
+    </div>
+  </div>
+  <div class="app-shell">
+    <nav class="side-nav">
+      <div class="side-nav-item is-current">Feed</div>
+      <div class="side-nav-item">Friends</div>
+      <div class="side-nav-item">Groups</div>
+      <div class="side-nav-item">Marketplace</div>
+      <div class="side-nav-item">Watch</div>
+    </nav>
+    <main>
+      <div class="welcome-banner">
+        <h1>Welcome back, Jordan!</h1>
+        <p>You're logged in. Here's what's new in your feed.</p>
+      </div>
+      <div class="card">
+        <div class="post-row">
+          <div class="avatar">A</div>
+          <div>
+            <div class="post-author">Aisha Khan</div>
+            <div class="post-meta">2 hours ago</div>
+            <p>Just finished a 10k run along the river trail — beautiful morning for it!</p>
+          </div>
+        </div>
+        <div class="post-row">
+          <div class="avatar">D</div>
+          <div>
+            <div class="post-author">Diego Fernandez</div>
+            <div class="post-meta">5 hours ago</div>
+            <p>Posted 6 new photos from the team offsite in Austin.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="card right-rail">
+      <h3>Contacts</h3>
+      <div class="contact-row"><div class="avatar">A</div> Aisha Khan</div>
+      <div class="contact-row"><div class="avatar">D</div> Diego Fernandez</div>
+    </aside>
+  </div>
+</div>
+
+</div>
+
+<script>
+  // -----------------------------------------------------------------------
+  // Fixture data — inline only, no network calls (this is a visual prototype)
+  // -----------------------------------------------------------------------
+  var VALID_EMAIL = 'jordan@example.com';
+  var VALID_PASSWORD = 'Passw0rd!';
+
+  // -----------------------------------------------------------------------
+  // Reviewer bar scaffold
+  // -----------------------------------------------------------------------
+  var screens = Array.from(document.querySelectorAll('.screen'));
+  var cur = 0;
+  function show(i) {
+    cur = Math.max(0, Math.min(screens.length - 1, i));
+    screens.forEach(function (s, j) { s.classList.toggle('is-active', j === cur); });
+    document.getElementById('screen-label').textContent =
+      (cur + 1) + ' / ' + screens.length + ': ' + screens[cur].dataset.name;
+  }
+  function showScreen(i) { show(i); }
+  document.getElementById('prev-btn').onclick = function () { show(cur - 1); };
+  document.getElementById('next-btn').onclick = function () { show(cur + 1); };
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight') show(cur + 1);
+    if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  show(0);
+
+  // -----------------------------------------------------------------------
+  // Simulated login submission on the default screen (setTimeout stands in
+  // for the network round-trip described in the acceptance criteria)
+  // -----------------------------------------------------------------------
+  function setFieldError(fieldEl, inputEl, errorEl, message) {
+    if (message) {
+      inputEl.classList.add('has-error');
+      errorEl.textContent = message;
+      errorEl.hidden = false;
+    } else {
+      inputEl.classList.remove('has-error');
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+    }
+  }
+
+  function handleLogin(evt) {
+    evt.preventDefault();
+    var emailInput = document.getElementById('login-email');
+    var passwordInput = document.getElementById('login-password');
+    var emailError = document.getElementById('email-error');
+    var passwordError = document.getElementById('password-error');
+    var alertSlot = document.getElementById('login-alert-slot');
+    var submitBtn = document.getElementById('loginSubmitBtn');
+
+    var email = emailInput.value.trim();
+    var password = passwordInput.value;
+
+    // AC3: required-field validation — user input is preserved, nothing is submitted
+    setFieldError(null, emailInput, emailError, email ? '' : 'Email address is required.');
+    setFieldError(null, passwordInput, passwordError, password ? '' : 'Password is required.');
+    if (!email || !password) {
+      alertSlot.innerHTML = '';
+      return false;
+    }
+
+    alertSlot.innerHTML = '';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing in…';
+
+    setTimeout(function () {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Log in';
+
+      // AC1 vs AC2: valid fixture credentials authenticate, anything else is denied
+      if (email.toLowerCase() === VALID_EMAIL && password === VALID_PASSWORD) {
+        show(3); // Authenticated — access granted
+        return;
+      }
+
+      alertSlot.innerHTML =
+        '<div class="form-alert" role="alert">' +
+        '<span class="icon">!</span>' +
+        '<span>The email or password you entered is incorrect. Access denied.</span>' +
+        '</div>';
+    }, 300);
+
+    return false;
+  }
+</script>
+</body>
+</html>
+
+<!-- arc:css-inlined -->
