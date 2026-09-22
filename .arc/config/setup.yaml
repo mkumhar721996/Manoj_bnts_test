@@ -1,0 +1,4 @@
+commands:
+  test: npm test
+package_install_commands:
+  npm: npm install {name}@{version}
